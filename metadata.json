@@ -1,0 +1,6 @@
+{
+  "name": "Rental Invoice & Property Management",
+  "description": "Mobile-ready property, rooms, tenants, contract, meter utility readings, and invoice generator with dual currency USD/KHR support for Cambodia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
