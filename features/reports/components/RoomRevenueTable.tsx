@@ -23,16 +23,16 @@ export function RoomRevenueTable({
           Ordered by Paid Value
         </span>
       </div>
-      <div className="overflow-y-auto max-h-[300px]">
-        <table className="w-full text-left text-xs">
+      <div className="overflow-x-auto overflow-y-auto max-h-[300px] scroll-x-hint">
+        <table className="w-full min-w-[520px] text-left text-xs">
           <thead>
             <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase font-sans">
               <th className="p-4 pl-6">{t.room_number}</th>
               <th className="p-4">{lang === 'en' ? 'Location property' : 'ទីតាំងជួល'}</th>
-              <th className="p-4 text-right font-bold text-emerald-700">
+              <th className="p-4 text-right font-bold text-chart-2">
                 {lang === 'en' ? 'Deposited Total (USD)' : 'ប្រាក់ប្រមូលបានសរុប'}
               </th>
-              <th className="p-4 text-right text-rose-700">
+              <th className="p-4 text-right text-destructive">
                 {lang === 'en' ? 'Outstanding (USD)' : 'ប្រាក់នៅជំពាក់'}
               </th>
             </tr>
@@ -51,12 +51,12 @@ export function RoomRevenueTable({
                 <tr key={idx} className="hover:bg-muted/50 transition">
                   <td className="p-4 pl-6 font-bold text-foreground font-mono">{row.roomNumber}</td>
                   <td className="p-4 text-muted-foreground font-sans text-xs">{row.propertyName}</td>
-                  <td className="p-4 text-right font-black text-emerald-700 font-mono">
+                  <td className="p-4 text-right font-black text-chart-2 font-mono">
                     ${row.totalPaid.toFixed(2)}
                   </td>
                   <td className="p-4 text-right font-bold font-mono text-muted-foreground">
                     {row.totalOwed > 0 ? (
-                      <span className="text-rose-600">${row.totalOwed.toFixed(2)}</span>
+                      <span className="text-destructive">${row.totalOwed.toFixed(2)}</span>
                     ) : (
                       <span className="text-muted-foreground">$0.00</span>
                     )}

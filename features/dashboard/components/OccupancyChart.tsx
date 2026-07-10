@@ -35,7 +35,7 @@ export function OccupancyChart({
       >
         <div className="relative w-36 h-36">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#27272a" strokeWidth="3" />
+            <circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--border)" strokeWidth="3" />
 
             {occupiedPct > 0 && (
               <circle
@@ -43,7 +43,7 @@ export function OccupancyChart({
                 cy="18"
                 r="15.915"
                 fill="none"
-                stroke="#10b981"
+                stroke="var(--chart-2)"
                 strokeWidth="3.5"
                 strokeDasharray={`${occupiedPct} ${100 - occupiedPct}`}
                 strokeDashoffset="0"
@@ -56,7 +56,7 @@ export function OccupancyChart({
                 cy="18"
                 r="15.915"
                 fill="none"
-                stroke="#6366f1"
+                stroke="var(--chart-3)"
                 strokeWidth="3.5"
                 strokeDasharray={`${vacantPct} ${100 - vacantPct}`}
                 strokeDashoffset={`-${occupiedPct}`}
@@ -69,7 +69,7 @@ export function OccupancyChart({
                 cy="18"
                 r="15.915"
                 fill="none"
-                stroke="#f59e0b"
+                stroke="var(--chart-1)"
                 strokeWidth="3.5"
                 strokeDasharray={`${maintPct} ${100 - maintPct}`}
                 strokeDashoffset={`-${occupiedPct + vacantPct}`}
@@ -85,8 +85,8 @@ export function OccupancyChart({
         </div>
 
         <div className="space-y-3 shrink-0">
-          <div className="flex items-center gap-3 bg-emerald-500/5 p-2 px-3 rounded-lg border border-emerald-500/10">
-            <span className="w-3 h-3 rounded-full bg-emerald-500 block"></span>
+          <div className="flex items-center gap-3 bg-chart-2/5 p-2 px-3 rounded-lg border border-chart-2/10">
+            <span className="w-3 h-3 rounded-full bg-chart-2 block"></span>
             <div>
               <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
                 {t.occupied}
@@ -98,8 +98,8 @@ export function OccupancyChart({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 bg-indigo-500/5 p-2 px-3 rounded-lg border border-indigo-500/10">
-            <span className="w-3 h-3 rounded-full bg-indigo-500 block"></span>
+          <div className="flex items-center gap-3 bg-chart-3/5 p-2 px-3 rounded-lg border border-chart-3/10">
+            <span className="w-3 h-3 rounded-full bg-chart-3 block"></span>
             <div>
               <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
                 {t.vacant}
@@ -111,8 +111,8 @@ export function OccupancyChart({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 bg-amber-500/5 p-2 px-3 rounded-lg border border-amber-500/10">
-            <span className="w-3 h-3 rounded-full bg-amber-500 block"></span>
+          <div className="flex items-center gap-3 bg-chart-1/5 p-2 px-3 rounded-lg border border-chart-1/10">
+            <span className="w-3 h-3 rounded-full bg-chart-1 block"></span>
             <div>
               <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
                 {lang === 'en' ? 'Maintenance' : 'កំពុងជួសជុល'}

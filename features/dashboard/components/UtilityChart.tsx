@@ -17,37 +17,37 @@ export function UtilityChart({ t, lang }: { t: any; lang: AppLanguage }) {
 
       <div className="relative w-full h-44 mt-auto" id="utility-outlay-chart-container">
         <svg className="w-full h-full" viewBox="0 0 350 150">
-          <line x1="30" y1="20" x2="330" y2="20" stroke="#27272a" strokeWidth="1" />
-          <line x1="30" y1="60" x2="330" y2="60" stroke="#27272a" strokeWidth="1" />
-          <line x1="30" y1="100" x2="330" y2="100" stroke="#27272a" strokeWidth="1" />
-          <line x1="30" y1="130" x2="330" y2="130" stroke="#3f3f46" strokeWidth="1" />
+          <line x1="30" y1="20" x2="330" y2="20" stroke="var(--border)" strokeWidth="1" />
+          <line x1="30" y1="60" x2="330" y2="60" stroke="var(--border)" strokeWidth="1" />
+          <line x1="30" y1="100" x2="330" y2="100" stroke="var(--border)" strokeWidth="1" />
+          <line x1="30" y1="130" x2="330" y2="130" stroke="var(--muted-foreground)" strokeWidth="1" />
 
-          <text x="25" y="23" textAnchor="end" fontSize="8" fill="#71717a" className="font-mono">$120</text>
-          <text x="25" y="63" textAnchor="end" fontSize="8" fill="#71717a" className="font-mono">$80</text>
-          <text x="25" y="103" textAnchor="end" fontSize="8" fill="#71717a" className="font-mono">$40</text>
-          <text x="25" y="133" textAnchor="end" fontSize="8" fill="#71717a" className="font-mono">$0</text>
+          <text x="25" y="23" textAnchor="end" fontSize="8" fill="var(--muted-foreground)" className="font-mono">$120</text>
+          <text x="25" y="63" textAnchor="end" fontSize="8" fill="var(--muted-foreground)" className="font-mono">$80</text>
+          <text x="25" y="103" textAnchor="end" fontSize="8" fill="var(--muted-foreground)" className="font-mono">$40</text>
+          <text x="25" y="133" textAnchor="end" fontSize="8" fill="var(--muted-foreground)" className="font-mono">$0</text>
 
-          <path d="M 60 130 L 60 60 Q 180 43 180 52 T 300 55 L 300 130 Z" fill="rgba(245, 158, 11, 0.1)" />
-          <path d="M 60 60 Q 180 43 180 52 T 300 55" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M 60 130 L 60 60 Q 180 43 180 52 T 300 55 L 300 130 Z" fill="color-mix(in srgb, var(--chart-1) 10%, transparent)" />
+          <path d="M 60 60 Q 180 43 180 52 T 300 55" fill="none" stroke="var(--chart-1)" strokeWidth="2.5" strokeLinecap="round" />
 
-          <path d="M 60 130 L 60 111 Q 180 102 180 108 T 300 108 L 300 130 Z" fill="rgba(99, 102, 241, 0.1)" />
-          <path d="M 60 111 Q 180 102 180 108 T 300 108" fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M 60 130 L 60 111 Q 180 102 180 108 T 300 108 L 300 130 Z" fill="color-mix(in srgb, var(--chart-3) 10%, transparent)" />
+          <path d="M 60 111 Q 180 102 180 108 T 300 108" fill="none" stroke="var(--chart-3)" strokeWidth="2.5" strokeLinecap="round" />
 
-          <circle cx="60" cy="60" r="3.5" fill="#f59e0b" stroke="#18181b" strokeWidth="1" />
-          <circle cx="180" cy="52" r="3.5" fill="#f59e0b" stroke="#18181b" strokeWidth="1" />
-          <circle cx="300" cy="55" r="3.5" fill="#f59e0b" stroke="#18181b" strokeWidth="1" />
+          <circle cx="60" cy="60" r="3.5" fill="var(--chart-1)" stroke="var(--card)" strokeWidth="1" />
+          <circle cx="180" cy="52" r="3.5" fill="var(--chart-1)" stroke="var(--card)" strokeWidth="1" />
+          <circle cx="300" cy="55" r="3.5" fill="var(--chart-1)" stroke="var(--card)" strokeWidth="1" />
 
-          <circle cx="60" cy="111" r="3.5" fill="#6366f1" stroke="#18181b" strokeWidth="1" />
-          <circle cx="180" cy="108" r="3.5" fill="#6366f1" stroke="#18181b" strokeWidth="1" />
-          <circle cx="300" cy="108" r="3.5" fill="#6366f1" stroke="#18181b" strokeWidth="1" />
+          <circle cx="60" cy="111" r="3.5" fill="var(--chart-3)" stroke="var(--card)" strokeWidth="1" />
+          <circle cx="180" cy="108" r="3.5" fill="var(--chart-3)" stroke="var(--card)" strokeWidth="1" />
+          <circle cx="300" cy="108" r="3.5" fill="var(--chart-3)" stroke="var(--card)" strokeWidth="1" />
 
-          <text x="60" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="#a1a1aa">
+          <text x="60" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--muted-foreground)">
             {lang === 'en' ? 'April' : 'មេសា'}
           </text>
-          <text x="180" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="#a1a1aa">
+          <text x="180" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--muted-foreground)">
             {lang === 'en' ? 'May' : 'ឧសភា'}
           </text>
-          <text x="300" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="#a1a1aa">
+          <text x="300" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--muted-foreground)">
             {lang === 'en' ? 'June' : 'មិថុនា'}
           </text>
         </svg>
@@ -55,16 +55,16 @@ export function UtilityChart({ t, lang }: { t: any; lang: AppLanguage }) {
 
       <div className="flex justify-center gap-6 mt-3 text-xs">
         <div className="flex items-center gap-1.5 text-muted-foreground font-mono">
-          <span className="w-3 h-3 bg-amber-500 rounded-full block"></span>
+          <span className="w-3 h-3 bg-chart-1 rounded-full block"></span>
           <span className="flex items-center gap-1">
-            <Lightbulb className="w-3 h-3 text-amber-500" />
+            <Lightbulb className="w-3 h-3 text-chart-1" />
             {lang === 'en' ? 'Electricity' : 'អគ្គិសនី'}
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-muted-foreground font-mono">
-          <span className="w-3 h-3 bg-indigo-550 rounded-full block bg-indigo-500"></span>
+          <span className="w-3 h-3 bg-chart-3 rounded-full block"></span>
           <span className="flex items-center gap-1">
-            <Droplet className="w-3 h-3 text-indigo-400" />
+            <Droplet className="w-3 h-3 text-chart-3" />
             {lang === 'en' ? 'Water' : 'ទឹកស្អាត'}
           </span>
         </div>

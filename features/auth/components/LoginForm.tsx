@@ -20,8 +20,8 @@ export function LoginForm() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="space-y-3 text-center">
-          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 shadow-lg shadow-indigo-500/20">
-            <Building2 className="h-6 w-6 text-white" />
+          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/20">
+            <Building2 className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
             <CardTitle className="text-lg font-extrabold uppercase tracking-tight">

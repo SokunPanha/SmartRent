@@ -36,7 +36,7 @@ export default function RolesManager() {
     <div className="space-y-6" id="roles-manager-page">
       <div className="bg-card p-4 rounded-xl border border-border shadow-3xs">
         <h2 className="text-base font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
-          <ShieldCheck className="w-5 h-5 text-indigo-500" />
+          <ShieldCheck className="w-5 h-5 text-primary" />
           {lang === 'en' ? 'Roles & Permissions' : 'តួនាទី និងសិទ្ធិ'}
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5 font-sans">
@@ -61,7 +61,7 @@ export default function RolesManager() {
           <button
             type="submit"
             disabled={create.isPending || !newRole.trim()}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer disabled:opacity-50 shrink-0"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-50 shrink-0"
           >
             <Plus className="w-4 h-4" />
             {lang === 'en' ? 'Add Role' : 'បន្ថែម'}
@@ -137,9 +137,9 @@ function RoleCard({
       <div className="flex items-center justify-between gap-2 p-4 border-b border-border">
         {locked ? (
           <div className="flex items-center gap-2 font-bold text-foreground text-sm">
-            <Lock className="w-4 h-4 text-indigo-500" />
+            <Lock className="w-4 h-4 text-primary" />
             {role.name}
-            <span className="text-[9px] uppercase font-bold text-indigo-500 bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 rounded">
+            <span className="text-[9px] uppercase font-bold text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded">
               System
             </span>
           </div>
@@ -157,14 +157,14 @@ function RoleCard({
               <button
                 onClick={() => onSave({ name: name.trim(), permissions: [...perms] })}
                 disabled={saving || !dirty}
-                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer disabled:opacity-40"
+                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-40"
               >
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                 {lang === 'en' ? 'Save' : 'រក្សាទុក'}
               </button>
               <button
                 onClick={onDelete}
-                className="text-muted-foreground hover:text-rose-600 p-1.5 rounded-md hover:bg-rose-500/10 transition cursor-pointer"
+                className="text-muted-foreground hover:text-destructive p-1.5 rounded-md hover:bg-destructive/10 transition cursor-pointer"
                 title={lang === 'en' ? 'Delete role' : 'លុបតួនាទី'}
               >
                 <Trash2 className="w-4 h-4" />
@@ -187,7 +187,7 @@ function RoleCard({
                 checked={checked}
                 disabled={locked}
                 onChange={() => toggle(perm.key)}
-                className="mt-0.5 h-4 w-4 rounded border-border text-indigo-600 focus:ring-indigo-500 cursor-pointer disabled:cursor-not-allowed"
+                className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer disabled:cursor-not-allowed"
               />
               <span>
                 <span className="block text-xs font-semibold text-foreground">{perm.label}</span>

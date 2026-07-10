@@ -21,20 +21,20 @@ export function TelegramHub({
   const failed = c.filteredInvoices.filter((inv) => inv.telegramStatus === 'failed').length;
 
   return (
-    <div className="bg-gradient-to-br from-indigo-900 to-card text-white p-5 rounded-2xl border border-indigo-500/30 shadow-md space-y-4">
+    <div className="bg-card text-foreground p-5 rounded-2xl border border-primary/30 shadow-md space-y-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 px-2.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono text-[10px] uppercase font-bold tracking-widest border border-indigo-400/20">
+            <span className="p-1.5 px-2.5 rounded-full bg-primary/20 text-primary font-mono text-[10px] uppercase font-bold tracking-widest border border-primary/30">
               PWA Automated Service
             </span>
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-chart-2 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-chart-2"></span>
             </span>
           </div>
           <h3 className="text-lg font-bold font-sans tracking-tight flex items-center gap-1.5">
-            <Send className="w-5 h-5 text-indigo-400" />
+            <Send className="w-5 h-5 text-primary" />
             {lang === 'en'
               ? 'Telegram Invoice Delivery & Scheduler Hub'
               : 'ប្រព័ន្ធស្វ័យប្រវត្តិបញ្ជូនវិក្កយបត្រតេឡេក្រាម'}
@@ -48,7 +48,7 @@ export function TelegramHub({
 
         <button
           onClick={() => c.setTelegramIsSettingsOpen(!c.telegramIsSettingsOpen)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-card/10 hover:bg-card/20 text-indigo-200 hover:text-white rounded-lg transition border border-white/10 cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-card/10 hover:bg-card/20 text-primary hover:text-foreground rounded-lg transition border border-border cursor-pointer"
         >
           <Settings className="w-4 h-4" />
           {lang === 'en' ? 'Bot Credentials' : 'កំណត់លេខសម្គាល់ Bot'}
@@ -56,47 +56,47 @@ export function TelegramHub({
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-        <div className="bg-card/5 border border-white/10 rounded-xl p-3 text-center">
+        <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
             {lang === 'en' ? 'Active Recipients' : 'អ្នកជួលភ្ជាប់តេឡេក្រាម'}
           </p>
-          <p className="text-xl font-mono font-bold text-indigo-300 mt-1">
+          <p className="text-xl font-mono font-bold text-primary mt-1">
             {recipients} <span className="text-xs text-muted-foreground font-sans">/ {tenants.length}</span>
           </p>
         </div>
-        <div className="bg-card/5 border border-white/10 rounded-xl p-3 text-center">
+        <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
             {lang === 'en' ? 'Scheduled Queue' : 'វិក្កយបត្រត្រូវបាញ់'}
           </p>
-          <p className="text-xl font-mono font-bold text-amber-300 mt-1">{queued}</p>
+          <p className="text-xl font-mono font-bold text-chart-1 mt-1">{queued}</p>
         </div>
-        <div className="bg-card/5 border border-white/10 rounded-xl p-3 text-center">
+        <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
             {lang === 'en' ? 'Successful Sends' : 'វិក្កយបត្រផ្ញើរួច'}
           </p>
-          <p className="text-xl font-mono font-bold text-emerald-400 mt-1">{sent}</p>
+          <p className="text-xl font-mono font-bold text-chart-2 mt-1">{sent}</p>
         </div>
-        <div className="bg-card/5 border border-white/10 rounded-xl p-3 text-center">
+        <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
             {lang === 'en' ? 'Deliveries Failed' : 'ការផ្ញើបរាជ័យ'}
           </p>
-          <p className="text-xl font-mono font-bold text-rose-400 mt-1">{failed}</p>
+          <p className="text-xl font-mono font-bold text-destructive mt-1">{failed}</p>
         </div>
       </div>
 
-      <div className="bg-background/40 p-4 rounded-xl border border-white/5 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+      <div className="bg-background/40 p-4 rounded-xl border border-border flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center shrink-0">
           <div className="space-y-1">
-            <label className="text-[10px] uppercase font-bold text-indigo-300 font-sans tracking-wider block">
+            <label className="text-[10px] uppercase font-bold text-primary font-sans tracking-wider block">
               {lang === 'en' ? 'Scheduled Auto-Send Date' : 'កាលបរិច្ឆេទស្កេនបញ្ជូនស្វ័យប្រវត្តិ'}
             </label>
-            <div className="flex items-center gap-2 bg-card border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white">
+            <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground">
               <CalendarDays className="w-4 h-4 text-muted-foreground" />
               <input
                 type="date"
                 value={c.telegramScheduledDate}
                 onChange={(e) => c.handleSaveScheduledDate(e.target.value)}
-                className="bg-transparent text-white focus:outline-none font-mono"
+                className="bg-transparent text-foreground focus:outline-none font-mono"
               />
             </div>
           </div>
@@ -108,8 +108,8 @@ export function TelegramHub({
             disabled={c.telegramIsDispatching}
             className={`flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold rounded-lg transition shadow-sm cursor-pointer ${
               c.telegramIsDispatching
-                ? 'bg-indigo-600/50 text-indigo-200 border border-indigo-500/20'
-                : 'bg-indigo-500 hover:bg-indigo-400 text-white border border-indigo-400'
+                ? 'bg-primary/50 text-primary-foreground/70 border border-primary/20'
+                : 'bg-primary hover:bg-primary/90 text-primary-foreground border border-primary'
             }`}
           >
             {c.telegramIsDispatching ? (
@@ -128,9 +128,9 @@ export function TelegramHub({
       </div>
 
       {c.telegramIsSettingsOpen && (
-        <div className="bg-background/80 p-4 rounded-xl border border-white/10 space-y-3 font-sans text-xs text-muted-foreground">
-          <h4 className="font-bold text-white text-sm flex items-center gap-1">
-            <Settings className="w-4 h-4 text-indigo-400" />
+        <div className="bg-background/80 p-4 rounded-xl border border-border space-y-3 font-sans text-xs text-muted-foreground">
+          <h4 className="font-bold text-foreground text-sm flex items-center gap-1">
+            <Settings className="w-4 h-4 text-primary" />
             {lang === 'en'
               ? 'Telegram Bot Channel Identity & Authentication'
               : 'ការកំណត់អត្តសញ្ញាណប៊្លូធូសមេសសិញតេឡេក្រាម'}
@@ -147,12 +147,12 @@ export function TelegramHub({
                   placeholder="e.g. 729184938:AAE89..."
                   value={c.telegramBotToken}
                   onChange={(e) => c.handleSaveToken(e.target.value)}
-                  className="w-full bg-card border border-white/15 px-3 py-2 rounded-lg font-mono text-white text-[11px] focus:outline-none focus:border-indigo-500 shrink"
+                  className="w-full bg-card border border-border px-3 py-2 rounded-lg font-mono text-foreground text-[11px] focus:outline-none focus:border-primary shrink"
                 />
                 <button
                   onClick={c.handleTestBotConnection}
                   disabled={c.telegramTestStatus === 'loading'}
-                  className="px-3 py-2 bg-card/10 hover:bg-card/15 text-indigo-300 font-semibold rounded-lg shrink-0 transition cursor-pointer"
+                  className="px-3 py-2 bg-card/10 hover:bg-card/15 text-primary font-semibold rounded-lg shrink-0 transition cursor-pointer"
                 >
                   {c.telegramTestStatus === 'loading' ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -164,14 +164,14 @@ export function TelegramHub({
                 </button>
               </div>
               {c.telegramTestStatus === 'success' && (
-                <p className="text-[10px] text-emerald-400 font-bold font-mono">✓ API authentication successful! Bot is ready.</p>
+                <p className="text-[10px] text-chart-2 font-bold font-mono">✓ API authentication successful! Bot is ready.</p>
               )}
               {c.telegramTestStatus === 'failed' && (
-                <p className="text-[10px] text-rose-400 font-bold font-mono">✗ API Connection failed. Verify Token or Bot setup.</p>
+                <p className="text-[10px] text-destructive font-bold font-mono">✗ API Connection failed. Verify Token or Bot setup.</p>
               )}
             </div>
 
-            <div className="bg-card/5 p-3 rounded-lg border border-white/5 space-y-1.5 flex flex-col justify-center">
+            <div className="bg-card/5 p-3 rounded-lg border border-border space-y-1.5 flex flex-col justify-center">
               <label className="flex items-center gap-1.5 cursor-pointer">
                 <input
                   type="checkbox"
@@ -179,10 +179,10 @@ export function TelegramHub({
                   onChange={(e) =>
                     c.handleSaveToken(e.target.checked ? '7829482938:AAE_MOCK_TELEGRAM_TOKEN_DEFAULT' : '')
                   }
-                  className="rounded border-border text-indigo-500 focus:ring-ring"
+                  className="rounded border-border text-primary focus:ring-ring"
                 />
                 <div>
-                  <span className="font-bold text-white text-[11px] block">
+                  <span className="font-bold text-foreground text-[11px] block">
                     {lang === 'en' ? 'Sandbox / Simulate Mode' : 'របៀបសាកល្បង / បញ្ជូនសម្តែង'}
                   </span>
                   <span className="text-[9px] text-muted-foreground block">
@@ -195,8 +195,8 @@ export function TelegramHub({
             </div>
           </div>
 
-          <div className="pt-2 border-t border-white/5 text-[11px] text-muted-foreground space-y-1">
-            <p className="font-semibold text-indigo-300">
+          <div className="pt-2 border-t border-border text-[11px] text-muted-foreground space-y-1">
+            <p className="font-semibold text-primary">
               {lang === 'en' ? 'How to set up Telegram Bot?' : 'របៀបបង្កើត Bot តេឡេក្រាម៖'}
             </p>
             <ol className="list-decimal pl-4 space-y-0.5">
@@ -221,12 +221,12 @@ export function TelegramHub({
       )}
 
       {c.telegramLogs.length > 0 && (
-        <div className="bg-black/80 rounded-xl border border-white/10 p-3 font-mono text-[10px] space-y-2">
-          <div className="flex justify-between items-center text-muted-foreground border-b border-white/5 pb-1.5">
+        <div className="bg-black/80 rounded-xl border border-border p-3 font-mono text-[10px] space-y-2">
+          <div className="flex justify-between items-center text-muted-foreground border-b border-border pb-1.5">
             <span>✈️ AUTOMATION HUB LIVE LOGGER CONSOLE</span>
             <button
               onClick={() => c.setTelegramLogs([])}
-              className="text-muted-foreground hover:text-white transition uppercase text-[9px] cursor-pointer"
+              className="text-muted-foreground hover:text-foreground transition uppercase text-[9px] cursor-pointer"
             >
               Clear Console
             </button>
@@ -234,12 +234,12 @@ export function TelegramHub({
           {c.telegramIsDispatching && (
             <div className="w-full bg-card rounded-full h-1.5 overflow-hidden">
               <div
-                className="bg-indigo-400 h-1.5 rounded-full transition-all duration-300"
+                className="bg-primary h-1.5 rounded-full transition-all duration-300"
                 style={{ width: `${c.telegramProgress}%` }}
               ></div>
             </div>
           )}
-          <div className="max-h-36 overflow-y-auto space-y-0.5 custom-scrollbar text-emerald-400">
+          <div className="max-h-36 overflow-y-auto space-y-0.5 custom-scrollbar text-chart-2">
             {c.telegramLogs.map((log, index) => (
               <div key={index}>{log}</div>
             ))}

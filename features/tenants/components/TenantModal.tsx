@@ -29,7 +29,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
               value={c.tenantName}
               onChange={(e) => c.setTenantName(e.target.value)}
               placeholder="e.g. Sok Chamroeun"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
           </div>
@@ -43,7 +43,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
               value={c.tenantNameKh}
               onChange={(e) => c.setTenantNameKh(e.target.value)}
               placeholder="ឧ. សុខ ចំរើន"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
           </div>
@@ -58,7 +58,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
                 value={c.tenantPhone}
                 onChange={(e) => c.setTenantPhone(e.target.value)}
                 placeholder="e.g. 012 345 678"
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none font-mono"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono"
                 required
               />
             </div>
@@ -72,7 +72,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
                 value={c.tenantNID}
                 onChange={(e) => c.setTenantNID(e.target.value)}
                 placeholder="e.g. 120485934"
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none font-mono"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono"
                 required
               />
             </div>
@@ -87,13 +87,13 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
               value={c.tenantEmail}
               onChange={(e) => c.setTenantEmail(e.target.value)}
               placeholder="e.g. sok.chamroeun99@gmail.com"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none font-mono"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3 bg-indigo-50/50 p-3.5 rounded-xl border border-indigo-100">
+          <div className="grid grid-cols-2 gap-3 bg-info/10 p-3.5 rounded-xl border border-info/20">
             <div>
-              <label className="text-[10px] font-bold text-indigo-805 text-indigo-700 uppercase tracking-wider block mb-1 font-sans">
+              <label className="text-[10px] font-bold text-info uppercase tracking-wider block mb-1 font-sans">
                 Telegram Chat ID
               </label>
               <input
@@ -101,12 +101,12 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
                 value={c.tenantTelegramChatId}
                 onChange={(e) => c.setTenantTelegramChatId(e.target.value)}
                 placeholder="e.g. 129482938"
-                className="w-full px-3 py-1.5 rounded-lg border border-indigo-200 text-xs focus:border-indigo-500 focus:outline-none font-mono focus:bg-card bg-card/70 text-indigo-950 font-bold"
+                className="w-full px-3 py-1.5 rounded-lg border border-info/30 text-xs focus:border-info focus:outline-none font-mono focus:bg-card bg-card/70 text-info font-bold"
               />
-              <span className="text-[8px] text-indigo-500 block mt-0.5">Find via @CheckMyIDBot</span>
+              <span className="text-[8px] text-info block mt-0.5">Find via @CheckMyIDBot</span>
             </div>
             <div className="flex flex-col justify-center">
-              <label className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider block mb-1 font-sans">
+              <label className="text-[10px] font-bold text-info uppercase tracking-wider block mb-1 font-sans">
                 Autosend Invoice
               </label>
               <label className="inline-flex items-center gap-2 mt-1 cursor-pointer">
@@ -114,9 +114,9 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
                   type="checkbox"
                   checked={c.tenantTelegramAutoSend}
                   onChange={(e) => c.setTenantTelegramAutoSend(e.target.checked)}
-                  className="rounded border-indigo-300 text-indigo-650 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
+                  className="rounded border-info/40 text-info focus:ring-info w-4 h-4 cursor-pointer"
                 />
-                <span className="text-xs text-indigo-900 font-semibold">
+                <span className="text-xs text-info font-semibold">
                   {lang === 'en' ? 'Yes, automated' : 'បាទ ស្វ័យប្រវត្តិ'}
                 </span>
               </label>
@@ -132,7 +132,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
                 type="date"
                 value={c.tenantCheckIn}
                 onChange={(e) => c.setTenantCheckIn(e.target.value)}
-                className="w-full px-2 py-2 rounded-lg border border-border text-xs focus:border-emerald-500 focus:outline-none font-mono"
+                className="w-full px-2 py-2 rounded-lg border border-border text-xs focus:border-primary focus:outline-none font-mono"
                 required
               />
             </div>
@@ -146,7 +146,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
                 value={c.tenantEmergency}
                 onChange={(e) => c.setTenantEmergency(e.target.value)}
                 placeholder="e.g. Wife - 016 999 888"
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               />
             </div>
           </div>
@@ -162,7 +162,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
           </button>
           <button
             type="submit"
-            className="flex-1 py-2 rounded-lg text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition font-semibold cursor-pointer font-sans"
+            className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans"
           >
             {t.save}
           </button>

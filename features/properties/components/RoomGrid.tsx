@@ -37,7 +37,7 @@ export function RoomGrid({
             {canModify && (
               <button
                 onClick={onAddRoom}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition cursor-pointer self-stretch sm:self-auto justify-center"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer self-stretch sm:self-auto justify-center"
                 id="open-add-room-modal"
               >
                 <Plus className="w-4 h-4" />
@@ -57,7 +57,7 @@ export function RoomGrid({
               {canModify && (
                 <button
                   onClick={onAddRoom}
-                  className="mt-4 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg transition cursor-pointer"
+                  className="mt-4 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   {t.add_room}
@@ -67,13 +67,13 @@ export function RoomGrid({
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="rooms-grid-layout">
               {activeRooms.map((room) => {
-                let statusColor = 'bg-blue-50 border-blue-100 text-blue-700';
+                let statusColor = 'bg-info/10 border-info/20 text-info';
                 let statusLabel = t.vacant;
                 if (room.status === 'occupied') {
-                  statusColor = 'bg-emerald-50 border-emerald-100 text-emerald-700';
+                  statusColor = 'bg-chart-2/10 border-chart-2/20 text-chart-2';
                   statusLabel = t.occupied;
                 } else if (room.status === 'maintenance') {
-                  statusColor = 'bg-amber-50 border-amber-100 text-amber-700';
+                  statusColor = 'bg-chart-1/10 border-chart-1/20 text-chart-1';
                   statusLabel = lang === 'en' ? 'Maintenance' : 'កំពុងជួសជុល';
                 }
 
@@ -111,14 +111,14 @@ export function RoomGrid({
                         <div className="flex items-center gap-1.5 shrink-0">
                           <button
                             onClick={() => onEditRoom(room)}
-                            className="p-1.5 bg-muted text-muted-foreground hover:text-emerald-700 hover:bg-emerald-50 border border-border rounded-lg transition cursor-pointer"
+                            className="p-1.5 bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 border border-border rounded-lg transition cursor-pointer"
                             title={t.edit}
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => onDeleteRoom(room.id, room.roomNumber)}
-                            className="p-1.5 bg-muted text-muted-foreground hover:text-rose-600 hover:bg-rose-50 border border-border rounded-lg transition cursor-pointer"
+                            className="p-1.5 bg-muted text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-border rounded-lg transition cursor-pointer"
                             title={t.delete}
                           >
                             <Trash2 className="w-3.5 h-3.5" />

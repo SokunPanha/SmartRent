@@ -10,8 +10,8 @@ export function RoleBanner({
   lang: AppLanguage;
 }) {
   return (
-    <div className="bg-amber-50/70 border border-amber-200 text-amber-900 rounded-xl p-3 text-xs flex items-center gap-2 font-sans">
-      <Briefcase className="w-4 h-4 text-amber-500 hover:rotate-12 transition shrink-0" />
+    <div className="bg-chart-1/10 border border-chart-1/30 text-chart-1 rounded-xl p-3 text-xs flex items-center gap-2 font-sans">
+      <Briefcase className="w-4 h-4 text-chart-1 hover:rotate-12 transition shrink-0" />
       <div>
         <span className="font-bold">
           {lang === 'en' ? 'READ-ONLY ACCESS - ' : 'សិទ្ធិមើលតែប៉ុណ្ណោះ - '}
@@ -86,7 +86,7 @@ export function ReadingFilters({
       {canModify && (
         <button
           onClick={onRecord}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition cursor-pointer self-stretch md:self-auto justify-center"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-chart-2 text-white rounded-lg hover:bg-chart-2/90 transition cursor-pointer self-stretch md:self-auto justify-center"
           id="open-record-reading-btn"
         >
           <Plus className="w-4 h-4" />

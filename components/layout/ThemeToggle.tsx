@@ -24,9 +24,9 @@ export function ThemeToggle() {
     >
       {mounted ? (
         isDark ? (
-          <Sun className="h-4 w-4 text-amber-400" />
+          <Sun className="h-4 w-4 text-chart-1" />
         ) : (
-          <Moon className="h-4 w-4 text-indigo-500" />
+          <Moon className="h-4 w-4 text-chart-3" />
         )
       ) : (
         <Sun className="h-4 w-4 opacity-0" />

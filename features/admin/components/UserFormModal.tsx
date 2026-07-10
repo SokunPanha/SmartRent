@@ -99,7 +99,7 @@ export function UserFormModal({
             value={roleId}
             onChange={(e) => setRoleId(e.target.value)}
             required
-            className="w-full px-3 py-2.5 rounded-lg border border-border text-sm bg-card font-sans focus:border-indigo-500 focus:outline-none"
+            className="w-full px-3 py-2.5 rounded-lg border border-border text-sm bg-card font-sans focus:border-primary focus:outline-none"
           >
             <option value="" disabled>
               {lang === 'en' ? '— Select a role —' : '— ជ្រើសរើសតួនាទី —'}
@@ -123,7 +123,7 @@ export function UserFormModal({
           <button
             type="submit"
             disabled={busy || !roleId}
-            className="flex-1 py-2 rounded-lg text-sm bg-indigo-600 hover:bg-indigo-700 text-white transition font-semibold cursor-pointer font-sans disabled:opacity-50"
+            className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans disabled:opacity-50"
           >
             {lang === 'en' ? 'Create User' : 'បង្កើត'}
           </button>

@@ -18,7 +18,7 @@ export function MonthlyTable({
             : 'របាយការណ៍ហិរញ្ញវត្ថុលម្អិតប្រចាំខែ'}
         </h4>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto scroll-x-hint">
         <table className="w-full text-left text-xs text-muted-foreground">
           <thead>
             <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase font-sans">
@@ -35,7 +35,7 @@ export function MonthlyTable({
                 </span>
               </th>
               <th className="p-4 text-right">{lang === 'en' ? 'Aggregate Billed (USD)' : 'សរុបវិក្កយបត្រ ($)'}</th>
-              <th className="p-4 text-right text-emerald-800 font-bold">
+              <th className="p-4 text-right text-chart-2 font-bold">
                 {lang === 'en' ? 'Deposited Receipts (USD)' : 'ទឹកប្រាក់ទទួលបាន ($)'}
               </th>
             </tr>
@@ -45,10 +45,10 @@ export function MonthlyTable({
               <tr key={row.month} className="hover:bg-muted/50 transition">
                 <td className="p-4 pl-6 font-bold text-foreground font-sans">{row.monthLabel}</td>
                 <td className="p-4 text-right">${row.rent.toFixed(2)}</td>
-                <td className="p-4 text-right text-amber-700">${row.electricity.toFixed(2)}</td>
-                <td className="p-4 text-right text-blue-700">${row.water.toFixed(2)}</td>
+                <td className="p-4 text-right text-chart-1">${row.electricity.toFixed(2)}</td>
+                <td className="p-4 text-right text-info">${row.water.toFixed(2)}</td>
                 <td className="p-4 text-right font-bold text-foreground">${row.total.toFixed(2)}</td>
-                <td className="p-4 text-right font-black text-emerald-700 bg-emerald-50/20">
+                <td className="p-4 text-right font-black text-chart-2 bg-chart-2/10">
                   ${row.collected.toFixed(2)}
                 </td>
               </tr>

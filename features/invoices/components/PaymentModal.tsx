@@ -31,7 +31,7 @@ export function PaymentModal({ c, t, lang }: { c: Controller; t: any; lang: AppL
               min={0.01}
               max={10000}
               step={0.01}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm font-mono font-bold focus:border-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm font-mono font-bold focus:border-chart-2 focus:outline-none"
               required
             />
           </div>
@@ -43,7 +43,7 @@ export function PaymentModal({ c, t, lang }: { c: Controller; t: any; lang: AppL
             <select
               value={c.payMethod}
               onChange={(e) => c.setPayMethod(e.target.value as typeof c.payMethod)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none bg-card font-sans font-semibold"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-chart-2 focus:outline-none bg-card font-sans font-semibold"
             >
               <option value="aba">ABA Fast QR / ABA Pay</option>
               <option value="cash">Hard Cash / ប្រាក់សុទ្ធ</option>
@@ -61,7 +61,7 @@ export function PaymentModal({ c, t, lang }: { c: Controller; t: any; lang: AppL
               value={c.payNotes}
               onChange={(e) => c.setPayNotes(e.target.value)}
               placeholder="e.g. Paid online through ABA KHQR barcode"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-chart-2 focus:outline-none"
             />
           </div>
         </div>
@@ -76,7 +76,7 @@ export function PaymentModal({ c, t, lang }: { c: Controller; t: any; lang: AppL
           </button>
           <button
             type="submit"
-            className="flex-1 py-2 rounded-lg text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition font-semibold cursor-pointer font-sans text-center"
+            className="flex-1 py-2 rounded-lg text-sm bg-chart-2 hover:bg-chart-2/90 text-white transition font-semibold cursor-pointer font-sans text-center"
           >
             {lang === 'en' ? 'Record Payment' : 'បញ្ជាក់ការបង់ប្រាក់'}
           </button>

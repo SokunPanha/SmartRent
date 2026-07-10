@@ -52,7 +52,7 @@ export default function UsersAdmin() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-card p-4 rounded-xl border border-border shadow-3xs">
         <div>
           <h2 className="text-base font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
-            <ShieldCheck className="w-5 h-5 text-indigo-500" />
+            <ShieldCheck className="w-5 h-5 text-primary" />
             {lang === 'en' ? 'User Management' : 'ការគ្រប់គ្រងអ្នកប្រើ'}
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5 font-sans">
@@ -64,7 +64,7 @@ export default function UsersAdmin() {
         <button
           onClick={() => setShowCreate(true)}
           disabled={roles.length === 0}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer self-stretch sm:self-auto justify-center disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer self-stretch sm:self-auto justify-center disabled:opacity-50"
         >
           <UserPlus className="w-4 h-4" />
           {lang === 'en' ? 'Add User' : 'បន្ថែមអ្នកប្រើ'}

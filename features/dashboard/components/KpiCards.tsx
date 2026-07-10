@@ -25,10 +25,10 @@ export function KpiCards({
         id="kpi-properties"
       >
         <div className="flex items-start justify-between">
-          <div className="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-400 group-hover:scale-105 transition">
+          <div className="p-2.5 bg-primary/10 rounded-xl text-primary group-hover:scale-105 transition">
             <Building2 className="w-5 h-5" />
           </div>
-          <ArrowUpRight className="w-4 h-4 text-muted-foreground text-muted-foreground group-hover:text-indigo-400 transition" />
+          <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition" />
         </div>
         <div className="mt-3">
           <span className="text-[10px] font-bold text-muted-foreground block tracking-wider uppercase font-mono">
@@ -47,10 +47,10 @@ export function KpiCards({
         id="kpi-rooms"
       >
         <div className="flex items-start justify-between">
-          <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-400 group-hover:scale-105 transition">
+          <div className="p-2.5 bg-info/10 rounded-xl text-info group-hover:scale-105 transition">
             <Building className="w-5 h-5" />
           </div>
-          <span className="text-[10px] font-bold bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/20 font-mono">
+          <span className="text-[10px] font-bold bg-info/10 text-info px-2 py-0.5 rounded-full border border-info/20 font-mono">
             {stats.occupiedRooms}/{stats.totalRooms} {lang === 'en' ? 'Occ' : 'ជួល'}
           </span>
         </div>
@@ -76,10 +76,10 @@ export function KpiCards({
         id="kpi-revenue"
       >
         <div className="flex items-start justify-between">
-          <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 group-hover:scale-105 transition">
+          <div className="p-2.5 bg-chart-2/10 rounded-xl text-chart-2 group-hover:scale-105 transition">
             <Coins className="w-5 h-5" />
           </div>
-          <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 font-mono">
+          <span className="text-[10px] font-bold bg-chart-2/10 text-chart-2 px-2 py-0.5 rounded-full border border-chart-2/20 font-mono">
             {Math.round((stats.juneRevenueCollected / (stats.juneRevenueInvoiced || 1)) * 100)}%{' '}
             {lang === 'en' ? 'Paid' : 'រួច'}
           </span>
@@ -104,11 +104,11 @@ export function KpiCards({
         id="kpi-outstanding"
       >
         <div className="flex items-start justify-between">
-          <div className="p-2.5 bg-rose-500/10 rounded-xl text-rose-450 group-hover:scale-105 transition text-rose-400">
+          <div className="p-2.5 bg-destructive/10 rounded-xl text-destructive group-hover:scale-105 transition">
             <AlertTriangle className="w-5 h-5" />
           </div>
           {stats.overdueCount > 0 && (
-            <span className="text-[10px] font-bold bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/20 font-mono">
+            <span className="text-[10px] font-bold bg-destructive/10 text-destructive px-2 py-0.5 rounded-full border border-destructive/20 font-mono">
               {stats.overdueCount} {lang === 'en' ? 'Overdue' : 'ហួសកំណត់'}
             </span>
           )}
@@ -117,7 +117,7 @@ export function KpiCards({
           <span className="text-[10px] font-bold text-muted-foreground block tracking-wider uppercase font-mono">
             {t.outstanding_amount}
           </span>
-          <span className="text-2xl font-bold text-rose-400 tracking-tight block">
+          <span className="text-2xl font-bold text-destructive tracking-tight block">
             {usd0(stats.totalOutstanding)}
           </span>
           <span className="text-[10px] text-muted-foreground font-mono block mt-0.5">

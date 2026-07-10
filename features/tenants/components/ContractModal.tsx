@@ -42,7 +42,7 @@ export function ContractModal({
             <select
               value={c.conRoomId}
               onChange={(e) => c.handleRoomSelectInContract(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none bg-card font-sans"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
               required
             >
               <option value="" disabled>
@@ -55,7 +55,7 @@ export function ContractModal({
               ))}
             </select>
             {c.vacantRooms.length === 0 && (
-              <span className="text-[10px] text-rose-600 italic mt-0.5 block">
+              <span className="text-[10px] text-destructive italic mt-0.5 block">
                 {lang === 'en'
                   ? '* No vacant rooms currently available! Set room status to Vacant first.'
                   : '* គ្មានបន្ទប់ទំនេរឡើយ! សូមផ្លាស់ប្តូរស្ថានភាពបន្ទប់សិន។'}
@@ -70,7 +70,7 @@ export function ContractModal({
             <select
               value={c.conTenantId}
               onChange={(e) => c.setConTenantId(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none bg-card font-sans"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
               required
             >
               <option value="" disabled>
@@ -93,7 +93,7 @@ export function ContractModal({
                 type="date"
                 value={c.conStartDate}
                 onChange={(e) => c.setConStartDate(e.target.value)}
-                className="w-full px-2 py-2 rounded-lg border border-border text-xs focus:border-emerald-500 focus:outline-none font-mono"
+                className="w-full px-2 py-2 rounded-lg border border-border text-xs focus:border-primary focus:outline-none font-mono"
                 required
               />
             </div>
@@ -106,7 +106,7 @@ export function ContractModal({
                 type="date"
                 value={c.conEndDate}
                 onChange={(e) => c.setConEndDate(e.target.value)}
-                className="w-full px-2 py-2 rounded-lg border border-border text-xs focus:border-emerald-500 focus:outline-none font-mono"
+                className="w-full px-2 py-2 rounded-lg border border-border text-xs focus:border-primary focus:outline-none font-mono"
                 required
               />
             </div>
@@ -122,7 +122,7 @@ export function ContractModal({
                 value={c.conRent}
                 onChange={(e) => c.setConRent(Number(e.target.value))}
                 min={10}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none font-mono font-bold"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
                 required
               />
             </div>
@@ -136,7 +136,7 @@ export function ContractModal({
                 value={c.conDeposit}
                 onChange={(e) => c.setConDeposit(Number(e.target.value))}
                 min={0}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none font-mono font-bold"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
                 required
               />
             </div>
@@ -144,7 +144,7 @@ export function ContractModal({
 
           <div className="grid grid-cols-2 gap-3 bg-muted p-3 rounded-xl border border-border">
             <div>
-              <label className="text-[10px] font-bold text-amber-800 uppercase tracking-wider block mb-1 font-sans flex items-center gap-0.5">
+              <label className="text-[10px] font-bold text-chart-1 uppercase tracking-wider block mb-1 font-sans flex items-center gap-0.5">
                 Electric Rate (៛/kWh) *
               </label>
               <input
@@ -154,13 +154,13 @@ export function ContractModal({
                 min={300}
                 max={10000}
                 step={50}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:border-amber-500 focus:outline-none font-mono font-bold"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:border-chart-1 focus:outline-none font-mono font-bold"
                 required
               />
             </div>
 
             <div>
-              <label className="text-[10px] font-bold text-blue-800 uppercase tracking-wider block mb-1 font-sans">
+              <label className="text-[10px] font-bold text-info uppercase tracking-wider block mb-1 font-sans">
                 Water Rate (៛/m³) *
               </label>
               <input
@@ -170,7 +170,7 @@ export function ContractModal({
                 min={300}
                 max={10000}
                 step={100}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:border-blue-500 focus:outline-none font-mono font-bold"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:border-info focus:outline-none font-mono font-bold"
                 required
               />
             </div>
@@ -188,7 +188,7 @@ export function ContractModal({
           <button
             type="submit"
             disabled={c.vacantRooms.length === 0}
-            className="flex-1 py-2 rounded-lg text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition font-semibold cursor-pointer font-sans disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {t.save}
           </button>

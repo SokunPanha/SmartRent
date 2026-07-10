@@ -31,13 +31,13 @@ export function ContractList({
     <div className="lg:col-span-7 space-y-4">
       <div className="flex justify-between items-center bg-card p-3.5 rounded-xl border border-border shadow-3xs">
         <h3 className="text-sm font-bold text-foreground tracking-tight uppercase flex items-center gap-1.5 font-sans">
-          <FileText className="w-4 h-4 text-emerald-600" />
+          <FileText className="w-4 h-4 text-primary" />
           {t.contracts_list}
         </h3>
         {canModify && vacantRooms.length > 0 && tenants.length > 0 && (
           <button
             onClick={onAdd}
-            className="p-1 px-2.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 transition flex items-center gap-1 cursor-pointer animate-pulse"
+            className="p-1 px-2.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition flex items-center gap-1 cursor-pointer animate-pulse"
             id="open-add-contract-modal"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -59,13 +59,13 @@ export function ContractList({
             const roomNameStr = getRoomName(rooms, properties, contract.roomId, lang);
             const tenantNameStr = getTenantName(tenants, contract.tenantId, lang);
 
-            let statusBadge = 'bg-emerald-50 text-emerald-700 border-emerald-100';
+            let statusBadge = 'bg-chart-2/10 text-chart-2 border-chart-2/20';
             let statusLabel = t.active;
             if (contract.status === 'suspended') {
-              statusBadge = 'bg-amber-50 text-amber-700 border-amber-100';
+              statusBadge = 'bg-chart-1/10 text-chart-1 border-chart-1/20';
               statusLabel = t.suspended;
             } else if (contract.status === 'expired') {
-              statusBadge = 'bg-rose-50 text-rose-700 border-rose-100';
+              statusBadge = 'bg-destructive/10 text-destructive border-destructive/20';
               statusLabel = t.expired;
             }
 
@@ -83,7 +83,7 @@ export function ContractList({
                       <span className="font-mono text-xs text-muted-foreground">ID: {contract.id}</span>
                     </div>
                     <h4 className="font-bold text-foreground text-base mt-1 flex items-center gap-1 font-sans">
-                      <KeyRound className="w-4 h-4 text-emerald-600" />
+                      <KeyRound className="w-4 h-4 text-primary" />
                       {roomNameStr}
                     </h4>
                   </div>
@@ -103,7 +103,7 @@ export function ContractList({
                       </select>
                       <button
                         onClick={() => onDelete(contract.id)}
-                        className="text-muted-foreground hover:text-rose-600 p-1 rounded-md hover:bg-rose-100 transition cursor-pointer"
+                        className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-destructive/10 transition cursor-pointer"
                         title={lang === 'en' ? 'Terminate Record' : 'លុបចោល'}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -125,7 +125,7 @@ export function ContractList({
                   </div>
                   <div>
                     <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">{t.deposit}</span>
-                    <span className="font-bold text-emerald-700 font-mono block mt-1">${contract.depositAmount}</span>
+                    <span className="font-bold text-chart-2 font-mono block mt-1">${contract.depositAmount}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">
@@ -141,10 +141,10 @@ export function ContractList({
                 <div className="pt-3 flex justify-between items-center text-[11px] text-muted-foreground font-sans">
                   <div className="flex gap-4">
                     <span>
-                      {t.el_rate}: <strong className="text-amber-600 font-mono">{contract.electricityRate} ៛/kWh</strong>
+                      {t.el_rate}: <strong className="text-chart-1 font-mono">{contract.electricityRate} ៛/kWh</strong>
                     </span>
                     <span>
-                      {t.wt_rate}: <strong className="text-blue-600 font-mono">{contract.waterRate} ៛/m³</strong>
+                      {t.wt_rate}: <strong className="text-info font-mono">{contract.waterRate} ៛/m³</strong>
                     </span>
                   </div>
                   <span className="text-[10px] text-muted-foreground font-mono italic">

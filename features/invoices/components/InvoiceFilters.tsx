@@ -61,7 +61,7 @@ export function InvoiceFilters({
       {canGenerate && (
         <button
           onClick={onGenerate}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition cursor-pointer self-stretch md:self-auto justify-center"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-chart-2 text-white rounded-lg hover:bg-chart-2/90 transition cursor-pointer self-stretch md:self-auto justify-center"
           id="trigger-june-invoices-btn"
         >
           <Calculator className="w-4 h-4" />

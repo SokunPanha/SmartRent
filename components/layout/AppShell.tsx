@@ -15,7 +15,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!mounted) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background font-sans text-foreground">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         <p className="mt-4 animate-pulse font-mono text-xs font-bold uppercase tracking-widest text-muted-foreground">
           Loading Cambodia Property System...
         </p>

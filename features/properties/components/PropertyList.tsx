@@ -26,13 +26,13 @@ export function PropertyList({
     <div className="md:col-span-1 space-y-4">
       <div className="flex justify-between items-center bg-card p-3.5 rounded-xl border border-border shadow-3xs">
         <h3 className="text-sm font-bold text-foreground tracking-tight uppercase flex items-center gap-1.5 font-sans">
-          <Building2 className="w-4 h-4 text-emerald-600" />
+          <Building2 className="w-4 h-4 text-primary" />
           {t.property_list}
         </h3>
         {canModify && (
           <button
             onClick={onAddClick}
-            className="p-1 px-2.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition flex items-center gap-1 cursor-pointer"
+            className="p-1 px-2.5 rounded-lg text-xs font-semibold bg-primary/10 text-primary hover:bg-primary/20 transition flex items-center gap-1 cursor-pointer"
             id="open-add-property-modal"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -53,7 +53,7 @@ export function PropertyList({
               onClick={() => onSelect(prop.id)}
               className={`p-4 rounded-xl border transition cursor-pointer text-left ${
                 isSelected
-                  ? 'bg-emerald-50/70 border-emerald-300 shadow-2xs'
+                  ? 'bg-primary/10 border-primary/40 shadow-2xs'
                   : 'bg-card border-border hover:border-border'
               }`}
             >
@@ -79,7 +79,7 @@ export function PropertyList({
                       e.stopPropagation();
                       onDeleteProp(prop.id, prop.name, prop.nameKh);
                     }}
-                    className="text-muted-foreground hover:text-rose-600 transition p-1 hover:bg-rose-50 rounded-lg cursor-pointer"
+                    className="text-muted-foreground hover:text-destructive transition p-1 hover:bg-destructive/10 rounded-lg cursor-pointer"
                     title={lang === 'en' ? 'Delete Property Location' : 'លុបទីតាំង'}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -87,7 +87,7 @@ export function PropertyList({
                 )}
               </div>
 
-              <h4 className="font-bold text-foreground text-sm mt-2 transition group-hover:text-emerald-700 font-sans">
+              <h4 className="font-bold text-foreground text-sm mt-2 transition group-hover:text-primary font-sans">
                 {lang === 'en' ? prop.name : prop.nameKh}
               </h4>
 
@@ -100,7 +100,7 @@ export function PropertyList({
                 <span>
                   {propRooms.length} {t.room_count}
                 </span>
-                <span className="font-semibold text-emerald-700 text-[11px] bg-emerald-50 px-2 py-0.5 rounded-full">
+                <span className="font-semibold text-chart-2 text-[11px] bg-chart-2/10 px-2 py-0.5 rounded-full">
                   {occCount} {lang === 'en' ? 'Occupied' : 'ជួលរួច'}
                 </span>
               </div>

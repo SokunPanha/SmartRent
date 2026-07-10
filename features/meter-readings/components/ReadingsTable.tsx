@@ -23,7 +23,7 @@ export function ReadingsTable({
 }) {
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden shadow-3xs">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto scroll-x-hint">
         <table className="w-full text-left border-collapse" id="utility-readings-ledger-table">
           <thead>
             <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans">
@@ -31,13 +31,13 @@ export function ReadingsTable({
               <th className="p-4">{lang === 'en' ? 'Billing Cycle' : 'លំដាប់ខែ'}</th>
               <th className="p-4">
                 <span className="flex items-center gap-1">
-                  <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+                  <Lightbulb className="w-3.5 h-3.5 text-chart-1" />
                   {lang === 'en' ? 'Electricity Meter (kWh)' : 'កុងទ័រភ្លើង (kWh)'}
                 </span>
               </th>
               <th className="p-4">
                 <span className="flex items-center gap-1">
-                  <Droplet className="w-3.5 h-3.5 text-blue-500" />
+                  <Droplet className="w-3.5 h-3.5 text-info" />
                   {lang === 'en' ? 'Water Meter (m³)' : 'កុងទ័រទឹក (m³)'}
                 </span>
               </th>
@@ -79,7 +79,7 @@ export function ReadingsTable({
                           {r.prevElectricityValue} ➔{' '}
                           <span className="font-bold text-foreground">{r.currElectricityValue}</span>
                         </div>
-                        <span className="text-[10px] font-bold bg-amber-50 text-amber-800 px-1.5 py-0.2 rounded-md font-mono">
+                        <span className="text-[10px] font-bold bg-chart-1/10 text-chart-1 px-1.5 py-0.2 rounded-md font-mono">
                           +{elecUsed} kWh
                         </span>
                       </div>
@@ -90,7 +90,7 @@ export function ReadingsTable({
                           {r.prevWaterValue} ➔{' '}
                           <span className="font-bold text-foreground">{r.currWaterValue}</span>
                         </div>
-                        <span className="text-[10px] font-bold bg-blue-50 text-blue-800 px-1.5 py-0.2 rounded-md font-mono">
+                        <span className="text-[10px] font-bold bg-info/10 text-info px-1.5 py-0.2 rounded-md font-mono">
                           +{waterUsed} m³
                         </span>
                       </div>

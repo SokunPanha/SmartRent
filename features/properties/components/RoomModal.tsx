@@ -39,7 +39,7 @@ export function RoomModal({
               value={c.roomNumber}
               onChange={(e) => c.setRoomNumber(e.target.value)}
               placeholder="e.g. A-101, E-04"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none font-mono font-bold"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
               required
             />
           </div>
@@ -55,7 +55,7 @@ export function RoomModal({
                 onChange={(e) => c.setRoomFloor(Number(e.target.value))}
                 min={1}
                 max={40}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
                 required
               />
             </div>
@@ -70,7 +70,7 @@ export function RoomModal({
                 onChange={(e) => c.setRoomRent(Number(e.target.value))}
                 min={1}
                 max={10000}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none font-mono font-bold"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
                 required
               />
             </div>
@@ -83,7 +83,7 @@ export function RoomModal({
             <select
               value={c.roomStatus}
               onChange={(e) => c.setRoomStatus(e.target.value as typeof c.roomStatus)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none bg-card font-sans"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
             >
               <option value="vacant">{t.vacant}</option>
               <option value="occupied">{t.occupied}</option>
@@ -102,7 +102,7 @@ export function RoomModal({
           </button>
           <button
             type="submit"
-            className="flex-1 py-2 rounded-lg text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition font-semibold cursor-pointer font-sans"
+            className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans"
           >
             {t.save}
           </button>

@@ -35,33 +35,33 @@ export function CollectionGauge({
             <span className="text-muted-foreground">
               {lang === 'en' ? 'Overall Collection Efficiency' : 'ប្រសិទ្ធភាពនៃការប្រមូលប្រាក់ទូទៅ'}
             </span>
-            <span className="text-emerald-400 font-bold">{percent}%</span>
+            <span className="text-chart-2 font-bold">{percent}%</span>
           </div>
           <div className="w-full bg-muted h-3 rounded-full overflow-hidden">
             <div
-              className="bg-emerald-500 h-full rounded-full transition-all duration-1000"
+              className="bg-chart-2 h-full rounded-full transition-all duration-1000"
               style={{ width: `${percent}%` }}
             ></div>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-2">
-          <div className="p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
-            <span className="text-[10px] font-bold text-emerald-450 tracking-wider uppercase block font-mono">
+          <div className="p-3 bg-chart-2/5 rounded-xl border border-chart-2/10">
+            <span className="text-[10px] font-bold text-chart-2 tracking-wider uppercase block font-mono">
               {lang === 'en' ? 'Total Collected' : 'ប្រមូលប្រាក់រួច'}
             </span>
-            <span className="text-lg font-bold text-emerald-400 font-mono block mt-1">
+            <span className="text-lg font-bold text-chart-2 font-mono block mt-1">
               {usd0(collected)}
             </span>
             <span className="text-[10px] text-muted-foreground mt-0.5 block font-mono">
               ≈ {formatKHRFromUSD(collected)}
             </span>
           </div>
-          <div className="p-3 bg-rose-500/5 rounded-xl border border-rose-500/10">
-            <span className="text-[10px] font-bold text-rose-400 tracking-wider uppercase block font-mono">
+          <div className="p-3 bg-destructive/5 rounded-xl border border-destructive/10">
+            <span className="text-[10px] font-bold text-destructive tracking-wider uppercase block font-mono">
               {lang === 'en' ? 'Owed Balance' : 'ប្រាក់ជំពាក់នៅសល់'}
             </span>
-            <span className="text-lg font-bold text-rose-450 font-mono block mt-1 text-rose-400">
+            <span className="text-lg font-bold text-destructive font-mono block mt-1 text-destructive">
               {usd0(outstanding)}
             </span>
             <span className="text-[10px] text-muted-foreground mt-0.5 block font-mono">

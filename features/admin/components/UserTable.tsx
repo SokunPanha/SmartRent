@@ -22,7 +22,7 @@ export function UserTable({
 }) {
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden shadow-3xs">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto scroll-x-hint">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans">
@@ -48,14 +48,14 @@ export function UserTable({
                   <tr key={u.id} className="hover:bg-muted/50 transition">
                     <td className="p-4 pl-6">
                       <div className="flex items-center gap-2">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-500">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
                           <ShieldCheck className="h-4 w-4" />
                         </span>
                         <div className="flex flex-col">
                           <span className="font-bold text-foreground text-sm">
                             {u.name}
                             {isSelf && (
-                              <span className="ml-1 text-[9px] uppercase font-bold text-indigo-500">(you)</span>
+                              <span className="ml-1 text-[9px] uppercase font-bold text-primary">(you)</span>
                             )}
                           </span>
                           {u.nameKh && <span className="text-[10px] text-muted-foreground">{u.nameKh}</span>}
@@ -83,7 +83,7 @@ export function UserTable({
                       <button
                         onClick={() => onDelete(u)}
                         disabled={busy || isSelf}
-                        className="text-muted-foreground hover:text-rose-600 p-1 rounded-md hover:bg-rose-500/10 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+                        className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-destructive/10 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
                         title={isSelf ? 'You cannot delete your own account' : 'Delete user'}
                       >
                         <Trash2 className="w-4 h-4" />

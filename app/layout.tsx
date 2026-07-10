@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Geist } from 'next/font/google';
+import { Fraunces, IBM_Plex_Mono, Instrument_Sans } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -9,7 +9,13 @@ import { QueryProvider } from '@/lib/query/provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/sonner';
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
+const instrumentSans = Instrument_Sans({ subsets: ['latin'], variable: '--font-sans' });
+const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-heading' });
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+});
 
 export const metadata: Metadata = {
   title: 'Rental Invoice & Property Management',
@@ -22,7 +28,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn('font-sans', geist.variable)} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={cn('font-sans', instrumentSans.variable, fraunces.variable, ibmPlexMono.variable)}
+      suppressHydrationWarning
+    >
       <body suppressHydrationWarning>
         <ThemeProvider
           attribute="class"

@@ -69,8 +69,8 @@ export default function InvoicesPayments({
   return (
     <div className="space-y-6" id="invoices-payments-container">
       {!canPay && (
-        <div className="bg-amber-50/75 border border-amber-200 text-amber-900 rounded-xl p-3 text-xs flex items-center gap-2 font-sans">
-          <ClipboardList className="w-4 h-4 text-amber-500 shrink-0" />
+        <div className="bg-chart-1/10 border border-chart-1/30 text-chart-1 rounded-xl p-3 text-xs flex items-center gap-2 font-sans">
+          <ClipboardList className="w-4 h-4 text-chart-1 shrink-0" />
           <div>
             <span className="font-bold">
               {lang === 'en' ? 'STAFF PERSONA DETECTED - ' : 'កំណត់សម្គាល់តួនាទីបុគ្គលិក - '}

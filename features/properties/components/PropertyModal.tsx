@@ -37,7 +37,7 @@ export function PropertyModal({
               value={c.propName}
               onChange={(e) => c.setPropName(e.target.value)}
               placeholder="e.g. Sensok Cozy Apartment"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
           </div>
@@ -51,7 +51,7 @@ export function PropertyModal({
               value={c.propNameKh}
               onChange={(e) => c.setPropNameKh(e.target.value)}
               placeholder="ឧ. សែនសុខ ខូហ្ស៊ី អាផាតមិន"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
           </div>
@@ -63,7 +63,7 @@ export function PropertyModal({
             <select
               value={c.propType}
               onChange={(e) => c.setPropType(e.target.value as typeof c.propType)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none bg-card font-sans"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
             >
               <option value="apartment">Apartment / អាផាតមិន</option>
               <option value="borey">Borey (Villa/Flat) / បុរី</option>
@@ -81,7 +81,7 @@ export function PropertyModal({
               value={c.propAddress}
               onChange={(e) => c.setPropAddress(e.target.value)}
               placeholder="e.g. Street 1986, Sen Sok, Phnom Penh"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
           </div>
@@ -95,7 +95,7 @@ export function PropertyModal({
               value={c.propAddressKh}
               onChange={(e) => c.setPropAddressKh(e.target.value)}
               placeholder="ឧ. ផ្លូវ ១៩៨៦, ខណ្ឌសែនសុខ, ភ្នំពេញ"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
           </div>
@@ -111,7 +111,7 @@ export function PropertyModal({
           </button>
           <button
             type="submit"
-            className="flex-1 py-2 rounded-lg text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition font-semibold cursor-pointer font-sans"
+            className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans"
           >
             {t.save}
           </button>

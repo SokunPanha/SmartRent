@@ -51,16 +51,16 @@ export function InvoiceGrid({
           const elecUnits = inv.electricityCurr - inv.electricityPrev;
           const waterUnits = inv.waterCurr - inv.waterPrev;
 
-          let badgeStyle = 'bg-rose-50 border-rose-100 text-rose-700';
+          let badgeStyle = 'bg-destructive/10 border-destructive/20 text-destructive';
           let label = t.unpaid;
           if (inv.status === 'paid') {
-            badgeStyle = 'bg-emerald-50 border-emerald-100 text-emerald-750';
+            badgeStyle = 'bg-chart-2/10 border-chart-2/20 text-chart-2';
             label = t.paid;
           } else if (inv.status === 'partial') {
-            badgeStyle = 'bg-amber-50 border-amber-100 text-amber-700';
+            badgeStyle = 'bg-chart-1/10 border-chart-1/20 text-chart-1';
             label = t.partial;
           } else if (inv.status === 'overdue') {
-            badgeStyle = 'bg-rose-100 border-rose-200 text-rose-800 animate-pulse';
+            badgeStyle = 'bg-destructive/20 border-destructive/30 text-destructive animate-pulse';
             label = t.overdue;
           }
 
@@ -100,14 +100,14 @@ export function InvoiceGrid({
                       <span className="font-mono font-bold text-foreground">${inv.rentAmountUSD}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="flex items-center gap-0.5 text-amber-700 font-semibold">
+                      <span className="flex items-center gap-0.5 text-chart-1 font-semibold">
                         <Lightbulb className="w-3.5 h-3.5" />
                         {lang === 'en' ? 'Electric Cost ' : 'ថ្លៃអគ្គិសនី '} ({elecUnits} kWh)
                       </span>
                       <span className="font-mono text-foreground">${inv.electricityCostUSD.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="flex items-center gap-0.5 text-blue-700 font-semibold">
+                      <span className="flex items-center gap-0.5 text-info font-semibold">
                         <Droplet className="w-3.5 h-3.5" />
                         {lang === 'en' ? 'Water Cost ' : 'ថ្លៃទឹក '} ({waterUnits} m³)
                       </span>
@@ -118,7 +118,7 @@ export function InvoiceGrid({
                   <div className="flex justify-between pt-2 border-t border-border">
                     <span className="font-bold text-foreground">{t.total_amount}</span>
                     <div className="text-right">
-                      <span className="font-bold text-base text-emerald-800 font-mono block">
+                      <span className="font-bold text-base text-chart-2 font-mono block">
                         {formatUSD(inv.totalAmountUSD)}
                       </span>
                       <span className="text-[10px] text-muted-foreground font-mono block">
@@ -132,19 +132,19 @@ export function InvoiceGrid({
               <div className="mt-3.5 pt-2 border-t border-dashed border-border flex items-center justify-between text-[10px]">
                 <span className="text-muted-foreground font-sans">{lang === 'en' ? 'Telegram delivery:' : 'ផ្ញើក្នុងតេឡេក្រាម៖'}</span>
                 {inv.telegramStatus === 'sent' ? (
-                  <span className="text-emerald-700 font-mono font-bold flex items-center gap-1 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span className="text-chart-2 font-mono font-bold flex items-center gap-1 bg-chart-2/10 border border-chart-2/20 px-1.5 py-0.5 rounded">
+                    <span className="w-1.5 h-1.5 rounded-full bg-chart-2"></span>
                     Sent ({inv.telegramSentDate})
                   </span>
                 ) : inv.telegramStatus === 'failed' ? (
                   <span
-                    className="text-rose-600 font-mono font-bold bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded flex items-center gap-1"
+                    className="text-destructive font-mono font-bold bg-destructive/10 border border-destructive/20 px-1.5 py-0.5 rounded flex items-center gap-1"
                     title={inv.telegramError}
                   >
                     ⚠️ Failed ({inv.telegramError?.slice(0, 12)}...)
                   </span>
                 ) : inv.telegramStatus === 'scheduled' ? (
-                  <span className="text-indigo-700 font-bold bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded">
+                  <span className="text-info font-bold bg-info/10 border border-info/20 px-1.5 py-0.5 rounded">
                     Scheduled ({inv.telegramScheduledDate})
                   </span>
                 ) : (
@@ -164,16 +164,16 @@ export function InvoiceGrid({
 
                 <button
                   onClick={() => onDispatch(inv)}
-                  className="py-1.5 px-3 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-750 font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                  className="py-1.5 px-3 rounded-lg bg-info/10 hover:bg-info/20 border border-info/30 text-info font-bold transition flex items-center justify-center gap-1 cursor-pointer"
                   title={lang === 'en' ? 'Send Telegram' : 'ផ្ញើតេឡេក្រាម'}
                 >
-                  <Send className="w-3.5 h-3.5 text-indigo-600" />
+                  <Send className="w-3.5 h-3.5 text-info" />
                 </button>
 
                 {inv.status !== 'paid' && canPay ? (
                   <button
                     onClick={() => onPay(inv)}
-                    className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-chart-2 hover:bg-chart-2/90 text-white transition flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <Coins className="w-3.5 h-3.5" />
                     {lang === 'en' ? 'Pay' : 'បង់പ്രាក់'}
@@ -186,8 +186,8 @@ export function InvoiceGrid({
                     {lang === 'en' ? 'Unpaid' : 'មិនទាន់បង់'}
                   </button>
                 ) : (
-                  <div className="flex-1 py-1.5 text-xs bg-emerald-50 text-emerald-850 font-bold border border-emerald-100 rounded-lg flex items-center justify-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <div className="flex-1 py-1.5 text-xs bg-chart-2/10 text-chart-2 font-bold border border-chart-2/20 rounded-lg flex items-center justify-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-chart-2" />
                     {lang === 'en' ? 'Cleared' : 'បង់រួច'}
                   </div>
                 )}

@@ -37,13 +37,13 @@ export function Modal({
     >
       <div
         className={cn(
-          'w-full overflow-hidden rounded-2xl bg-card shadow-xl animate-slide-up',
+          'flex w-full max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-card shadow-xl animate-slide-up',
           SIZE[size],
           className
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        {children}
+        <div className="overflow-y-auto">{children}</div>
       </div>
     </div>
   );
