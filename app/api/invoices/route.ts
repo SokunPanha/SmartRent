@@ -1,7 +1,9 @@
+import { NextResponse } from 'next/server';
 import { and, eq, desc, type SQL } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { invoices } from '@/lib/db/schema';
 import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
+import { requirePermission } from '@/lib/api/guard';
 
 // GET /api/invoices?status=&month=&year= — list invoices, newest first
 export async function GET(req: Request) {
@@ -29,6 +31,8 @@ export async function GET(req: Request) {
 // POST /api/invoices — create a single invoice with caller-provided figures.
 // (For the monthly bulk run, use POST /api/invoices/generate.)
 export async function POST(req: Request) {
+  const gate = await requirePermission('invoices.generate');
+  if (gate instanceof NextResponse) return gate;
   try {
     const body = await readJson(req);
     if (!body) return badRequest('Invalid JSON body');

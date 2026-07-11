@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
 import { getRoomNameByInvoice, generateTelegramInvoiceHTML } from './invoices.helpers';
 
@@ -119,7 +120,7 @@ export function useInvoicesController({
 
   async function handleTestBotConnection() {
     if (!telegramBotToken || telegramBotToken.trim() === '') {
-      alert(lang === 'en' ? 'Please enter a Bot Token first.' : 'សូមបញ្ចូលលេខសម្គាល់ Bot សិន។');
+      toast.error(lang === 'en' ? 'Please enter a Bot Token first.' : 'សូមបញ្ចូលលេខសម្គាល់ Bot សិន។');
       return;
     }
     setTelegramTestStatus('loading');
@@ -139,7 +140,7 @@ export function useInvoicesController({
   async function handleDispatchSingleInvoice(invoice: Invoice) {
     const tenant = tenants.find((tIdx) => tIdx.id === invoice.tenantId);
     if (!tenant || !tenant.telegramChatId) {
-      alert(
+      toast.error(
         lang === 'en'
           ? "Error: This tenant doesn't have a Telegram Chat ID configured. Register or update the Tenant's Chat ID first."
           : 'កំហុស៖ អតិថិជននេះមិនទាន់មានលេខសម្គាល់ Telegram ឡើយ។ '
@@ -232,7 +233,7 @@ export function useInvoicesController({
     });
 
     if (dispatchable.length === 0) {
-      alert(
+      toast.error(
         lang === 'en'
           ? 'No dispatchable invoices found. Ensure tenants have a configured Telegram Chat ID and that invoices are unpaid.'
           : 'មិនមានវិក្កយបត្រដែលអាចបញ្ជូនបានឡើយ។ សូមពិនិត្យថាតើអតិថិជនមាន លេខសម្គាល់ Telegram និងវិក្កយបត្រពុំទាន់ទូទាត់ប្រាក់។'
@@ -336,7 +337,7 @@ export function useInvoicesController({
 
   function handleOpenPaymentClick(inv: Invoice) {
     if (!canPay) {
-      alert(
+      toast.error(
         lang === 'en'
           ? 'Action Denied: Your staff persona lacks credit logging permission.'
           : 'ប្រតិបត្តិការត្រូវបានរារាំង៖ បុគ្គលិកកត់កុងទ័រមិនមានសិទ្ធិកត់ត្រាការទូទាត់ប្រាក់ឡើយ។'
@@ -355,7 +356,7 @@ export function useInvoicesController({
     e.preventDefault();
     if (!canPay) return;
     if (!payAmount || payAmount <= 0) {
-      alert(lang === 'en' ? 'Please enter a valid payment sum.' : 'សូមបញ្ចូលចំនួនទឹកប្រាក់ត្រឹមត្រូវ។');
+      toast.error(lang === 'en' ? 'Please enter a valid payment sum.' : 'សូមបញ្ចូលចំនួនទឹកប្រាក់ត្រឹមត្រូវ។');
       return;
     }
     const currentInv = invoices.find((inv) => inv.id === targetInvoiceId);
@@ -363,7 +364,7 @@ export function useInvoicesController({
 
     const remaining = currentInv.totalAmountUSD - currentInv.amountPaidUSD;
     if (payAmount > Number((remaining + 0.01).toFixed(2))) {
-      alert(
+      toast.error(
         lang === 'en'
           ? `Error: Payment amount cannot exceed the remaining balance ($${remaining.toFixed(2)}).`
           : `កំហុស៖ ចំនួនទឹកប្រាក់ទូទាត់ មិនអាចលើសពីចំនួននៅខ្វះឡើយ ($${remaining.toFixed(2)})។`
@@ -384,7 +385,7 @@ export function useInvoicesController({
 
   function handleGenerateClick() {
     if (!canGenerate) {
-      alert(t.insufficient_permissions);
+      toast.error(t.insufficient_permissions);
       return;
     }
     onAutoGenerateInvoices();

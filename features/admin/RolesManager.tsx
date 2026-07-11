@@ -6,28 +6,37 @@ import { ShieldCheck, Plus, Trash2, Save, Loader2, Lock } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
 import { PERMISSION_META, PermissionKey } from '@/lib/permissions';
 import { Input } from '@/components/ui/input';
-import { useCan } from './permissions.queries';
+import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
+import { useCan, useMyPermissions } from './permissions.queries';
 import { useRoles, useRoleMutations } from './roles.queries';
 import { Role } from './roles.api';
 
 export default function RolesManager() {
-  const { lang, mounted } = useRent();
+  const { lang, mounted, sessionLoading, isSuperAdmin } = useRent();
   const can = useCan();
   const router = useRouter();
+  const confirm = useConfirm();
   const allowed = can('admin.access');
+  // Super admins are known instantly from the session; everyone else needs
+  // the permissions fetch to resolve before "not allowed" is trustworthy.
+  const { isLoading: permissionsLoading } = useMyPermissions();
+  const authReady = mounted && !sessionLoading && (isSuperAdmin || !permissionsLoading);
 
   useEffect(() => {
-    if (mounted && !allowed) router.replace('/dashboard');
-  }, [mounted, allowed, router]);
+    if (authReady && !allowed) router.replace('/dashboard');
+  }, [authReady, allowed, router]);
 
   const { data: roles = [], isLoading } = useRoles();
   const { create, update, remove } = useRoleMutations();
   const [newRole, setNewRole] = useState('');
 
-  if (!allowed) {
+  if (!authReady || !allowed) {
+    const label = !authReady
+      ? lang === 'en' ? 'Loading…' : 'កំពុងផ្ទុក…'
+      : lang === 'en' ? 'Redirecting…' : 'កំពុងបញ្ជូនត្រឡប់…';
     return (
       <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
-        {lang === 'en' ? 'Redirecting…' : 'កំពុងបញ្ជូនត្រឡប់…'}
+        {label}
       </div>
     );
   }
@@ -81,8 +90,13 @@ export default function RolesManager() {
               role={role}
               saving={update.isPending}
               onSave={(patch) => update.mutate({ id: role.id, patch })}
-              onDelete={() => {
-                if (confirm(`Delete role "${role.name}"?`)) remove.mutate(role.id);
+              onDelete={async () => {
+                const ok = await confirm({
+                  title: `Delete role "${role.name}"?`,
+                  confirmLabel: 'Delete',
+                  variant: 'destructive',
+                });
+                if (ok) remove.mutate(role.id);
               }}
               lang={lang}
             />

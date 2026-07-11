@@ -47,15 +47,20 @@ export async function readJson<T = Record<string, unknown>>(
 }
 
 /**
- * Assert that every key in `required` is present (not undefined/null) on `body`.
- * Returns the name of the first missing field, or null when all are present.
+ * Assert that every key in `required` is present (not undefined/null, and not
+ * a blank/whitespace-only string) on `body`. Returns the name of the first
+ * missing field, or null when all are present.
  */
 export function missingField(
   body: Record<string, unknown>,
   required: string[]
 ): string | null {
   for (const key of required) {
-    if (body[key] === undefined || body[key] === null) return key;
+    const value = body[key];
+    if (value === undefined || value === null) return key;
+    if (typeof value === 'string' && value.trim() === '') return key;
   }
   return null;
 }
+
+export const MIN_PASSWORD_LENGTH = 6;

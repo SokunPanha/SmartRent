@@ -25,6 +25,14 @@ type Translation = (typeof TRANSLATIONS)['en'];
 
 interface RentContextValue {
   mounted: boolean;
+  /**
+   * False until NextAuth's `useSession()` has resolved. `mounted` alone
+   * flips true on the first client render, well before the session fetch
+   * completes — gating access-control redirects on `mounted` instead of
+   * this can incorrectly bounce an authorized user (session not loaded
+   * yet reads as "no permission").
+   */
+  sessionLoading: boolean;
   lang: AppLanguage;
   t: Translation;
   handleLangToggle: () => void;
@@ -40,7 +48,8 @@ interface RentContextValue {
 const RentContext = createContext<RentContextValue | null>(null);
 
 export function RentProvider({ children }: { children: React.ReactNode }) {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
+  const sessionLoading = sessionStatus === 'loading';
   const [mounted, setMounted] = useState(false);
 
   const [lang, setLang] = useState<AppLanguage>(() => {
@@ -75,6 +84,7 @@ export function RentProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<RentContextValue>(
     () => ({
       mounted,
+      sessionLoading,
       lang,
       t,
       handleLangToggle,
@@ -86,7 +96,7 @@ export function RentProvider({ children }: { children: React.ReactNode }) {
       userEmail,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mounted, lang, activeRole, roleId, isSuperAdmin, userName, userEmail]
+    [mounted, sessionLoading, lang, activeRole, roleId, isSuperAdmin, userName, userEmail]
   );
 
   return <RentContext.Provider value={value}>{children}</RentContext.Provider>;

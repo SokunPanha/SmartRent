@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, UserPlus } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
-import { useCan } from './permissions.queries';
+import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
+import { useCan, useMyPermissions } from './permissions.queries';
 import { useUsers, useUserMutations } from './users.queries';
 import { useRoles } from './roles.queries';
 import { AdminUser } from './users.api';
@@ -13,14 +14,19 @@ import { UserFormModal } from './components/UserFormModal';
 
 /** Admin screen: manage user accounts and assign them to roles. */
 export default function UsersAdmin() {
-  const { lang, userEmail, mounted } = useRent();
+  const { lang, userEmail, mounted, sessionLoading, isSuperAdmin } = useRent();
   const can = useCan();
   const router = useRouter();
+  const confirm = useConfirm();
   const allowed = can('admin.access');
+  // Super admins are known instantly from the session; everyone else needs
+  // the permissions fetch to resolve before "not allowed" is trustworthy.
+  const { isLoading: permissionsLoading } = useMyPermissions();
+  const authReady = mounted && !sessionLoading && (isSuperAdmin || !permissionsLoading);
 
   useEffect(() => {
-    if (mounted && !allowed) router.replace('/dashboard');
-  }, [mounted, allowed, router]);
+    if (authReady && !allowed) router.replace('/dashboard');
+  }, [authReady, allowed, router]);
 
   const { data: users = [], isLoading } = useUsers();
   const { data: roles = [] } = useRoles();
@@ -33,16 +39,23 @@ export default function UsersAdmin() {
     update.mutate({ id, patch: { roleId } });
   }
 
-  function handleDelete(user: AdminUser) {
-    if (confirm(`Delete user "${user.email}"? This cannot be undone.`)) {
-      remove.mutate(user.id);
-    }
+  async function handleDelete(user: AdminUser) {
+    const ok = await confirm({
+      title: `Delete user "${user.email}"?`,
+      description: 'This cannot be undone.',
+      confirmLabel: 'Delete',
+      variant: 'destructive',
+    });
+    if (ok) remove.mutate(user.id);
   }
 
-  if (!allowed) {
+  if (!authReady || !allowed) {
+    const label = !authReady
+      ? lang === 'en' ? 'Loading…' : 'កំពុងផ្ទុក…'
+      : lang === 'en' ? 'Redirecting…' : 'កំពុងបញ្ជូនត្រឡប់…';
     return (
       <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
-        {lang === 'en' ? 'Redirecting…' : 'កំពុងបញ្ជូនត្រឡប់…'}
+        {label}
       </div>
     );
   }

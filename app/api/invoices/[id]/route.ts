@@ -1,7 +1,9 @@
+import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { invoices } from '@/lib/db/schema';
 import { ok, notFound, badRequest, serverError, readJson } from '@/lib/api/http';
+import { requirePermission } from '@/lib/api/guard';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -19,6 +21,8 @@ export async function GET(_req: Request, { params }: Params) {
 
 // PATCH /api/invoices/:id — partial update (status, notes, telegram fields, ...)
 export async function PATCH(req: Request, { params }: Params) {
+  const gate = await requirePermission('invoices.generate');
+  if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
     const body = await readJson(req);
@@ -44,6 +48,8 @@ export async function PATCH(req: Request, { params }: Params) {
 
 // DELETE /api/invoices/:id
 export async function DELETE(_req: Request, { params }: Params) {
+  const gate = await requirePermission('invoices.generate');
+  if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
     const [existing] = await db.select().from(invoices).where(eq(invoices.id, id));

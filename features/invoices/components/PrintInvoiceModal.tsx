@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Printer, X, QrCode } from 'lucide-react';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
 import { formatUSD, formatKHR } from '@/lib/format';
@@ -26,14 +27,31 @@ export function PrintInvoiceModal({
   t: any;
   lang: AppLanguage;
 }) {
+  useEffect(() => {
+    if (!invoice) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [invoice, onClose]);
+
   if (!invoice) return null;
 
   const roomName = getRoomNameByInvoice(invoice, rooms, properties, lang);
   const tenant = tenants.find((tIdx) => tIdx.id === invoice.tenantId);
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto animate-fade-in printing-modal-wrapper">
-      <div className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden my-8 border border-border flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto animate-fade-in printing-modal-wrapper"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
+        className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden my-8 border border-border flex flex-col max-h-[90vh]"
+      >
         <div className="flex justify-between items-center p-4 bg-muted border-b border-border print:hidden shrink-0">
           <h3 className="font-bold text-foreground text-sm font-sans flex items-center gap-1.5">
             <Printer className="w-4 h-4 text-primary" />

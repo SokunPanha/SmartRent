@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requirePermission } from "@/lib/api/guard";
 
 export async function POST(req: NextRequest) {
+  const gate = await requirePermission('invoices.generate');
+  if (gate instanceof NextResponse) return gate;
   try {
     const { token, chatId, text } = await req.json();
 

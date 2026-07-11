@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Tenant, Contract, Room, Property, AppLanguage } from '@/lib/types';
+import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
 import { getRoomName, getTenantName } from './tenants.helpers';
 
 type ContractStatus = 'active' | 'suspended' | 'expired';
@@ -38,6 +40,7 @@ export function useTenantsController({
   onDeleteContract,
   logAction,
 }: Args) {
+  const confirm = useConfirm();
   const vacantRooms = rooms.filter((r) => r.status === 'vacant');
 
   const [showTenantModal, setShowTenantModal] = useState(false);
@@ -78,8 +81,8 @@ export function useTenantsController({
 
   function handleCreateTenant(e: React.FormEvent) {
     e.preventDefault();
-    if (!canModify) return alert(t.insufficient_permissions);
-    if (!tenantName || !tenantNameKh || !tenantPhone || !tenantNID) return alert(t.please_fill);
+    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!tenantName || !tenantNameKh || !tenantPhone || !tenantNID) return toast.error(t.please_fill);
 
     onAddTenant({
       id: 'tenant-' + Date.now(),
@@ -123,7 +126,7 @@ export function useTenantsController({
 
   function handleCreateContract(e: React.FormEvent) {
     e.preventDefault();
-    if (!canModify) return alert(t.insufficient_permissions);
+    if (!canModify) return toast.error(t.insufficient_permissions);
     if (
       !conRoomId ||
       !conTenantId ||
@@ -134,7 +137,7 @@ export function useTenantsController({
       !conElecRate ||
       !conWaterRate
     ) {
-      return alert(t.please_fill);
+      return toast.error(t.please_fill);
     }
 
     onAddContract({
@@ -167,7 +170,7 @@ export function useTenantsController({
   }
 
   function handleUpdateStatus(conId: string, status: ContractStatus) {
-    if (!canModify) return alert(t.insufficient_permissions);
+    if (!canModify) return toast.error(t.insufficient_permissions);
     onUpdateContractStatus(conId, status);
     const contract = contracts.find((c) => c.id === conId);
     const rName = getRoomName(rooms, properties, contract?.roomId || '', lang);
@@ -179,9 +182,14 @@ export function useTenantsController({
     );
   }
 
-  function handleDeleteContractClick(conId: string) {
-    if (!canModify) return alert(t.insufficient_permissions);
-    if (confirm(t.confirm_delete)) {
+  async function handleDeleteContractClick(conId: string) {
+    if (!canModify) return toast.error(t.insufficient_permissions);
+    const ok = await confirm({
+      title: t.confirm_delete,
+      confirmLabel: t.delete ?? 'Delete',
+      variant: 'destructive',
+    });
+    if (ok) {
       onDeleteContract(conId);
       logAction(
         'Terminated/Deleted Contract',
@@ -192,17 +200,22 @@ export function useTenantsController({
     }
   }
 
-  function handleDeleteTenantClick(tenantId: string, name: string) {
-    if (!canModify) return alert(t.insufficient_permissions);
+  async function handleDeleteTenantClick(tenantId: string, name: string) {
+    if (!canModify) return toast.error(t.insufficient_permissions);
     const hasActive = contracts.some((c) => c.tenantId === tenantId && c.status === 'active');
     if (hasActive) {
-      return alert(
+      return toast.error(
         lang === 'en'
           ? 'Cannot delete! This tenant currently holds an active rental contract.'
           : 'មិនអាចលុបបានទេ! អ្នកជួលនេះបច្ចុប្បន្នកំពុងមានកិច្ចសន្យាជួលដ៏សកម្មមួយ។'
       );
     }
-    if (confirm(t.confirm_delete)) {
+    const ok = await confirm({
+      title: t.confirm_delete,
+      confirmLabel: t.delete ?? 'Delete',
+      variant: 'destructive',
+    });
+    if (ok) {
       onDeleteTenant(tenantId);
       logAction(
         'Removed Tenant',

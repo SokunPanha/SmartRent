@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Property, Room, AppLanguage } from '@/lib/types';
+import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
 
 type PropType = 'apartment' | 'borey' | 'condo' | 'guesthouse';
 type RoomStatus = 'vacant' | 'occupied' | 'maintenance';
@@ -34,6 +36,7 @@ export function usePropertiesController({
   onDeleteProperty,
   logAction,
 }: Args) {
+  const confirm = useConfirm();
   const [selectedPropId, setSelectedPropId] = useState<string>(properties[0]?.id || '');
 
   const [showPropModal, setShowPropModal] = useState(false);
@@ -75,8 +78,8 @@ export function usePropertiesController({
 
   function handleCreateProp(e: React.FormEvent) {
     e.preventDefault();
-    if (!canModify) return alert(t.insufficient_permissions);
-    if (!propName || !propNameKh || !propAddress || !propAddressKh) return alert(t.please_fill);
+    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!propName || !propNameKh || !propAddress || !propAddressKh) return toast.error(t.please_fill);
 
     const newId = 'prop-' + Date.now();
     onAddProperty({
@@ -103,8 +106,8 @@ export function usePropertiesController({
 
   function handleCreateOrUpdateRoom(e: React.FormEvent) {
     e.preventDefault();
-    if (!canModify) return alert(t.insufficient_permissions);
-    if (!roomNumber || !roomFloor || !roomRent) return alert(t.please_fill);
+    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!roomNumber || !roomFloor || !roomRent) return toast.error(t.please_fill);
 
     const isDuplicate = rooms.some(
       (r) =>
@@ -113,7 +116,7 @@ export function usePropertiesController({
         r.id !== editingRoomId
     );
     if (isDuplicate) {
-      return alert(
+      return toast.error(
         lang === 'en'
           ? 'Room number already exists in this property.'
           : 'បន្ទប់លេខនេះមានរួចមកហើយនៅក្នុងទីតាំងនេះ។'
@@ -161,7 +164,7 @@ export function usePropertiesController({
   }
 
   function handleEditRoomClick(room: Room) {
-    if (!canModify) return alert(t.insufficient_permissions);
+    if (!canModify) return toast.error(t.insufficient_permissions);
     setEditingRoomId(room.id);
     setRoomNumber(room.roomNumber);
     setRoomFloor(room.floor);
@@ -170,9 +173,14 @@ export function usePropertiesController({
     setShowRoomModal(true);
   }
 
-  function handleDeleteRoomClick(roomId: string, rNumber: string) {
-    if (!canModify) return alert(t.insufficient_permissions);
-    if (confirm(t.confirm_delete)) {
+  async function handleDeleteRoomClick(roomId: string, rNumber: string) {
+    if (!canModify) return toast.error(t.insufficient_permissions);
+    const ok = await confirm({
+      title: t.confirm_delete,
+      confirmLabel: t.delete ?? 'Delete',
+      variant: 'destructive',
+    });
+    if (ok) {
       onDeleteRoom(roomId);
       logAction(
         'Deleted Room',
@@ -183,17 +191,22 @@ export function usePropertiesController({
     }
   }
 
-  function handleDeletePropClick(pId: string, pName: string, pNameKh: string) {
-    if (!canModify) return alert(t.insufficient_permissions);
+  async function handleDeletePropClick(pId: string, pName: string, pNameKh: string) {
+    if (!canModify) return toast.error(t.insufficient_permissions);
     const count = rooms.filter((r) => r.propertyId === pId).length;
     if (count > 0) {
-      return alert(
+      return toast.error(
         lang === 'en'
           ? `Cannot delete property! Please delete all ${count} rooms inside it first.`
           : `មិនអាចលុបទីតាំងបានទេ! សូមលុបបន្ទប់ទាំង ${count} នៅក្នុងនោះជាមុនសិន។`
       );
     }
-    if (confirm(t.confirm_delete)) {
+    const ok = await confirm({
+      title: t.confirm_delete,
+      confirmLabel: t.delete ?? 'Delete',
+      variant: 'destructive',
+    });
+    if (ok) {
       onDeleteProperty(pId);
       logAction(
         'Deleted Property Location',

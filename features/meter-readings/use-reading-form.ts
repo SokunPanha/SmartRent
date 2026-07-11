@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { MeterReading, Room, UserRole, AppLanguage } from '@/lib/types';
 import { getRoomNumber } from './meter-readings.helpers';
 
@@ -71,15 +72,15 @@ export function useReadingForm({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!canModify) {
-      alert(t.insufficient_permissions);
+      toast.error(t.insufficient_permissions);
       return;
     }
     if (!targetRoomId || !readingYear || !readingMonth) {
-      alert(t.please_fill);
+      toast.error(t.please_fill);
       return;
     }
     if (currElec < prevElec) {
-      alert(
+      toast.error(
         lang === 'en'
           ? 'Error: Current Electric value cannot be less than previous Electric value!'
           : 'កំហុស៖ លេខអគ្គិសនីថ្មី មិនអាចតូចជាងលេខអគ្គិសនីចាស់បានឡើយ!'
@@ -87,7 +88,7 @@ export function useReadingForm({
       return;
     }
     if (currWater < prevWater) {
-      alert(
+      toast.error(
         lang === 'en'
           ? 'Error: Current Water value cannot be less than previous Water value!'
           : 'កំហុស៖ លេខទឹកស្អាតថ្មី មិនអាចតូចជាងលេខទឹកស្អាតចាស់បានឡើយ!'
@@ -101,7 +102,7 @@ export function useReadingForm({
         r.month === Number(readingMonth)
     );
     if (duplicate) {
-      alert(
+      toast.error(
         lang === 'en'
           ? `A meter reading for this room is already recorded for ${readingMonth}/${readingYear}.`
           : `កុងទ័រសម្រាប់ខែនេះ (${readingMonth}/${readingYear}) បានកត់ត្រារួចរាល់ហើយសម្រាប់បន្ទប់នេះ។`

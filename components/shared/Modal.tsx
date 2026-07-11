@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 const SIZE: Record<string, string> = {
@@ -10,10 +11,17 @@ const SIZE: Record<string, string> = {
   '2xl': 'max-w-2xl',
 };
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 /**
  * Centered modal overlay shared across feature forms (properties, tenants,
  * invoices). Renders nothing when `open` is false. Clicking the backdrop calls
  * `onClose` if provided; clicks inside the panel are not propagated.
+ *
+ * Handles the standard dialog accessibility contract: `role="dialog"`,
+ * Escape-to-close, a focus trap while open, and returning focus to whatever
+ * triggered the modal once it closes.
  */
 export function Modal({
   open,
@@ -28,6 +36,45 @@ export function Modal({
   className?: string;
   children: React.ReactNode;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<Element | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    triggerRef.current = document.activeElement;
+
+    const panel = panelRef.current;
+    const focusable = panel?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    (focusable?.[0] ?? panel)?.focus();
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        onClose?.();
+        return;
+      }
+      if (e.key !== 'Tab' || !panel) return;
+
+      const focusables = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      if (triggerRef.current instanceof HTMLElement) triggerRef.current.focus();
+    };
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
@@ -36,8 +83,12 @@ export function Modal({
       onClick={onClose}
     >
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
         className={cn(
-          'flex w-full max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-card shadow-xl animate-slide-up',
+          'flex w-full max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-card shadow-xl outline-none animate-slide-up',
           SIZE[size],
           className
         )}

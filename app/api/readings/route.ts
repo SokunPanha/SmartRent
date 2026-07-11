@@ -42,6 +42,20 @@ export async function POST(req: Request) {
     ]);
     if (missing) return badRequest(`Missing required field: ${missing}`);
 
+    const prevElec = Number(body.prevElectricityValue);
+    const currElec = Number(body.currElectricityValue);
+    const prevWater = Number(body.prevWaterValue);
+    const currWater = Number(body.currWaterValue);
+    if ([prevElec, currElec, prevWater, currWater].some((n) => Number.isNaN(n) || n < 0)) {
+      return badRequest('Meter values must be non-negative numbers');
+    }
+    if (currElec < prevElec) {
+      return badRequest('Current electricity reading cannot be less than the previous reading');
+    }
+    if (currWater < prevWater) {
+      return badRequest('Current water reading cannot be less than the previous reading');
+    }
+
     const row = {
       id: (body.id as string) || genId('mr'),
       roomId: body.roomId as string,

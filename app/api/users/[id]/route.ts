@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { eq, inArray } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users, roles } from '@/lib/db/schema';
-import { ok, notFound, badRequest, serverError, readJson } from '@/lib/api/http';
+import { ok, notFound, badRequest, serverError, readJson, MIN_PASSWORD_LENGTH } from '@/lib/api/http';
 import { requireAdmin } from '@/lib/api/guard';
 
 type Params = { params: Promise<{ id: string }> };
@@ -47,7 +47,12 @@ export async function PATCH(req: Request, { params }: Params) {
 
     if (body.name !== undefined) patch.name = body.name;
     if (body.nameKh !== undefined) patch.nameKh = body.nameKh;
-    if (body.password) patch.passwordHash = await bcrypt.hash(String(body.password), 10);
+    if (body.password) {
+      if (String(body.password).length < MIN_PASSWORD_LENGTH) {
+        return badRequest(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
+      }
+      patch.passwordHash = await bcrypt.hash(String(body.password), 10);
+    }
 
     if (Object.keys(patch).length === 0) return badRequest('No updatable fields provided');
 

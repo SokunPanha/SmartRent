@@ -8,6 +8,7 @@ import { RentProvider } from '@/store/rent-store';
 import { QueryProvider } from '@/lib/query/provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/sonner';
+import { ConfirmDialogProvider } from '@/components/shared/ConfirmDialogProvider';
 
 const instrumentSans = Instrument_Sans({ subsets: ['latin'], variable: '--font-sans' });
 const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-heading' });
@@ -43,7 +44,9 @@ export default function RootLayout({
           <SessionProvider>
             <QueryProvider>
               <RentProvider>
-                <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+                <ConfirmDialogProvider>
+                  <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+                </ConfirmDialogProvider>
                 <Toaster position="bottom-right" />
               </RentProvider>
             </QueryProvider>

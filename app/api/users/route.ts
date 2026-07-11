@@ -3,7 +3,16 @@ import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users, roles } from '@/lib/db/schema';
-import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
+import {
+  ok,
+  created,
+  badRequest,
+  serverError,
+  readJson,
+  missingField,
+  genId,
+  MIN_PASSWORD_LENGTH,
+} from '@/lib/api/http';
 import { requireAdmin } from '@/lib/api/guard';
 
 // GET /api/users — admin only. Lists users with their role name (no hashes).
@@ -40,6 +49,10 @@ export async function POST(req: Request) {
 
     const missing = missingField(body, ['name', 'email', 'password', 'roleId']);
     if (missing) return badRequest(`Missing required field: ${missing}`);
+
+    if (String(body.password).length < MIN_PASSWORD_LENGTH) {
+      return badRequest(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
+    }
 
     const [role] = await db.select().from(roles).where(eq(roles.id, body.roleId as string));
     if (!role) return badRequest('Selected role does not exist');
