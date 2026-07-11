@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
-import { Trash2, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DeleteButton } from '@/components/shared/DeleteButton';
 import { AdminUser } from '../users.api';
 import { Role } from '../roles.api';
 
@@ -91,14 +92,12 @@ export function UserTable({
                       </Select>
                     </td>
                     <td className="p-4 pr-6 text-right">
-                      <button
+                      <DeleteButton
                         onClick={() => onDelete(u)}
                         disabled={busy || isSelf}
-                        className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-destructive/10 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+                        size="md"
                         title={isSelf ? 'You cannot delete your own account' : 'Delete user'}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      />
                     </td>
                   </tr>
                 );

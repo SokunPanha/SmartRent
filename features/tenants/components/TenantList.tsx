@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Users, UserPlus, Trash2, Phone, UserSquare, AlertCircle, Send, Copy, Check, MessageCircle } from 'lucide-react';
+import { Users, UserPlus, Phone, UserSquare, AlertCircle, Send, Copy, Check, MessageCircle } from 'lucide-react';
 import { Tenant, AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
+import { DeleteButton } from '@/components/shared/DeleteButton';
+import { pickLocale } from '@/lib/i18n';
 import { TelegramConnectCode } from '../tenants.api';
 import { useTenantMessages, useSendTenantMessage } from '../tenants.queries';
 
@@ -91,7 +93,7 @@ export function TenantList({
             <div className="flex justify-between items-start gap-2">
               <div>
                 <h4 className="font-bold text-foreground text-sm font-sans flex items-center gap-1">
-                  {lang === 'en' ? tenant.name : tenant.nameKh}
+                  {pickLocale(lang, tenant.name, tenant.nameKh)}
                   {lang === 'kh' && tenant.name !== tenant.nameKh && (
                     <span className="text-xs text-muted-foreground font-normal">({tenant.name})</span>
                   )}
@@ -102,13 +104,7 @@ export function TenantList({
               </div>
 
               {canModify && (
-                <button
-                  onClick={() => onDelete(tenant.id, tenant.name)}
-                  className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-destructive/10 transition cursor-pointer"
-                  title={t('delete_tenant')}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                <DeleteButton onClick={() => onDelete(tenant.id, tenant.name)} title={t('delete_tenant')} />
               )}
             </div>
 

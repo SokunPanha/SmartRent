@@ -1,6 +1,10 @@
 import { useTranslations } from 'next-intl';
-import { Plus, Trash2, Edit3, Grid } from 'lucide-react';
+import { Plus, Edit3, Grid } from 'lucide-react';
 import { Property, Room, AppLanguage } from '@/lib/types';
+import { StatusBadge, StatusBadgeTone } from '@/components/shared/StatusBadge';
+import { DeleteButton } from '@/components/shared/DeleteButton';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { pickLocale } from '@/lib/i18n';
 
 export function RoomGrid({
   activeProperty,
@@ -28,7 +32,7 @@ export function RoomGrid({
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-card p-4 rounded-xl border border-border shadow-3xs">
             <div>
               <h3 className="font-bold text-foreground text-base font-sans">
-                {t('rooms_for')} &quot;{lang === 'en' ? activeProperty.name : activeProperty.nameKh}&quot;
+                {t('rooms_for')} &quot;{pickLocale(lang, activeProperty.name, activeProperty.nameKh)}&quot;
               </h3>
               <p className="text-xs text-muted-foreground mt-1 font-sans">
                 {activeRooms.length}{' '}
@@ -48,31 +52,32 @@ export function RoomGrid({
           </div>
 
           {activeRooms.length === 0 ? (
-            <div className="bg-card rounded-xl border border-border p-12 text-center shadow-xs">
-              <Grid className="w-10 h-10 text-muted-foreground mx-auto stroke-1" />
-              <p className="text-sm font-semibold text-muted-foreground mt-3 font-sans">
-                {t('no_rooms_listed')}
-              </p>
-              {canModify && (
-                <button
-                  onClick={onAddRoom}
-                  className="mt-4 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition cursor-pointer"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  {t('add_room')}
-                </button>
-              )}
-            </div>
+            <EmptyState
+              icon={Grid}
+              title={t('no_rooms_listed')}
+              className="p-12 shadow-xs"
+              action={
+                canModify && (
+                  <button
+                    onClick={onAddRoom}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    {t('add_room')}
+                  </button>
+                )
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="rooms-grid-layout">
               {activeRooms.map((room) => {
-                let statusColor = 'bg-info/10 border-info/20 text-info';
+                let statusTone: StatusBadgeTone = 'info';
                 let statusLabel = t('vacant');
                 if (room.status === 'occupied') {
-                  statusColor = 'bg-chart-2/10 border-chart-2/20 text-chart-2';
+                  statusTone = 'success';
                   statusLabel = t('occupied');
                 } else if (room.status === 'maintenance') {
-                  statusColor = 'bg-chart-1/10 border-chart-1/20 text-chart-1';
+                  statusTone = 'warning';
                   statusLabel = t('maintenance');
                 }
 
@@ -90,9 +95,7 @@ export function RoomGrid({
                           {room.roomNumber}
                         </h5>
                       </div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusColor}`}>
-                        {statusLabel}
-                      </span>
+                      <StatusBadge tone={statusTone}>{statusLabel}</StatusBadge>
                     </div>
 
                     <div className="mt-4 pt-3 border-t border-border flex justify-between items-center">
@@ -115,13 +118,11 @@ export function RoomGrid({
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
-                          <button
+                          <DeleteButton
                             onClick={() => onDeleteRoom(room.id, room.roomNumber)}
-                            className="p-1.5 bg-muted text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-border rounded-lg transition cursor-pointer"
                             title={tCommon('delete')}
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                            className="p-1.5 bg-muted border border-border rounded-lg"
+                          />
                         </div>
                       )}
                     </div>
@@ -132,11 +133,7 @@ export function RoomGrid({
           )}
         </>
       ) : (
-        <div className="bg-card rounded-xl border border-border p-12 text-center shadow-xs">
-          <p className="text-muted-foreground text-sm font-sans italic">
-            {t('no_property_selected')}
-          </p>
-        </div>
+        <EmptyState title={t('no_property_selected')} className="p-12 shadow-xs" />
       )}
     </div>
   );

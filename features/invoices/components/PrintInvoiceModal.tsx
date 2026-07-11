@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Printer, X, QrCode } from 'lucide-react';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
 import { formatUSD, formatKHR } from '@/lib/format';
+import { Modal } from '@/components/shared/Modal';
 import {
   MonthOption,
   getRoomNameByInvoice,
@@ -27,14 +27,6 @@ export function PrintInvoiceModal({
   lang: AppLanguage;
 }) {
   const t = useTranslations('Invoices');
-  useEffect(() => {
-    if (!invoice) return;
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
-    }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [invoice, onClose]);
 
   if (!invoice) return null;
 
@@ -42,39 +34,30 @@ export function PrintInvoiceModal({
   const tenant = tenants.find((tIdx) => tIdx.id === invoice.tenantId);
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto animate-fade-in printing-modal-wrapper"
-      onClick={onClose}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        onClick={(e) => e.stopPropagation()}
-        className="bg-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden my-8 border border-border flex flex-col max-h-[90vh]"
-      >
-        <div className="flex justify-between items-center p-4 bg-muted border-b border-border print:hidden shrink-0">
-          <h3 className="font-bold text-foreground text-sm font-sans flex items-center gap-1.5">
-            <Printer className="w-4 h-4 text-primary" />
-            {t('print_preview_voucher')}
-          </h3>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => window.print()}
-              className="px-3.5 py-1.5 text-xs font-bold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition flex items-center gap-1.5 cursor-pointer shadow-3xs"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              {t('print_invoice_button')}
-            </button>
-            <button
-              onClick={onClose}
-              className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
+    <Modal open={!!invoice} onClose={onClose} className="max-w-2xl max-h-[90vh] shadow-2xl">
+      <div className="flex justify-between items-center p-4 bg-muted border-b border-border print:hidden sticky top-0 z-10">
+        <h3 className="font-bold text-foreground text-sm font-sans flex items-center gap-1.5">
+          <Printer className="w-4 h-4 text-primary" />
+          {t('print_preview_voucher')}
+        </h3>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => window.print()}
+            className="px-3.5 py-1.5 text-xs font-bold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition flex items-center gap-1.5 cursor-pointer shadow-3xs"
+          >
+            <Printer className="w-3.5 h-3.5" />
+            {t('print_invoice_button')}
+          </button>
+          <button
+            onClick={onClose}
+            className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
+      </div>
 
-        <div className="p-8 overflow-y-auto flex-1 font-sans print:p-0" id="rental-invoice-print-area">
+      <div className="p-8 font-sans print:p-0" id="rental-invoice-print-area">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b-2 border-primary pb-6">
             <div>
               <h1 className="text-xl font-bold text-primary tracking-tight font-sans">
@@ -265,7 +248,6 @@ export function PrintInvoiceModal({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

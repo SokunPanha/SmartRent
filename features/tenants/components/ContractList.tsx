@@ -1,7 +1,10 @@
 import { useTranslations } from 'next-intl';
-import { FileText, Plus, Trash2, KeyRound, CalendarDays } from 'lucide-react';
+import { FileText, Plus, KeyRound, CalendarDays } from 'lucide-react';
 import { Tenant, Contract, Room, Property, AppLanguage } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { StatusBadge, StatusBadgeTone } from '@/components/shared/StatusBadge';
+import { DeleteButton } from '@/components/shared/DeleteButton';
+import { EmptyState } from '@/components/shared/EmptyState';
 import { getRoomName, getTenantName } from '../tenants.helpers';
 
 export function ContractList({
@@ -49,24 +52,19 @@ export function ContractList({
 
       <div className="space-y-4" id="contracts-list-view">
         {contracts.length === 0 ? (
-          <div className="bg-card border border-border rounded-xl p-12 text-center shadow-xs">
-            <FileText className="w-8 h-8 text-muted-foreground mx-auto" />
-            <p className="text-sm text-muted-foreground mt-2 font-sans italic">
-              {t('no_contracts')}
-            </p>
-          </div>
+          <EmptyState icon={FileText} title={t('no_contracts')} className="p-12 shadow-xs" />
         ) : (
           contracts.map((contract) => {
             const roomNameStr = getRoomName(rooms, properties, contract.roomId, lang);
             const tenantNameStr = getTenantName(tenants, contract.tenantId, lang);
 
-            let statusBadge = 'bg-chart-2/10 text-chart-2 border-chart-2/20';
+            let statusTone: StatusBadgeTone = 'success';
             let statusLabel = t('active');
             if (contract.status === 'suspended') {
-              statusBadge = 'bg-chart-1/10 text-chart-1 border-chart-1/20';
+              statusTone = 'warning';
               statusLabel = t('suspended');
             } else if (contract.status === 'expired') {
-              statusBadge = 'bg-destructive/10 text-destructive border-destructive/20';
+              statusTone = 'danger';
               statusLabel = t('expired');
             }
 
@@ -78,9 +76,9 @@ export function ContractList({
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-border pb-3">
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className={`text-[10px] font-bold uppercase tracking-wider py-0.5 px-2 rounded-full border ${statusBadge}`}>
+                      <StatusBadge tone={statusTone} className="uppercase tracking-wider py-0.5">
                         {statusLabel}
-                      </span>
+                      </StatusBadge>
                       <span className="font-mono text-xs text-muted-foreground">ID: {contract.id}</span>
                     </div>
                     <h4 className="font-bold text-foreground text-base mt-1 flex items-center gap-1 font-sans">
@@ -106,13 +104,7 @@ export function ContractList({
                           <SelectItem value="expired">{t('expired')}</SelectItem>
                         </SelectContent>
                       </Select>
-                      <button
-                        onClick={() => onDelete(contract.id)}
-                        className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-destructive/10 transition cursor-pointer"
-                        title={t('terminate_record')}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <DeleteButton onClick={() => onDelete(contract.id)} title={t('terminate_record')} />
                     </div>
                   )}
                 </div>

@@ -1,7 +1,8 @@
 import { useTranslations } from 'next-intl';
-import { X } from 'lucide-react';
 import { AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
+import { ModalHeader } from '@/components/shared/ModalHeader';
+import { ModalFooter } from '@/components/shared/ModalFooter';
 import { useTenantsController } from '../use-tenants-controller';
 
 type Controller = ReturnType<typeof useTenantsController>;
@@ -11,15 +12,7 @@ export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
   const tCommon = useTranslations('Common');
   return (
     <Modal open={c.showTenantModal} onClose={c.closeTenantModal} size="sm">
-      <div className="flex justify-between items-center p-4 border-b border-border">
-        <h3 className="font-bold text-foreground text-base font-sans">{t('add_tenant')}</h3>
-        <button
-          onClick={c.closeTenantModal}
-          className="p-1 hover:bg-muted rounded-lg text-muted-foreground hover:text-muted-foreground cursor-pointer"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
+      <ModalHeader title={t('add_tenant')} onClose={c.closeTenantModal} />
 
       <form onSubmit={c.handleCreateTenant} className="p-4 space-y-4">
         <div className="space-y-4 text-xs">
@@ -140,21 +133,7 @@ export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
           </div>
         </div>
 
-        <div className="flex gap-2 pt-2">
-          <button
-            type="button"
-            onClick={c.closeTenantModal}
-            className="flex-1 py-2 rounded-lg text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
-          >
-            {tCommon('cancel')}
-          </button>
-          <button
-            type="submit"
-            className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans"
-          >
-            {tCommon('save')}
-          </button>
-        </div>
+        <ModalFooter cancelLabel={tCommon('cancel')} onCancel={c.closeTenantModal} submitLabel={tCommon('save')} />
       </form>
     </Modal>
   );

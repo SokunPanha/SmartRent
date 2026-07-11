@@ -2,6 +2,7 @@ import { BarChart3, Printer } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Property, AppLanguage } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { pickLocale } from '@/lib/i18n';
 
 export function ReportFilters({
   properties,
@@ -39,7 +40,7 @@ export function ReportFilters({
               <SelectItem value="all">{t('all_locations')}</SelectItem>
               {properties.map((p) => (
                 <SelectItem key={p.id} value={p.id}>
-                  {lang === 'en' ? p.name : p.nameKh}
+                  {pickLocale(lang, p.name, p.nameKh)}
                 </SelectItem>
               ))}
             </SelectContent>

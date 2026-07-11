@@ -1,7 +1,9 @@
-import { X, Lightbulb, Droplet } from 'lucide-react';
+import { Lightbulb, Droplet } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Room, Property, AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
+import { ModalHeader } from '@/components/shared/ModalHeader';
+import { ModalFooter } from '@/components/shared/ModalFooter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   MonthOption,
@@ -29,15 +31,7 @@ export function RecordReadingModal({
   const tCommon = useTranslations('Common');
   return (
     <Modal open={form.showModal} onClose={form.closeModal} size="sm">
-      <div className="flex justify-between items-center p-4 border-b border-border">
-        <h3 className="font-bold text-foreground text-base font-sans">{t('record_reading')}</h3>
-        <button
-          onClick={form.closeModal}
-          className="p-1 hover:bg-muted rounded-lg text-muted-foreground hover:text-muted-foreground cursor-pointer"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
+      <ModalHeader title={t('record_reading')} onClose={form.closeModal} />
 
       <form onSubmit={form.submit} className="p-4 space-y-4 text-xs">
         <div className="space-y-4">
@@ -160,21 +154,12 @@ export function RecordReadingModal({
           </div>
         </div>
 
-        <div className="flex gap-2 pt-2">
-          <button
-            type="button"
-            onClick={form.closeModal}
-            className="flex-1 py-2 rounded-lg text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
-          >
-            {tCommon('cancel')}
-          </button>
-          <button
-            type="submit"
-            className="flex-1 py-2 rounded-lg text-sm bg-chart-2 hover:bg-chart-2/90 text-white transition font-semibold cursor-pointer font-sans"
-          >
-            {tCommon('save')}
-          </button>
-        </div>
+        <ModalFooter
+          cancelLabel={tCommon('cancel')}
+          onCancel={form.closeModal}
+          submitLabel={tCommon('save')}
+          tone="success"
+        />
       </form>
     </Modal>
   );

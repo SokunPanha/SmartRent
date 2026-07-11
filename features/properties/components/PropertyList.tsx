@@ -1,6 +1,8 @@
 import { useTranslations } from 'next-intl';
-import { Plus, MapPin, Building2, Trash2 } from 'lucide-react';
+import { Plus, MapPin, Building2 } from 'lucide-react';
 import { Property, Room, AppLanguage } from '@/lib/types';
+import { DeleteButton } from '@/components/shared/DeleteButton';
+import { pickLocale } from '@/lib/i18n';
 
 export function PropertyList({
   properties,
@@ -68,26 +70,24 @@ export function PropertyList({
                         : t('type_apartment')}
                 </span>
                 {canModify && isSelected && (
-                  <button
+                  <DeleteButton
                     onClick={(e) => {
                       e.stopPropagation();
                       onDeleteProp(prop.id, prop.name, prop.nameKh);
                     }}
-                    className="text-muted-foreground hover:text-destructive transition p-1 hover:bg-destructive/10 rounded-lg cursor-pointer"
                     title={t('delete_property_title')}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                    className="rounded-lg"
+                  />
                 )}
               </div>
 
               <h4 className="font-bold text-foreground text-sm mt-2 transition group-hover:text-primary font-sans">
-                {lang === 'en' ? prop.name : prop.nameKh}
+                {pickLocale(lang, prop.name, prop.nameKh)}
               </h4>
 
               <p className="text-xs text-muted-foreground flex items-start gap-1 mt-1.5 font-sans">
                 <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
-                <span className="line-clamp-2">{lang === 'en' ? prop.address : prop.addressKh}</span>
+                <span className="line-clamp-2">{pickLocale(lang, prop.address, prop.addressKh)}</span>
               </p>
 
               <div className="mt-4 pt-3 border-t border-dashed border-border flex justify-between items-center text-xs text-muted-foreground font-sans">

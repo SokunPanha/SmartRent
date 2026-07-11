@@ -1,4 +1,5 @@
 import { Invoice, Room, Property, AppLanguage } from '@/lib/types';
+import { pickLocale } from '@/lib/i18n';
 
 export interface MonthlySummaryRow {
   month: number;
@@ -73,7 +74,7 @@ export function getReportData(
     const room = rooms.find((r) => r.id === inv.roomId);
     if (!room) return;
     const prop = properties.find((p) => p.id === room.propertyId);
-    const propName = prop ? (lang === 'en' ? prop.name : prop.nameKh) : 'Unknown';
+    const propName = prop ? pickLocale(lang, prop.name, prop.nameKh) : 'Unknown';
 
     if (!roomRevenueMap[inv.roomId]) {
       roomRevenueMap[inv.roomId] = {

@@ -2,6 +2,8 @@ import { useTranslations } from 'next-intl';
 import { Coins, Printer, CheckCircle2, Lightbulb, Droplet, ClipboardList, Send } from 'lucide-react';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
 import { formatUSD, formatKHR } from '@/lib/format';
+import { StatusBadge, StatusBadgeTone } from '@/components/shared/StatusBadge';
+import { EmptyState } from '@/components/shared/EmptyState';
 import {
   MonthOption,
   getRoomNameByInvoice,
@@ -35,12 +37,11 @@ export function InvoiceGrid({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="invoices-registry-grid-list">
       {invoices.length === 0 ? (
-        <div className="md:col-span-2 lg:col-span-3 bg-card border border-border p-16 rounded-xl text-center shadow-3xs">
-          <ClipboardList className="w-10 h-10 text-muted-foreground mx-auto stroke-1" />
-          <p className="text-sm text-muted-foreground mt-2.5 font-sans italic">
-            {t('no_invoices_match_filters')}
-          </p>
-        </div>
+        <EmptyState
+          icon={ClipboardList}
+          title={t('no_invoices_match_filters')}
+          className="md:col-span-2 lg:col-span-3"
+        />
       ) : (
         invoices.map((inv) => {
           const rName = getRoomNameByInvoice(inv, rooms, properties, lang);
@@ -49,18 +50,21 @@ export function InvoiceGrid({
           const elecUnits = inv.electricityCurr - inv.electricityPrev;
           const waterUnits = inv.waterCurr - inv.waterPrev;
 
-          let badgeStyle = 'bg-destructive/10 border-destructive/20 text-destructive';
+          let tone: StatusBadgeTone = 'danger';
           let label = t('unpaid');
+          let pulse = false;
           if (inv.status === 'paid') {
-            badgeStyle = 'bg-chart-2/10 border-chart-2/20 text-chart-2';
+            tone = 'success';
             label = t('paid');
           } else if (inv.status === 'partial') {
-            badgeStyle = 'bg-chart-1/10 border-chart-1/20 text-chart-1';
+            tone = 'warning';
             label = t('partial');
           } else if (inv.status === 'overdue') {
-            badgeStyle = 'bg-destructive/20 border-destructive/30 text-destructive animate-pulse';
             label = t('overdue');
+            pulse = true;
           }
+          const overdueClassName =
+            inv.status === 'overdue' ? 'bg-destructive/20 border-destructive/30' : undefined;
 
           return (
             <div
@@ -75,9 +79,9 @@ export function InvoiceGrid({
                       {rName}
                     </h4>
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border tracking-wide ${badgeStyle}`}>
+                  <StatusBadge tone={tone} pulse={pulse} className={overdueClassName}>
                     {label}
-                  </span>
+                  </StatusBadge>
                 </div>
 
                 <div className="py-4 space-y-2 border-b border-dashed border-border text-xs font-sans">

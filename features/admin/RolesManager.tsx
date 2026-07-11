@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ShieldCheck, Plus, Trash2, Save, Loader2, Lock } from 'lucide-react';
+import { ShieldCheck, Plus, Save, Loader2, Lock } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
 import { PERMISSION_META, PermissionKey } from '@/lib/permissions';
 import { Input } from '@/components/ui/input';
 import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
+import { DeleteButton } from '@/components/shared/DeleteButton';
 import { useCan, useMyPermissions } from './permissions.queries';
 import { useRoles, useRoleMutations } from './roles.queries';
 import { Role } from './roles.api';
@@ -172,13 +173,7 @@ function RoleCard({
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                 {t('save')}
               </button>
-              <button
-                onClick={onDelete}
-                className="text-muted-foreground hover:text-destructive p-1.5 rounded-md hover:bg-destructive/10 transition cursor-pointer"
-                title={t('delete_role')}
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <DeleteButton onClick={onDelete} size="md" title={t('delete_role')} />
             </>
           )}
         </div>

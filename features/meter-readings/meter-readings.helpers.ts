@@ -1,4 +1,5 @@
 import { MeterReading, Room, Property, AppLanguage } from '@/lib/types';
+import { pickLocale } from '@/lib/i18n';
 
 export interface MonthOption {
   value: number;
@@ -60,5 +61,5 @@ export function getPropertyName(
   const room = rooms.find((item) => item.id === roomId);
   if (!room) return 'Unknown';
   const prop = properties.find((p) => p.id === room.propertyId);
-  return prop ? (lang === 'en' ? prop.name : prop.nameKh) : 'Unknown';
+  return prop ? pickLocale(lang, prop.name, prop.nameKh) : 'Unknown';
 }

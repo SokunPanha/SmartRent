@@ -2,6 +2,7 @@ import { Plus, Briefcase } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Property, UserRole, AppLanguage } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { pickLocale } from '@/lib/i18n';
 import { MonthOption } from '../meter-readings.helpers';
 
 export function RoleBanner({
@@ -61,7 +62,7 @@ export function ReadingFilters({
               <SelectItem value="all">{t('all_properties')}</SelectItem>
               {properties.map((p) => (
                 <SelectItem key={p.id} value={p.id}>
-                  {lang === 'en' ? p.name : p.nameKh}
+                  {pickLocale(lang, p.name, p.nameKh)}
                 </SelectItem>
               ))}
             </SelectContent>

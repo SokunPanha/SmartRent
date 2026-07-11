@@ -1,8 +1,10 @@
 import { useTranslations } from 'next-intl';
-import { X } from 'lucide-react';
 import { Tenant, Room, Property, AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
+import { ModalHeader } from '@/components/shared/ModalHeader';
+import { ModalFooter } from '@/components/shared/ModalFooter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { pickLocale } from '@/lib/i18n';
 import { getRoomName } from '../tenants.helpers';
 import { useTenantsController } from '../use-tenants-controller';
 
@@ -25,15 +27,7 @@ export function ContractModal({
   const tCommon = useTranslations('Common');
   return (
     <Modal open={c.showContractModal} onClose={c.closeContractModal} size="md">
-      <div className="flex justify-between items-center p-4 border-b border-border">
-        <h3 className="font-bold text-foreground text-base font-sans">{t('add_contract')}</h3>
-        <button
-          onClick={c.closeContractModal}
-          className="p-1 hover:bg-muted rounded-lg text-muted-foreground hover:text-muted-foreground cursor-pointer"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
+      <ModalHeader title={t('add_contract')} onClose={c.closeContractModal} />
 
       <form onSubmit={c.handleCreateContract} className="p-4 space-y-4">
         <div className="space-y-4 text-xs">
@@ -71,7 +65,7 @@ export function ContractModal({
               <SelectContent>
                 {tenants.map((tn) => (
                   <SelectItem key={tn.id} value={tn.id}>
-                    {lang === 'en' ? tn.name : tn.nameKh} ({tn.phone})
+                    {pickLocale(lang, tn.name, tn.nameKh)} ({tn.phone})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -171,22 +165,12 @@ export function ContractModal({
           </div>
         </div>
 
-        <div className="flex gap-2 pt-2">
-          <button
-            type="button"
-            onClick={c.closeContractModal}
-            className="flex-1 py-2 rounded-lg text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
-          >
-            {tCommon('cancel')}
-          </button>
-          <button
-            type="submit"
-            disabled={c.vacantRooms.length === 0}
-            className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {tCommon('save')}
-          </button>
-        </div>
+        <ModalFooter
+          cancelLabel={tCommon('cancel')}
+          onCancel={c.closeContractModal}
+          submitLabel={tCommon('save')}
+          submitDisabled={c.vacantRooms.length === 0}
+        />
       </form>
     </Modal>
   );

@@ -1,4 +1,5 @@
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
+import { pickLocale } from '@/lib/i18n';
 
 export interface MonthOption {
   value: number;
@@ -22,12 +23,12 @@ export function getRoomNameByInvoice(
   const room = rooms.find((r) => r.id === inv.roomId);
   if (!room) return 'Unknown';
   const prop = properties.find((p) => p.id === room.propertyId);
-  return `${room.roomNumber} (${lang === 'en' ? prop?.name : prop?.nameKh})`;
+  return `${room.roomNumber} (${pickLocale(lang, prop?.name, prop?.nameKh)})`;
 }
 
 export function getTenantNameByInvoice(inv: Invoice, tenants: Tenant[], lang: AppLanguage): string {
   const tItem = tenants.find((tIdx) => tIdx.id === inv.tenantId);
-  return tItem ? (lang === 'en' ? tItem.name : tItem.nameKh) : 'Unknown';
+  return tItem ? pickLocale(lang, tItem.name, tItem.nameKh) : 'Unknown';
 }
 
 /** Builds the HTML message body sent to a tenant over Telegram. */

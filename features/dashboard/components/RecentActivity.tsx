@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Clock, User } from 'lucide-react';
 import { ActivityLog, AppLanguage } from '@/lib/types';
+import { pickLocale } from '@/lib/i18n';
 
 export function RecentActivity({
   logs,
@@ -73,9 +74,9 @@ export function RecentActivity({
                       <div className="flex-1 min-w-0 pt-1.5 flex flex-col sm:flex-row justify-between sm:items-center gap-1">
                         <div>
                           <p className="text-sm text-foreground font-medium font-sans">
-                            {lang === 'en' ? log.action : log.actionKh}{' '}
+                            {pickLocale(lang, log.action, log.actionKh)}{' '}
                             <span className="text-xs text-muted-foreground font-normal block sm:inline sm:ml-2">
-                              ({lang === 'en' ? log.details : log.detailsKh})
+                              ({pickLocale(lang, log.details, log.detailsKh)})
                             </span>
                           </p>
                           <div className="flex items-center gap-2 mt-1">
