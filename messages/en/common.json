@@ -40,6 +40,8 @@
     "fix_rate_value": "$1 = 4,100 KHR (៛)",
     "read_only_access": "READ-ONLY ACCESS - ",
     "loading_system": "Loading Cambodia Property System...",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "back_to_home": "Back to dashboard",
+    "statistics": "Statistics"
   }
 }

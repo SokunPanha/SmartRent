@@ -24,9 +24,9 @@ declare global {
 }
 
 const STATUS_LABEL: Record<Invoice['status'], { en: string; kh: string; className: string }> = {
-  paid: { en: 'Paid', kh: 'បានទូទាត់', className: 'text-chart-2 bg-chart-2/10 border-chart-2/20' },
+  paid: { en: 'Paid', kh: 'បានទូទាត់', className: 'text-secondary bg-secondary/10 border-secondary/20' },
   unpaid: { en: 'Unpaid', kh: 'មិនទាន់ទូទាត់', className: 'text-destructive bg-destructive/10 border-destructive/20' },
-  partial: { en: 'Partial', kh: 'ទូទាត់ខ្លះ', className: 'text-primary bg-primary/10 border-primary/20' },
+  partial: { en: 'Partial', kh: 'ទូទាត់ខ្លះ', className: 'text-primary-foreground bg-primary border-primary' },
   overdue: { en: 'Overdue', kh: 'ហួសកំណត់', className: 'text-destructive bg-destructive/10 border-destructive/20' },
 };
 
@@ -202,7 +202,7 @@ export default function TelegramPortalPage() {
                       <p className="text-[11px] text-muted-foreground">
                         {lang === 'en' ? 'Due' : 'ថ្ងៃកំណត់'}: {inv.dueDate}
                       </p>
-                      <p className="font-mono text-lg font-bold text-primary">${inv.totalAmountUSD.toFixed(2)}</p>
+                      <p className="font-mono text-lg font-bold text-foreground">${inv.totalAmountUSD.toFixed(2)}</p>
                       {inv.amountPaidUSD > 0 && inv.status !== 'paid' && (
                         <p className="text-[10px] text-muted-foreground font-mono">
                           {lang === 'en' ? 'Paid so far' : 'បានទូទាត់'}: ${inv.amountPaidUSD.toFixed(2)}

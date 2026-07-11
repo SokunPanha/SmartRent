@@ -1,22 +1,48 @@
 'use client';
 
-import { Languages } from 'lucide-react';
+import { ArrowLeft, Languages } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { useRent } from '@/store/rent-store';
 import { ThemeToggle } from './ThemeToggle';
+import { UserMenu } from './UserMenu';
+
+const HOME_PATH = '/dashboard';
 
 export function AppHeader() {
   const { lang, handleLangToggle } = useRent();
   const t = useTranslations('Common');
+  const pathname = usePathname();
+  const router = useRouter();
+  const isHome = pathname === HOME_PATH;
 
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-card px-4 shadow-sm print:hidden">
       <div className="flex min-w-0 items-center gap-2">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-1 h-4 shrink-0" />
+        {/* Desktop keeps the persistent sidebar + its toggle. */}
+        <SidebarTrigger className="-ml-1 hidden md:inline-flex" />
+        <Separator orientation="vertical" className="mr-1 hidden h-4 shrink-0 md:block" />
+
+        {/* Mobile has no drawer: the dashboard grid is the only nav surface,
+            so every other page gets a back-to-home button instead. */}
+        {!isHome && (
+          <>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="-ml-1 md:hidden"
+              onClick={() => router.push(HOME_PATH)}
+              aria-label={t('back_to_home')}
+            >
+              <ArrowLeft />
+            </Button>
+            <Separator orientation="vertical" className="mr-1 h-4 shrink-0 md:hidden" />
+          </>
+        )}
+
         <h2 className="truncate font-sans text-sm font-extrabold uppercase tracking-tight">
           {t('property_management')}
         </h2>
@@ -42,6 +68,7 @@ export function AppHeader() {
         </Button>
 
         <ThemeToggle />
+        <UserMenu />
       </div>
     </header>
   );

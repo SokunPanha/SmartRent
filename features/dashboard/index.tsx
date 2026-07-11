@@ -19,12 +19,8 @@ import {
 } from './dashboard.helpers';
 import { DashboardHeader } from './components/DashboardHeader';
 import { KpiCards } from './components/KpiCards';
-import { AlertPills } from './components/AlertPills';
-import { RevenueChart } from './components/RevenueChart';
-import { OccupancyChart } from './components/OccupancyChart';
-import { CollectionGauge } from './components/CollectionGauge';
-import { UtilityChart } from './components/UtilityChart';
-import { RecentActivity } from './components/RecentActivity';
+import { QuickActionsGrid } from './components/QuickActionsGrid';
+import { DashboardDetails } from './components/DashboardDetails';
 
 interface DashboardProps {
   properties: Property[];
@@ -68,25 +64,24 @@ export default function Dashboard({
     <div className="space-y-6 text-foreground" id="dashboard-tab-content">
       <DashboardHeader onNavigate={onNavigate} />
       <KpiCards stats={stats} onNavigate={onNavigate} />
-      <AlertPills stats={stats} lang={lang} onNavigate={onNavigate} />
+      <QuickActionsGrid onNavigate={onNavigate} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" id="dashboard-charts-grid">
-        <RevenueChart data={revenue} />
-        <OccupancyChart
+      {/* Mobile home stays to headline numbers only; the same detail view
+          is reachable there via the "Statistics" grid tile at /statistics. */}
+      <div className="hidden md:block">
+        <DashboardDetails
           stats={stats}
+          revenue={revenue}
           occupiedPct={occupiedPct}
           vacantPct={vacantPct}
           maintPct={maintPct}
+          collectionPercent={collectionPercent}
+          totalCollected={totalCollected}
+          logs={logs}
+          lang={lang}
+          onNavigate={onNavigate}
         />
-        <CollectionGauge
-          percent={collectionPercent}
-          collected={totalCollected}
-          outstanding={stats.totalOutstanding}
-        />
-        <UtilityChart />
       </div>
-
-      <RecentActivity logs={logs} lang={lang} />
     </div>
   );
 }

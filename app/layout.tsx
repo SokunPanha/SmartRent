@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Fraunces, IBM_Plex_Mono, Instrument_Sans } from 'next/font/google';
+import { Baloo_2, IBM_Plex_Mono, Instrument_Sans } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { SessionProvider } from 'next-auth/react';
@@ -13,7 +13,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { ConfirmDialogProvider } from '@/components/shared/ConfirmDialogProvider';
 
 const instrumentSans = Instrument_Sans({ subsets: ['latin'], variable: '--font-sans' });
-const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-heading' });
+const baloo2 = Baloo_2({ subsets: ['latin'], variable: '--font-heading' });
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
@@ -36,7 +36,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={cn('font-sans', instrumentSans.variable, fraunces.variable, ibmPlexMono.variable)}
+      className={cn('font-sans', instrumentSans.variable, baloo2.variable, ibmPlexMono.variable)}
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>

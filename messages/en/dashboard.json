@@ -44,6 +44,7 @@
     "amount_received": "Amount Received",
     "utility_consumption_desc": "Accumulated electricity and water expenses (in USD value)",
     "electricity": "Electricity",
-    "water": "Water"
+    "water": "Water",
+    "statistics_title": "Statistics & Reports"
   }
 }

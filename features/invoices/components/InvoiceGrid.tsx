@@ -175,7 +175,7 @@ export function InvoiceGrid({
                 {inv.status !== 'paid' && canPay ? (
                   <button
                     onClick={() => onPay(inv)}
-                    className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-chart-2 hover:bg-chart-2/90 text-white transition flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-chart-2 hover:bg-chart-2/90 text-secondary-foreground transition flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <Coins className="w-3.5 h-3.5" />
                     {t('pay')}

@@ -44,6 +44,7 @@
     "amount_received": "ប្រាក់ទទួលបាន",
     "utility_consumption_desc": "ការចំណាយអគ្គិសនី និងទឹកសរុប (គិតជាតម្លៃដុល្លារ)",
     "electricity": "អគ្គិសនី",
-    "water": "ទឹកស្អាត"
+    "water": "ទឹកស្អាត",
+    "statistics_title": "ស្ថិតិ និងរបាយការណ៍"
   }
 }

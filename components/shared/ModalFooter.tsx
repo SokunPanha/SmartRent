@@ -30,7 +30,7 @@ export function ModalFooter({
         className={cn(
           'flex-1 py-2 rounded-lg text-sm transition font-semibold cursor-pointer font-sans disabled:opacity-40 disabled:cursor-not-allowed',
           tone === 'success'
-            ? 'bg-chart-2 hover:bg-chart-2/90 text-white'
+            ? 'bg-chart-2 hover:bg-chart-2/90 text-secondary-foreground'
             : 'bg-primary hover:bg-primary/90 text-primary-foreground'
         )}
       >
