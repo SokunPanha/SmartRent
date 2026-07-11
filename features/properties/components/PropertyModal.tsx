@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
@@ -7,17 +8,17 @@ type Controller = ReturnType<typeof usePropertiesController>;
 
 export function PropertyModal({
   c,
-  t,
   lang,
 }: {
   c: Controller;
-  t: any;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('Properties');
+  const tCommon = useTranslations('Common');
   return (
     <Modal open={c.showPropModal} onClose={c.closePropModal} size="md">
       <div className="flex justify-between items-center p-4 border-b border-border">
-        <h3 className="font-bold text-foreground text-base font-sans">{t.add_property}</h3>
+        <h3 className="font-bold text-foreground text-base font-sans">{t('add_property')}</h3>
         <button
           onClick={c.closePropModal}
           className="p-1 hover:bg-muted rounded-lg text-muted-foreground hover:text-muted-foreground cursor-pointer"
@@ -58,7 +59,7 @@ export function PropertyModal({
 
           <div>
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              {t.property_type} *
+              {t('property_type')} *
             </label>
             <select
               value={c.propType}
@@ -107,13 +108,13 @@ export function PropertyModal({
             onClick={c.closePropModal}
             className="flex-1 py-2 rounded-lg text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
           >
-            {t.cancel}
+            {tCommon('cancel')}
           </button>
           <button
             type="submit"
             className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans"
           >
-            {t.save}
+            {tCommon('save')}
           </button>
         </div>
       </form>

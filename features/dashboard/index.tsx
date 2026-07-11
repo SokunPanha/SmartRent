@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Property,
   Room,
@@ -34,7 +35,6 @@ interface DashboardProps {
   invoices: Invoice[];
   logs: ActivityLog[];
   lang: AppLanguage;
-  t: any;
   onNavigate: (tab: string) => void;
 }
 
@@ -49,14 +49,14 @@ export default function Dashboard({
   invoices,
   logs,
   lang,
-  t,
   onNavigate,
 }: DashboardProps) {
+  const t = useTranslations('Dashboard');
   const stats = useMemo(
     () => getDashboardStats(properties, rooms, contracts, invoices),
     [properties, rooms, contracts, invoices]
   );
-  const revenue = useMemo(() => getMonthlyRevenue(invoices, lang), [invoices, lang]);
+  const revenue = useMemo(() => getMonthlyRevenue(invoices, t), [invoices, t]);
   const { occupiedPct, vacantPct, maintPct } = getOccupancyBreakdown(stats);
 
   const totalBilled = invoices.reduce((sum, inv) => sum + inv.totalAmountUSD, 0);
@@ -66,31 +66,27 @@ export default function Dashboard({
 
   return (
     <div className="space-y-6 text-foreground" id="dashboard-tab-content">
-      <DashboardHeader t={t} lang={lang} onNavigate={onNavigate} />
-      <KpiCards stats={stats} t={t} lang={lang} onNavigate={onNavigate} />
-      <AlertPills stats={stats} t={t} lang={lang} onNavigate={onNavigate} />
+      <DashboardHeader onNavigate={onNavigate} />
+      <KpiCards stats={stats} onNavigate={onNavigate} />
+      <AlertPills stats={stats} lang={lang} onNavigate={onNavigate} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" id="dashboard-charts-grid">
-        <RevenueChart data={revenue} t={t} lang={lang} />
+        <RevenueChart data={revenue} />
         <OccupancyChart
           stats={stats}
           occupiedPct={occupiedPct}
           vacantPct={vacantPct}
           maintPct={maintPct}
-          t={t}
-          lang={lang}
         />
         <CollectionGauge
           percent={collectionPercent}
           collected={totalCollected}
           outstanding={stats.totalOutstanding}
-          t={t}
-          lang={lang}
         />
-        <UtilityChart t={t} lang={lang} />
+        <UtilityChart />
       </div>
 
-      <RecentActivity logs={logs} t={t} lang={lang} />
+      <RecentActivity logs={logs} lang={lang} />
     </div>
   );
 }

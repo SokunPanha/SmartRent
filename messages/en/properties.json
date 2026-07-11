@@ -1,0 +1,30 @@
+{
+  "Properties": {
+    "add_property": "Add Property",
+    "add_room": "Add Room",
+    "property_list": "Property Locations",
+    "room_count": "rooms",
+    "property_type": "Type",
+    "address": "Location Address",
+    "rooms_for": "Rooms inside",
+    "floor": "Floor",
+    "rent_rate": "Base Rent",
+    "vacant": "Vacant",
+    "occupied": "Occupied",
+    "maintenance": "Under Maintenance",
+    "room_number": "Room Number",
+    "cannot_modify_persona": "{role} persona cannot add, edit or delete properties and rooms. Switch to Owner or Manager for full CRUD operations.",
+    "add": "Add",
+    "type_borey": "Borey/Villa",
+    "type_guesthouse": "Guesthouse",
+    "type_apartment": "Apartment",
+    "delete_property_title": "Delete Property Location",
+    "occupied_count_label": "Occupied",
+    "rooms_configured": "rooms configured at this location",
+    "no_rooms_listed": "No rooms listed for this property.",
+    "no_property_selected": "Please create at least one Property location to inspect or configuration rooms.",
+    "edit_room": "Edit Room",
+    "duplicate_room_number": "Room number already exists in this property.",
+    "cannot_delete_property_with_rooms": "Cannot delete property! Please delete all {count} rooms inside it first."
+  }
+}

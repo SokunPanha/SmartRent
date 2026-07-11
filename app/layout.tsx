@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Fraunces, IBM_Plex_Mono, Instrument_Sans } from 'next/font/google';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import { SessionProvider } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -23,35 +25,40 @@ export const metadata: Metadata = {
   description: 'Cambodia rental invoicing and property management system',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html
-      lang="en"
+      lang={locale}
       className={cn('font-sans', instrumentSans.variable, fraunces.variable, ibmPlexMono.variable)}
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SessionProvider>
-            <QueryProvider>
-              <RentProvider>
-                <ConfirmDialogProvider>
-                  <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
-                </ConfirmDialogProvider>
-                <Toaster position="bottom-right" />
-              </RentProvider>
-            </QueryProvider>
-          </SessionProvider>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SessionProvider>
+              <QueryProvider>
+                <RentProvider>
+                  <ConfirmDialogProvider>
+                    <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+                  </ConfirmDialogProvider>
+                  <Toaster position="bottom-right" />
+                </RentProvider>
+              </QueryProvider>
+            </SessionProvider>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

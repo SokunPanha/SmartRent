@@ -1,25 +1,16 @@
-import { AppLanguage } from '@/lib/types';
+import { useTranslations } from 'next-intl';
 import { MonthlyRevenuePoint } from '../dashboard.helpers';
 
-export function RevenueChart({
-  data,
-  t,
-  lang,
-}: {
-  data: MonthlyRevenuePoint[];
-  t: any;
-  lang: AppLanguage;
-}) {
+export function RevenueChart({ data }: { data: MonthlyRevenuePoint[] }) {
+  const t = useTranslations('Dashboard');
   return (
     <div className="bg-card border border-border p-6 rounded-3xl flex flex-col shadow-lg shadow-black/20">
       <div className="mb-4">
         <h3 className="text-sm font-bold text-foreground tracking-wider uppercase font-mono">
-          {t.revenue_trend}
+          {t('revenue_trend')}
         </h3>
         <p className="text-xs text-muted-foreground mt-0.5">
-          {lang === 'en'
-            ? 'Comparing total invoiced billings vs received collections'
-            : 'ប្រៀបធៀបវិក្កយបត្រសរុប និងប្រាក់ប្រមូលបាន'}
+          {t('revenue_trend_desc')}
         </p>
       </div>
 
@@ -108,11 +99,11 @@ export function RevenueChart({
       <div className="flex justify-center gap-6 mt-3 text-xs">
         <div className="flex items-center gap-1.5 text-muted-foreground font-mono">
           <span className="w-3.5 h-3.5 bg-chart-1/40 border border-chart-1 rounded-sm block"></span>
-          {lang === 'en' ? 'Amount Billed' : 'វិក្កយបត្រសរុប'}
+          {t('amount_billed')}
         </div>
         <div className="flex items-center gap-1.5 text-muted-foreground font-mono">
           <span className="w-3.5 h-3.5 bg-chart-2 rounded-sm block"></span>
-          {lang === 'en' ? 'Amount Received' : 'ប្រាក់ទទួលបាន'}
+          {t('amount_received')}
         </div>
       </div>
     </div>

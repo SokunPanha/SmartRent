@@ -1,17 +1,16 @@
+import { useTranslations } from 'next-intl';
 import { Lightbulb, Droplet } from 'lucide-react';
-import { AppLanguage } from '@/lib/types';
 
-export function UtilityChart({ t, lang }: { t: any; lang: AppLanguage }) {
+export function UtilityChart() {
+  const t = useTranslations('Dashboard');
   return (
     <div className="bg-card border border-border p-6 rounded-3xl flex flex-col shadow-lg shadow-black/20">
       <div className="mb-4">
         <h3 className="text-sm font-bold text-foreground tracking-wider uppercase font-mono">
-          {t.utility_consumption}
+          {t('utility_consumption')}
         </h3>
         <p className="text-xs text-muted-foreground mt-0.5">
-          {lang === 'en'
-            ? 'Accumulated electricity and water expenses (in USD value)'
-            : 'ការចំណាយអគ្គិសនី និងទឹកសរុប (គិតជាតម្លៃដុល្លារ)'}
+          {t('utility_consumption_desc')}
         </p>
       </div>
 
@@ -42,13 +41,13 @@ export function UtilityChart({ t, lang }: { t: any; lang: AppLanguage }) {
           <circle cx="300" cy="108" r="3.5" fill="var(--chart-3)" stroke="var(--card)" strokeWidth="1" />
 
           <text x="60" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--muted-foreground)">
-            {lang === 'en' ? 'April' : 'មេសា'}
+            {t('month_4')}
           </text>
           <text x="180" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--muted-foreground)">
-            {lang === 'en' ? 'May' : 'ឧសភា'}
+            {t('month_5')}
           </text>
           <text x="300" y="145" textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--muted-foreground)">
-            {lang === 'en' ? 'June' : 'មិថុនា'}
+            {t('month_6')}
           </text>
         </svg>
       </div>
@@ -58,14 +57,14 @@ export function UtilityChart({ t, lang }: { t: any; lang: AppLanguage }) {
           <span className="w-3 h-3 bg-chart-1 rounded-full block"></span>
           <span className="flex items-center gap-1">
             <Lightbulb className="w-3 h-3 text-chart-1" />
-            {lang === 'en' ? 'Electricity' : 'អគ្គិសនី'}
+            {t('electricity')}
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-muted-foreground font-mono">
           <span className="w-3 h-3 bg-chart-3 rounded-full block"></span>
           <span className="flex items-center gap-1">
             <Droplet className="w-3 h-3 text-chart-3" />
-            {lang === 'en' ? 'Water' : 'ទឹកស្អាត'}
+            {t('water')}
           </span>
         </div>
       </div>

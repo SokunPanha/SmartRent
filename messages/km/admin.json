@@ -1,0 +1,30 @@
+{
+  "Admin": {
+    "loading": "កំពុងផ្ទុក…",
+    "redirecting": "កំពុងបញ្ជូនត្រឡប់…",
+    "user_management": "ការគ្រប់គ្រងអ្នកប្រើ",
+    "user_management_desc": "បង្កើតគណនី និងកំណត់តួនាទីឱ្យអ្នកប្រើនីមួយៗ។",
+    "add_user": "បន្ថែមអ្នកប្រើ",
+    "loading_users": "កំពុងផ្ទុក…",
+    "roles_permissions": "តួនាទី និងសិទ្ធិ",
+    "roles_permissions_desc": "បង្កើតតួនាទី និងកំណត់សិទ្ធិសម្រាប់នីមួយៗ។",
+    "new_role_placeholder": "ឈ្មោះតួនាទីថ្មី",
+    "add_role": "បន្ថែម",
+    "loading_roles": "កំពុងផ្ទុក…",
+    "save": "រក្សាទុក",
+    "delete_role": "លុបតួនាទី",
+    "delete_role_confirm_title": "លុបតួនាទី \"{name}\"?",
+    "delete_user_confirm_title": "លុបអ្នកប្រើ \"{email}\"?",
+    "delete_confirm_desc": "This cannot be undone.",
+    "delete": "Delete",
+    "create_user_title": "បង្កើតអ្នកប្រើ",
+    "create_user": "បង្កើត",
+    "select_role": "— ជ្រើសរើសតួនាទី —",
+    "cancel": "បោះបង់",
+    "table_user": "អ្នកប្រើ",
+    "table_email": "Email",
+    "table_role": "តួនាទី",
+    "table_actions": "សកម្មភាព",
+    "no_users_found": "មិនមានអ្នកប្រើប្រាស់ឡើយ។"
+  }
+}

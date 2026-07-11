@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { Property, Room, AppLanguage } from '@/lib/types';
 import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
 
@@ -13,7 +14,6 @@ interface Args {
   rooms: Room[];
   canModify: boolean;
   lang: AppLanguage;
-  t: any;
   onAddProperty: (prop: Omit<Property, 'totalRooms'>) => void;
   onAddRoom: (room: Room) => void;
   onUpdateRoom: (room: Room) => void;
@@ -28,7 +28,6 @@ export function usePropertiesController({
   rooms,
   canModify,
   lang,
-  t,
   onAddProperty,
   onAddRoom,
   onUpdateRoom,
@@ -36,6 +35,8 @@ export function usePropertiesController({
   onDeleteProperty,
   logAction,
 }: Args) {
+  const t = useTranslations('Properties');
+  const tCommon = useTranslations('Common');
   const confirm = useConfirm();
   const [selectedPropId, setSelectedPropId] = useState<string>(properties[0]?.id || '');
 
@@ -78,8 +79,8 @@ export function usePropertiesController({
 
   function handleCreateProp(e: React.FormEvent) {
     e.preventDefault();
-    if (!canModify) return toast.error(t.insufficient_permissions);
-    if (!propName || !propNameKh || !propAddress || !propAddressKh) return toast.error(t.please_fill);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
+    if (!propName || !propNameKh || !propAddress || !propAddressKh) return toast.error(tCommon('please_fill'));
 
     const newId = 'prop-' + Date.now();
     onAddProperty({
@@ -106,8 +107,8 @@ export function usePropertiesController({
 
   function handleCreateOrUpdateRoom(e: React.FormEvent) {
     e.preventDefault();
-    if (!canModify) return toast.error(t.insufficient_permissions);
-    if (!roomNumber || !roomFloor || !roomRent) return toast.error(t.please_fill);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
+    if (!roomNumber || !roomFloor || !roomRent) return toast.error(tCommon('please_fill'));
 
     const isDuplicate = rooms.some(
       (r) =>
@@ -116,11 +117,7 @@ export function usePropertiesController({
         r.id !== editingRoomId
     );
     if (isDuplicate) {
-      return toast.error(
-        lang === 'en'
-          ? 'Room number already exists in this property.'
-          : 'បន្ទប់លេខនេះមានរួចមកហើយនៅក្នុងទីតាំងនេះ។'
-      );
+      return toast.error(t('duplicate_room_number'));
     }
 
     if (editingRoomId) {
@@ -164,7 +161,7 @@ export function usePropertiesController({
   }
 
   function handleEditRoomClick(room: Room) {
-    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
     setEditingRoomId(room.id);
     setRoomNumber(room.roomNumber);
     setRoomFloor(room.floor);
@@ -174,10 +171,10 @@ export function usePropertiesController({
   }
 
   async function handleDeleteRoomClick(roomId: string, rNumber: string) {
-    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
     const ok = await confirm({
-      title: t.confirm_delete,
-      confirmLabel: t.delete ?? 'Delete',
+      title: tCommon('confirm_delete'),
+      confirmLabel: tCommon('delete'),
       variant: 'destructive',
     });
     if (ok) {
@@ -192,18 +189,14 @@ export function usePropertiesController({
   }
 
   async function handleDeletePropClick(pId: string, pName: string, pNameKh: string) {
-    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
     const count = rooms.filter((r) => r.propertyId === pId).length;
     if (count > 0) {
-      return toast.error(
-        lang === 'en'
-          ? `Cannot delete property! Please delete all ${count} rooms inside it first.`
-          : `មិនអាចលុបទីតាំងបានទេ! សូមលុបបន្ទប់ទាំង ${count} នៅក្នុងនោះជាមុនសិន។`
-      );
+      return toast.error(t('cannot_delete_property_with_rooms', { count }));
     }
     const ok = await confirm({
-      title: t.confirm_delete,
-      confirmLabel: t.delete ?? 'Delete',
+      title: tCommon('confirm_delete'),
+      confirmLabel: tCommon('delete'),
       variant: 'destructive',
     });
     if (ok) {

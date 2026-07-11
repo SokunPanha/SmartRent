@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 
 /**
  * Login logic, decoupled from presentation. Owns the form fields, the
@@ -13,6 +14,7 @@ export function useLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const t = useTranslations('Auth');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +31,7 @@ export function useLogin() {
     setLoading(false);
 
     if (res?.error) {
-      setError('Invalid email or password.');
+      setError(t('invalid_credentials'));
       return;
     }
     router.push(callbackUrl);

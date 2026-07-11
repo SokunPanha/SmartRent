@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { LogOut, UserCircle, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import {
   Sidebar,
@@ -25,12 +26,13 @@ import { NAV_ITEMS } from './nav-config';
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { t, lang, activeRole, isSuperAdmin, userName, userEmail } = useRent();
+  const { activeRole, isSuperAdmin, userName, userEmail } = useRent();
   const { setOpenMobile } = useSidebar();
   const can = useCan();
+  const t = useTranslations('Common');
 
   const canAdmin = isSuperAdmin || can('admin.access');
-  const roleLabel = activeRole || (lang === 'en' ? 'No role' : 'គ្មានតួនាទី');
+  const roleLabel = activeRole || t('no_role');
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -41,10 +43,10 @@ export function AppSidebar() {
           </div>
           <div className="min-w-0">
             <h1 className="truncate font-sans text-sm font-extrabold uppercase tracking-tight">
-              {lang === 'en' ? 'Rental Invoice' : 'ប្រព័ន្ធគ្រប់គ្រងការជួល'}
+              {t('rental_invoice_title')}
             </h1>
             <p className="mt-0.5 block text-[9px] font-bold text-primary">
-              Cambodia Real-Estate ($ / ៛)
+              {t('real_estate_tagline')}
             </p>
           </div>
         </div>
@@ -53,7 +55,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>
-            {lang === 'en' ? 'Navigation' : 'ម៉ឺនុយ'}
+            {t('navigation')}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -65,7 +67,7 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       asChild
                       isActive={isActive}
-                      tooltip={t[item.labelKey]}
+                      tooltip={t(item.labelKey)}
                     >
                       <Link
                         href={item.href}
@@ -74,7 +76,7 @@ export function AppSidebar() {
                         <Icon
                           className={cn(isActive ? 'text-primary' : '')}
                         />
-                        <span className="font-sans">{t[item.labelKey]}</span>
+                        <span className="font-sans">{t(item.labelKey)}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -87,7 +89,7 @@ export function AppSidebar() {
         {canAdmin && (
           <SidebarGroup>
             <SidebarGroupLabel>
-              {lang === 'en' ? 'Administration' : 'រដ្ឋបាល'}
+              {t('administration')}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -95,13 +97,13 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     isActive={pathname === '/admin/users'}
-                    tooltip={lang === 'en' ? 'Users & Permissions' : 'អ្នកប្រើ និងសិទ្ធិ'}
+                    tooltip={t('users_permissions')}
                   >
                     <Link href="/admin/users" onClick={() => setOpenMobile(false)}>
                       <ShieldCheck
                         className={cn(pathname === '/admin/users' ? 'text-primary' : '')}
                       />
-                      <span className="font-sans">{lang === 'en' ? 'Users' : 'អ្នកប្រើ'}</span>
+                      <span className="font-sans">{t('users')}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -109,14 +111,14 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     isActive={pathname === '/admin/roles'}
-                    tooltip={lang === 'en' ? 'Roles & Permissions' : 'តួនាទី និងសិទ្ធិ'}
+                    tooltip={t('roles_permissions')}
                   >
                     <Link href="/admin/roles" onClick={() => setOpenMobile(false)}>
                       <SlidersHorizontal
                         className={cn(pathname === '/admin/roles' ? 'text-primary' : '')}
                       />
                       <span className="font-sans">
-                        {lang === 'en' ? 'Roles & Permissions' : 'តួនាទី និងសិទ្ធិ'}
+                        {t('roles_permissions')}
                       </span>
                     </Link>
                   </SidebarMenuButton>
@@ -150,11 +152,11 @@ export function AppSidebar() {
             onClick={() => signOut({ callbackUrl: '/login' })}
           >
             <LogOut className="h-3.5 w-3.5" />
-            {lang === 'en' ? 'Sign out' : 'ចាកចេញ'}
+            {t('sign_out')}
           </Button>
 
           <div className="font-mono text-[8px] italic leading-tight text-muted-foreground">
-            * Access is determined by your assigned role.
+            {t('access_note')}
           </div>
         </div>
       </SidebarFooter>

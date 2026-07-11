@@ -1,4 +1,4 @@
-import { AppLanguage } from '@/lib/types';
+import { useTranslations } from 'next-intl';
 import { DashboardStats } from '../dashboard.helpers';
 
 export function OccupancyChart({
@@ -6,26 +6,21 @@ export function OccupancyChart({
   occupiedPct,
   vacantPct,
   maintPct,
-  t,
-  lang,
 }: {
   stats: DashboardStats;
   occupiedPct: number;
   vacantPct: number;
   maintPct: number;
-  t: any;
-  lang: AppLanguage;
 }) {
+  const t = useTranslations('Dashboard');
   return (
     <div className="bg-card border border-border p-6 rounded-3xl flex flex-col shadow-lg shadow-black/20">
       <div className="mb-4">
         <h3 className="text-sm font-bold text-foreground tracking-wider uppercase font-mono">
-          {t.occupancy_rate}
+          {t('occupancy_rate')}
         </h3>
         <p className="text-xs text-muted-foreground mt-0.5">
-          {lang === 'en'
-            ? 'Distribution of room statuses across properties'
-            : 'ការបែងចែកស្ថានភាពបន្ទប់ជួលសរុប'}
+          {t('occupancy_rate_desc')}
         </p>
       </div>
 
@@ -79,7 +74,7 @@ export function OccupancyChart({
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-bold text-foreground font-sans">{occupiedPct}%</span>
             <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-semibold font-mono">
-              {lang === 'en' ? 'Occupied' : 'ជួលហើយ'}
+              {t('occupied_donut_label')}
             </span>
           </div>
         </div>
@@ -89,10 +84,10 @@ export function OccupancyChart({
             <span className="w-3 h-3 rounded-full bg-chart-2 block"></span>
             <div>
               <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
-                {t.occupied}
+                {t('occupied')}
               </p>
               <p className="text-sm font-semibold text-foreground font-sans">
-                {stats.occupiedRooms} {t.room_count}{' '}
+                {stats.occupiedRooms} {t('room_count')}{' '}
                 <span className="text-xs text-muted-foreground">({occupiedPct}%)</span>
               </p>
             </div>
@@ -102,10 +97,10 @@ export function OccupancyChart({
             <span className="w-3 h-3 rounded-full bg-chart-3 block"></span>
             <div>
               <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
-                {t.vacant}
+                {t('vacant')}
               </p>
               <p className="text-sm font-semibold text-foreground font-sans">
-                {stats.vacantRooms} {t.room_count}{' '}
+                {stats.vacantRooms} {t('room_count')}{' '}
                 <span className="text-xs text-muted-foreground">({vacantPct}%)</span>
               </p>
             </div>
@@ -115,10 +110,10 @@ export function OccupancyChart({
             <span className="w-3 h-3 rounded-full bg-chart-1 block"></span>
             <div>
               <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
-                {lang === 'en' ? 'Maintenance' : 'កំពុងជួសជុល'}
+                {t('maintenance')}
               </p>
               <p className="text-sm font-semibold text-foreground font-sans">
-                {stats.maintenanceRooms} {t.room_count}{' '}
+                {stats.maintenanceRooms} {t('room_count')}{' '}
                 <span className="text-xs text-muted-foreground">({maintPct}%)</span>
               </p>
             </div>

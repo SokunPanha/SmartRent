@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useRent } from '@/store/rent-store';
 import { AppSidebar } from './AppSidebar';
@@ -11,13 +12,14 @@ import { AppHeader } from './AppHeader';
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { mounted } = useRent();
+  const t = useTranslations('Common');
 
   if (!mounted) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background font-sans text-foreground">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         <p className="mt-4 animate-pulse font-mono text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          Loading Cambodia Property System...
+          {t('loading_system')}
         </p>
       </div>
     );

@@ -1,0 +1,25 @@
+{
+  "Reports": {
+    "subtitle": "សេចក្តីថ្លែងការណ៍លម្អិតអំពីប្រាក់ចំណូល និងការវិភាគការជួល",
+    "property_label": "លម្អិតទីតាំង៖",
+    "all_locations": "គ្រប់ទីតាំងទាំងអស់",
+    "print_statement": "បោះពុម្ពបញ្ជី",
+    "monthly_statement_title": "របាយការណ៍ហិរញ្ញវត្ថុលម្អិតប្រចាំខែ",
+    "billed_cycle": "លំដាប់ខែ",
+    "rent_revenue": "ចំណូលឈ្នួលផ្ទះ ($)",
+    "aggregate_billed": "សរុបវិក្កយបត្រ ($)",
+    "deposited_receipts": "ទឹកប្រាក់ទទួលបាន ($)",
+    "room_income_title": "ការវិភាគចំណូលតាមបន្ទប់នីមួយៗ",
+    "room_number": "បន្ទប់លេខ",
+    "location_property": "ទីតាំងជួល",
+    "deposited_total": "ប្រាក់ប្រមូលបានសរុប",
+    "outstanding": "ប្រាក់នៅជំពាក់",
+    "no_room_history": "មិនទាន់មានប្រវត្តិទិន្នន័យចំណូលតាមបន្ទប់ទេ។",
+    "gross_revenue_invoiced": "ថ្លៃឈ្នួលវិក្កយបត្រសរុប",
+    "total_cash_receipts": "ការប្រមូលប្រាក់សុទ្ធរួចរាល់",
+    "outstanding_ar": "គណនីត្រូវប្រមូលប្រាក់ ( Receivable)",
+    "month_april": "មេសា",
+    "month_may": "ឧសភា",
+    "month_june": "មិថុនា"
+  }
+}

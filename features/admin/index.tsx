@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { ShieldCheck, UserPlus } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
 import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
@@ -14,7 +15,8 @@ import { UserFormModal } from './components/UserFormModal';
 
 /** Admin screen: manage user accounts and assign them to roles. */
 export default function UsersAdmin() {
-  const { lang, userEmail, mounted, sessionLoading, isSuperAdmin } = useRent();
+  const t = useTranslations('Admin');
+  const { userEmail, mounted, sessionLoading, isSuperAdmin } = useRent();
   const can = useCan();
   const router = useRouter();
   const confirm = useConfirm();
@@ -41,18 +43,16 @@ export default function UsersAdmin() {
 
   async function handleDelete(user: AdminUser) {
     const ok = await confirm({
-      title: `Delete user "${user.email}"?`,
-      description: 'This cannot be undone.',
-      confirmLabel: 'Delete',
+      title: t('delete_user_confirm_title', { email: user.email }),
+      description: t('delete_confirm_desc'),
+      confirmLabel: t('delete'),
       variant: 'destructive',
     });
     if (ok) remove.mutate(user.id);
   }
 
   if (!authReady || !allowed) {
-    const label = !authReady
-      ? lang === 'en' ? 'Loading…' : 'កំពុងផ្ទុក…'
-      : lang === 'en' ? 'Redirecting…' : 'កំពុងបញ្ជូនត្រឡប់…';
+    const label = !authReady ? t('loading') : t('redirecting');
     return (
       <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
         {label}
@@ -66,12 +66,10 @@ export default function UsersAdmin() {
         <div>
           <h2 className="text-base font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
             <ShieldCheck className="w-5 h-5 text-primary" />
-            {lang === 'en' ? 'User Management' : 'ការគ្រប់គ្រងអ្នកប្រើ'}
+            {t('user_management')}
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5 font-sans">
-            {lang === 'en'
-              ? 'Create accounts and assign each user to a role.'
-              : 'បង្កើតគណនី និងកំណត់តួនាទីឱ្យអ្នកប្រើនីមួយៗ។'}
+            {t('user_management_desc')}
           </p>
         </div>
         <button
@@ -80,13 +78,13 @@ export default function UsersAdmin() {
           className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer self-stretch sm:self-auto justify-center disabled:opacity-50"
         >
           <UserPlus className="w-4 h-4" />
-          {lang === 'en' ? 'Add User' : 'បន្ថែមអ្នកប្រើ'}
+          {t('add_user')}
         </button>
       </div>
 
       {isLoading ? (
         <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
-          {lang === 'en' ? 'Loading users…' : 'កំពុងផ្ទុក…'}
+          {t('loading_users')}
         </div>
       ) : (
         <UserTable
@@ -96,7 +94,6 @@ export default function UsersAdmin() {
           busy={busy}
           onChangeRole={handleChangeRole}
           onDelete={handleDelete}
-          lang={lang}
         />
       )}
 
@@ -106,7 +103,6 @@ export default function UsersAdmin() {
         busy={create.isPending}
         onClose={() => setShowCreate(false)}
         onSubmit={(data) => create.mutate(data, { onSuccess: () => setShowCreate(false) })}
-        lang={lang}
       />
     </div>
   );

@@ -8,7 +8,7 @@ import { useContracts } from '@/features/tenants/tenants.queries';
 import { useInvoices } from '@/features/invoices/invoices.queries';
 
 export default function ReportsPage() {
-  const { lang, t } = useRent();
+  const { lang } = useRent();
   const { data: invoices = [] } = useInvoices();
   const { data: rooms = [] } = useRooms();
   const { data: properties = [] } = useProperties();
@@ -22,7 +22,6 @@ export default function ReportsPage() {
         properties={properties}
         contracts={contracts}
         lang={lang}
-        t={t}
       />
     </PageTransition>
   );

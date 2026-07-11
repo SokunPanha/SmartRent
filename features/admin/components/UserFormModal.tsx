@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
-import { AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
 import { Input } from '@/components/ui/input';
 import { NewUserInput } from '../users.api';
@@ -14,15 +14,14 @@ export function UserFormModal({
   busy,
   onClose,
   onSubmit,
-  lang,
 }: {
   open: boolean;
   roles: Role[];
   busy: boolean;
   onClose: () => void;
   onSubmit: (data: NewUserInput) => void;
-  lang: AppLanguage;
 }) {
+  const t = useTranslations('Admin');
   const [name, setName] = useState('');
   const [nameKh, setNameKh] = useState('');
   const [email, setEmail] = useState('');
@@ -39,7 +38,7 @@ export function UserFormModal({
     <Modal open={open} onClose={onClose} size="sm">
       <div className="flex justify-between items-center p-4 border-b border-border">
         <h3 className="font-bold text-foreground text-base font-sans">
-          {lang === 'en' ? 'Create User' : 'បង្កើតអ្នកប្រើ'}
+          {t('create_user_title')}
         </h3>
         <button
           onClick={onClose}
@@ -102,7 +101,7 @@ export function UserFormModal({
             className="w-full px-3 py-2.5 rounded-lg border border-border text-sm bg-card font-sans focus:border-primary focus:outline-none"
           >
             <option value="" disabled>
-              {lang === 'en' ? '— Select a role —' : '— ជ្រើសរើសតួនាទី —'}
+              {t('select_role')}
             </option>
             {roles.map((r) => (
               <option key={r.id} value={r.id}>
@@ -118,14 +117,14 @@ export function UserFormModal({
             onClick={onClose}
             className="flex-1 py-2 rounded-lg text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
           >
-            {lang === 'en' ? 'Cancel' : 'បោះបង់'}
+            {t('cancel')}
           </button>
           <button
             type="submit"
             disabled={busy || !roleId}
             className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans disabled:opacity-50"
           >
-            {lang === 'en' ? 'Create User' : 'បង្កើត'}
+            {t('create_user')}
           </button>
         </div>
       </form>

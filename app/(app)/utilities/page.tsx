@@ -8,7 +8,7 @@ import { useReadings, useReadingMutations } from '@/features/meter-readings/read
 import { useLogAction } from '@/features/activity/activity.queries';
 
 export default function UtilitiesPage() {
-  const { activeRole, lang, t } = useRent();
+  const { activeRole, lang } = useRent();
   const { data: readings = [] } = useReadings();
   const { data: rooms = [] } = useRooms();
   const { data: properties = [] } = useProperties();
@@ -23,7 +23,6 @@ export default function UtilitiesPage() {
         properties={properties}
         activeRole={activeRole}
         lang={lang}
-        t={t}
         onAddReading={(reading) => readingMut.create.mutate(reading)}
         logAction={logAction}
       />

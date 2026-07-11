@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { ShieldCheck, Plus, Trash2, Save, Loader2, Lock } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
 import { PERMISSION_META, PermissionKey } from '@/lib/permissions';
@@ -12,7 +13,8 @@ import { useRoles, useRoleMutations } from './roles.queries';
 import { Role } from './roles.api';
 
 export default function RolesManager() {
-  const { lang, mounted, sessionLoading, isSuperAdmin } = useRent();
+  const t = useTranslations('Admin');
+  const { mounted, sessionLoading, isSuperAdmin } = useRent();
   const can = useCan();
   const router = useRouter();
   const confirm = useConfirm();
@@ -31,9 +33,7 @@ export default function RolesManager() {
   const [newRole, setNewRole] = useState('');
 
   if (!authReady || !allowed) {
-    const label = !authReady
-      ? lang === 'en' ? 'Loading…' : 'កំពុងផ្ទុក…'
-      : lang === 'en' ? 'Redirecting…' : 'កំពុងបញ្ជូនត្រឡប់…';
+    const label = !authReady ? t('loading') : t('redirecting');
     return (
       <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
         {label}
@@ -46,12 +46,10 @@ export default function RolesManager() {
       <div className="bg-card p-4 rounded-xl border border-border shadow-3xs">
         <h2 className="text-base font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
           <ShieldCheck className="w-5 h-5 text-primary" />
-          {lang === 'en' ? 'Roles & Permissions' : 'តួនាទី និងសិទ្ធិ'}
+          {t('roles_permissions')}
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5 font-sans">
-          {lang === 'en'
-            ? 'Create roles and choose what each one is allowed to do.'
-            : 'បង្កើតតួនាទី និងកំណត់សិទ្ធិសម្រាប់នីមួយៗ។'}
+          {t('roles_permissions_desc')}
         </p>
 
         <form
@@ -65,7 +63,7 @@ export default function RolesManager() {
           <Input
             value={newRole}
             onChange={(e) => setNewRole(e.target.value)}
-            placeholder={lang === 'en' ? 'New role name (e.g. Cashier)' : 'ឈ្មោះតួនាទីថ្មី'}
+            placeholder={t('new_role_placeholder')}
           />
           <button
             type="submit"
@@ -73,14 +71,14 @@ export default function RolesManager() {
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-50 shrink-0"
           >
             <Plus className="w-4 h-4" />
-            {lang === 'en' ? 'Add Role' : 'បន្ថែម'}
+            {t('add_role')}
           </button>
         </form>
       </div>
 
       {isLoading ? (
         <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
-          {lang === 'en' ? 'Loading roles…' : 'កំពុងផ្ទុក…'}
+          {t('loading_roles')}
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -92,13 +90,12 @@ export default function RolesManager() {
               onSave={(patch) => update.mutate({ id: role.id, patch })}
               onDelete={async () => {
                 const ok = await confirm({
-                  title: `Delete role "${role.name}"?`,
-                  confirmLabel: 'Delete',
+                  title: t('delete_role_confirm_title', { name: role.name }),
+                  confirmLabel: t('delete'),
                   variant: 'destructive',
                 });
                 if (ok) remove.mutate(role.id);
               }}
-              lang={lang}
             />
           ))}
         </div>
@@ -112,14 +109,13 @@ function RoleCard({
   saving,
   onSave,
   onDelete,
-  lang,
 }: {
   role: Role;
   saving: boolean;
   onSave: (patch: { name?: string; permissions?: PermissionKey[] }) => void;
   onDelete: () => void;
-  lang: 'en' | 'kh';
 }) {
+  const t = useTranslations('Admin');
   const [name, setName] = useState(role.name);
   const [perms, setPerms] = useState<Set<PermissionKey>>(new Set(role.permissions));
 
@@ -174,12 +170,12 @@ function RoleCard({
                 className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-40"
               >
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                {lang === 'en' ? 'Save' : 'រក្សាទុក'}
+                {t('save')}
               </button>
               <button
                 onClick={onDelete}
                 className="text-muted-foreground hover:text-destructive p-1.5 rounded-md hover:bg-destructive/10 transition cursor-pointer"
-                title={lang === 'en' ? 'Delete role' : 'លុបតួនាទី'}
+                title={t('delete_role')}
               >
                 <Trash2 className="w-4 h-4" />
               </button>

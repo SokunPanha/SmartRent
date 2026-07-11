@@ -1,0 +1,30 @@
+{
+  "Admin": {
+    "loading": "Loading…",
+    "redirecting": "Redirecting…",
+    "user_management": "User Management",
+    "user_management_desc": "Create accounts and assign each user to a role.",
+    "add_user": "Add User",
+    "loading_users": "Loading users…",
+    "roles_permissions": "Roles & Permissions",
+    "roles_permissions_desc": "Create roles and choose what each one is allowed to do.",
+    "new_role_placeholder": "New role name (e.g. Cashier)",
+    "add_role": "Add Role",
+    "loading_roles": "Loading roles…",
+    "save": "Save",
+    "delete_role": "Delete role",
+    "delete_role_confirm_title": "Delete role \"{name}\"?",
+    "delete_user_confirm_title": "Delete user \"{email}\"?",
+    "delete_confirm_desc": "This cannot be undone.",
+    "delete": "Delete",
+    "create_user_title": "Create User",
+    "create_user": "Create User",
+    "select_role": "— Select a role —",
+    "cancel": "Cancel",
+    "table_user": "User",
+    "table_email": "Email",
+    "table_role": "Role",
+    "table_actions": "Actions",
+    "no_users_found": "No users found."
+  }
+}

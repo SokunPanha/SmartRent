@@ -1,4 +1,5 @@
 import { X, Lightbulb, Droplet } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Room, Property, AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
 import {
@@ -15,20 +16,20 @@ export function RecordReadingModal({
   rooms,
   properties,
   monthNames,
-  t,
   lang,
 }: {
   form: ReadingForm;
   rooms: Room[];
   properties: Property[];
   monthNames: MonthOption[];
-  t: any;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('MeterReadings');
+  const tCommon = useTranslations('Common');
   return (
     <Modal open={form.showModal} onClose={form.closeModal} size="sm">
       <div className="flex justify-between items-center p-4 border-b border-border">
-        <h3 className="font-bold text-foreground text-base font-sans">{t.record_reading}</h3>
+        <h3 className="font-bold text-foreground text-base font-sans">{t('record_reading')}</h3>
         <button
           onClick={form.closeModal}
           className="p-1 hover:bg-muted rounded-lg text-muted-foreground hover:text-muted-foreground cursor-pointer"
@@ -41,7 +42,7 @@ export function RecordReadingModal({
         <div className="space-y-4">
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Room Number *
+              {t('room_number_required')}
             </label>
             <select
               value={form.targetRoomId}
@@ -50,7 +51,7 @@ export function RecordReadingModal({
               required
             >
               <option value="" disabled>
-                {lang === 'en' ? '-- Select a Room --' : '-- ជ្រើសរើសបន្ទប់ --'}
+                {t('select_room_placeholder')}
               </option>
               {rooms.map((r) => (
                 <option key={r.id} value={r.id}>
@@ -63,7 +64,7 @@ export function RecordReadingModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                Billing Month *
+                {t('billing_month_required')}
               </label>
               <select
                 value={form.readingMonth}
@@ -80,7 +81,7 @@ export function RecordReadingModal({
 
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                Billing Year *
+                {t('billing_year_required')}
               </label>
               <input
                 type="number"
@@ -97,11 +98,11 @@ export function RecordReadingModal({
           <div className="p-3 bg-chart-1/10 border border-chart-1/20 rounded-xl space-y-3">
             <h4 className="text-[10px] font-bold text-chart-1 uppercase tracking-wider font-sans flex items-center gap-1">
               <Lightbulb className="w-3.5 h-3.5" />
-              Electricity Level Entry (kWh)
+              {t('electricity_entry')}
             </h4>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[9px] font-bold text-chart-1 uppercase block mb-1 font-sans">Previous</label>
+                <label className="text-[9px] font-bold text-chart-1 uppercase block mb-1 font-sans">{t('previous')}</label>
                 <input
                   type="number"
                   value={form.prevElec}
@@ -112,7 +113,7 @@ export function RecordReadingModal({
                 />
               </div>
               <div>
-                <label className="text-[9px] font-bold text-chart-1 uppercase block mb-1 font-sans">Current Level *</label>
+                <label className="text-[9px] font-bold text-chart-1 uppercase block mb-1 font-sans">{t('current_level_required')}</label>
                 <input
                   type="number"
                   value={form.currElec}
@@ -128,11 +129,11 @@ export function RecordReadingModal({
           <div className="p-3 bg-info/10 border border-info/20 rounded-xl space-y-3">
             <h4 className="text-[10px] font-bold text-info uppercase tracking-wider font-sans flex items-center gap-1">
               <Droplet className="w-3.5 h-3.5" />
-              Water Level Entry (m³)
+              {t('water_entry')}
             </h4>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[9px] font-bold text-info uppercase block mb-1 font-sans">Previous</label>
+                <label className="text-[9px] font-bold text-info uppercase block mb-1 font-sans">{t('previous')}</label>
                 <input
                   type="number"
                   value={form.prevWater}
@@ -143,7 +144,7 @@ export function RecordReadingModal({
                 />
               </div>
               <div>
-                <label className="text-[9px] font-bold text-info uppercase block mb-1 font-sans">Current Level *</label>
+                <label className="text-[9px] font-bold text-info uppercase block mb-1 font-sans">{t('current_level_required')}</label>
                 <input
                   type="number"
                   value={form.currWater}
@@ -163,13 +164,13 @@ export function RecordReadingModal({
             onClick={form.closeModal}
             className="flex-1 py-2 rounded-lg text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
           >
-            {t.cancel}
+            {tCommon('cancel')}
           </button>
           <button
             type="submit"
             className="flex-1 py-2 rounded-lg text-sm bg-chart-2 hover:bg-chart-2/90 text-white transition font-semibold cursor-pointer font-sans"
           >
-            {t.save}
+            {tCommon('save')}
           </button>
         </div>
       </form>

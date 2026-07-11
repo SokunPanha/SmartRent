@@ -1,0 +1,30 @@
+{
+  "Properties": {
+    "add_property": "បន្ថែមទីតាំង",
+    "add_room": "បន្ថែមបន្ទប់",
+    "property_list": "បញ្ជីឈ្មោះទីតាំងជួល",
+    "room_count": "បន្ទប់",
+    "property_type": "ប្រភេទ",
+    "address": "អាសយដ្ឋានទីតាំង",
+    "rooms_for": "បន្ទប់ក្នុង",
+    "floor": "ជាន់ទី",
+    "rent_rate": "តម្លៃជួលមូលដ្ឋាន",
+    "vacant": "នៅទំនេរ",
+    "occupied": "មានអ្នកជួល",
+    "maintenance": "កំពុងជួសជុល",
+    "room_number": "បន្ទប់លេខ",
+    "cannot_modify_persona": "តួនាទីជាប្រព័ន្ធ {role} មិនអនុញ្ញាតឱ្យបន្ថែម កែប្រែ ឬលុបបន្ទប់ឡើយ។ សូមផ្លាស់ប្តូរទៅកាន់ Owner ឬ Manager។",
+    "add": "បន្ថែម",
+    "type_borey": "បុរី/វីឡា",
+    "type_guesthouse": "ផ្ទះសំណាក់",
+    "type_apartment": "អាផាតមិន",
+    "delete_property_title": "លុបទីតាំង",
+    "occupied_count_label": "ជួលរួច",
+    "rooms_configured": "បន្ទប់ជួលនៅក្នុងទីតាំងនេះ",
+    "no_rooms_listed": "មិនទាន់មានបន្ទប់សម្រាប់ទីតាំងនេះនៅឡើយទេ។",
+    "no_property_selected": "សូមបង្កើតទីតាំងអចលនទ្រព្យជាមុនសិន។",
+    "edit_room": "កែប្រែបញ្ជីបន្ទប់",
+    "duplicate_room_number": "បន្ទប់លេខនេះមានរួចមកហើយនៅក្នុងទីតាំងនេះ។",
+    "cannot_delete_property_with_rooms": "មិនអាចលុបទីតាំងបានទេ! សូមលុបបន្ទប់ទាំង {count} នៅក្នុងនោះជាមុនសិន។"
+  }
+}

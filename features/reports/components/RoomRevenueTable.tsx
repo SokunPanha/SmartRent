@@ -1,15 +1,15 @@
+import { useTranslations } from 'next-intl';
 import { AppLanguage } from '@/lib/types';
 import { RoomRevenueRow } from '../reports.helpers';
 
 export function RoomRevenueTable({
   rows,
-  t,
   lang,
 }: {
   rows: RoomRevenueRow[];
-  t: any;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('Reports');
   return (
     <div
       className="lg:col-span-12 bg-card rounded-2xl border border-border overflow-hidden shadow-3xs"
@@ -17,7 +17,7 @@ export function RoomRevenueTable({
     >
       <div className="p-4 bg-muted border-b border-border flex justify-between items-center">
         <h4 className="text-xs font-bold text-foreground uppercase tracking-wider font-sans">
-          {lang === 'en' ? 'ROOM INCOME CONTRIBUTIONS ANALYTICS' : 'ការវិភាគចំណូលតាមបន្ទប់នីមួយៗ'}
+          {t('room_income_title')}
         </h4>
         <span className="text-[10px] uppercase font-bold text-muted-foreground font-mono">
           Ordered by Paid Value
@@ -27,13 +27,13 @@ export function RoomRevenueTable({
         <table className="w-full min-w-[520px] text-left text-xs">
           <thead>
             <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase font-sans">
-              <th className="p-4 pl-6">{t.room_number}</th>
-              <th className="p-4">{lang === 'en' ? 'Location property' : 'ទីតាំងជួល'}</th>
+              <th className="p-4 pl-6">{t('room_number')}</th>
+              <th className="p-4">{t('location_property')}</th>
               <th className="p-4 text-right font-bold text-chart-2">
-                {lang === 'en' ? 'Deposited Total (USD)' : 'ប្រាក់ប្រមូលបានសរុប'}
+                {t('deposited_total')}
               </th>
               <th className="p-4 text-right text-destructive">
-                {lang === 'en' ? 'Outstanding (USD)' : 'ប្រាក់នៅជំពាក់'}
+                {t('outstanding')}
               </th>
             </tr>
           </thead>
@@ -41,9 +41,7 @@ export function RoomRevenueTable({
             {rows.length === 0 ? (
               <tr>
                 <td colSpan={4} className="p-12 text-center text-muted-foreground italic">
-                  {lang === 'en'
-                    ? 'No room billing history exists for matching parameters.'
-                    : 'មិនទាន់មានប្រវត្តិទិន្នន័យចំណូលតាមបន្ទប់ទេ។'}
+                  {t('no_room_history')}
                 </td>
               </tr>
             ) : (

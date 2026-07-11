@@ -1,15 +1,15 @@
+import { useTranslations } from 'next-intl';
 import { Clock, User } from 'lucide-react';
 import { ActivityLog, AppLanguage } from '@/lib/types';
 
 export function RecentActivity({
   logs,
-  t,
   lang,
 }: {
   logs: ActivityLog[];
-  t: any;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('Dashboard');
   return (
     <div
       className="bg-card border border-border p-6 rounded-3xl shadow-lg shadow-black/20"
@@ -18,16 +18,16 @@ export function RecentActivity({
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-sm font-bold text-foreground tracking-wider uppercase flex items-center gap-2 font-mono">
           <Clock className="w-4 h-4 text-primary animate-pulse" />
-          {t.recent_activities}
+          {t('recent_activities')}
         </h3>
         <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-widest font-mono">
-          {lang === 'en' ? 'Live Logs' : 'កំណត់ត្រាផ្ទាល់'}
+          {t('live_logs')}
         </span>
       </div>
 
       {logs.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-6 italic font-sans">
-          {t.no_activity}
+          {t('no_activity')}
         </p>
       ) : (
         <div className="flow-root">

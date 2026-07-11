@@ -1,5 +1,5 @@
+import { useTranslations } from 'next-intl';
 import { Trash2, ShieldCheck } from 'lucide-react';
-import { AppLanguage } from '@/lib/types';
 import { AdminUser } from '../users.api';
 import { Role } from '../roles.api';
 
@@ -10,7 +10,6 @@ export function UserTable({
   busy,
   onChangeRole,
   onDelete,
-  lang,
 }: {
   users: AdminUser[];
   roles: Role[];
@@ -18,25 +17,25 @@ export function UserTable({
   busy: boolean;
   onChangeRole: (id: string, roleId: string) => void;
   onDelete: (user: AdminUser) => void;
-  lang: AppLanguage;
 }) {
+  const t = useTranslations('Admin');
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden shadow-3xs">
       <div className="overflow-x-auto scroll-x-hint">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans">
-              <th className="p-4 pl-6">{lang === 'en' ? 'User' : 'អ្នកប្រើ'}</th>
-              <th className="p-4">Email</th>
-              <th className="p-4">{lang === 'en' ? 'Role' : 'តួនាទី'}</th>
-              <th className="p-4 pr-6 text-right">{lang === 'en' ? 'Actions' : 'សកម្មភាព'}</th>
+              <th className="p-4 pl-6">{t('table_user')}</th>
+              <th className="p-4">{t('table_email')}</th>
+              <th className="p-4">{t('table_role')}</th>
+              <th className="p-4 pr-6 text-right">{t('table_actions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border text-xs text-muted-foreground font-sans">
             {users.length === 0 ? (
               <tr>
                 <td colSpan={4} className="p-12 text-center text-muted-foreground italic">
-                  {lang === 'en' ? 'No users found.' : 'មិនមានអ្នកប្រើប្រាស់ឡើយ។'}
+                  {t('no_users_found')}
                 </td>
               </tr>
             ) : (

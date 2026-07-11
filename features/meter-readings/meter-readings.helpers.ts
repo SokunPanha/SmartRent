@@ -5,23 +5,23 @@ export interface MonthOption {
   label: string;
 }
 
-const MONTHS: { en: string; kh: string }[] = [
-  { en: 'January', kh: 'មករា' },
-  { en: 'February', kh: 'កុម្ភៈ' },
-  { en: 'March', kh: 'មីនា' },
-  { en: 'April', kh: 'មេសា' },
-  { en: 'May', kh: 'ឧសភា' },
-  { en: 'June', kh: 'មិថុនា' },
-  { en: 'July', kh: 'កក្កដា' },
-  { en: 'August', kh: 'សីហា' },
-  { en: 'September', kh: 'កញ្ញា' },
-  { en: 'October', kh: 'តុលា' },
-  { en: 'November', kh: 'វិច្ឆិកា' },
-  { en: 'December', kh: 'ធ្នូ' },
+const MONTH_KEYS = [
+  'month_1',
+  'month_2',
+  'month_3',
+  'month_4',
+  'month_5',
+  'month_6',
+  'month_7',
+  'month_8',
+  'month_9',
+  'month_10',
+  'month_11',
+  'month_12',
 ];
 
-export function getMonthNames(lang: AppLanguage): MonthOption[] {
-  return MONTHS.map((m, i) => ({ value: i + 1, label: lang === 'en' ? m.en : m.kh }));
+export function getMonthNames(t: (key: string) => string): MonthOption[] {
+  return MONTH_KEYS.map((key, i) => ({ value: i + 1, label: t(key) }));
 }
 
 export function sortReadings(readings: MeterReading[]): MeterReading[] {

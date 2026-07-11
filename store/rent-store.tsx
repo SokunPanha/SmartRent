@@ -8,9 +8,11 @@ import React, {
   useState,
 } from 'react';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
 import { UserRole, AppLanguage } from '@/lib/types';
-import { TRANSLATIONS } from '@/lib/data';
+import type { Locale } from '@/i18n/request';
 
 /**
  * UI-preference store.
@@ -19,9 +21,11 @@ import { TRANSLATIONS } from '@/lib/data';
  * toast helper. The acting role + identity are now derived from the
  * authenticated session (NextAuth) rather than a simulated toggle. All domain
  * data lives in Postgres and is fetched per-feature with TanStack Query hooks.
+ *
+ * `lang` also doubles as the key for bilingual data fields entered by users
+ * (e.g. `tenant.name` vs `tenant.nameKh`) — that's a data concern, not a UI
+ * string, so it stays separate from next-intl's message catalog.
  */
-
-type Translation = (typeof TRANSLATIONS)['en'];
 
 interface RentContextValue {
   mounted: boolean;
@@ -34,7 +38,6 @@ interface RentContextValue {
    */
   sessionLoading: boolean;
   lang: AppLanguage;
-  t: Translation;
   handleLangToggle: () => void;
   triggerToast: (msg: string) => void;
   // Identity (from the session)
@@ -47,18 +50,24 @@ interface RentContextValue {
 
 const RentContext = createContext<RentContextValue | null>(null);
 
+// next-intl uses the ISO code 'km' for Khmer; the app's domain model
+// (AppLanguage, bilingual `nameKh` fields) predates that and uses 'kh'.
+// These two convert between them at the store boundary.
+function localeToLang(locale: string): AppLanguage {
+  return locale === 'km' ? 'kh' : 'en';
+}
+function langToLocale(lang: AppLanguage): Locale {
+  return lang === 'kh' ? 'km' : 'en';
+}
+
 export function RentProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status: sessionStatus } = useSession();
   const sessionLoading = sessionStatus === 'loading';
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
-  const [lang, setLang] = useState<AppLanguage>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('khrent_lang');
-      return (stored as AppLanguage) || 'en';
-    }
-    return 'en';
-  });
+  const locale = useLocale();
+  const lang = localeToLang(locale);
 
   useEffect(() => {
     setMounted(true);
@@ -67,13 +76,11 @@ export function RentProvider({ children }: { children: React.ReactNode }) {
   const triggerToast = (msg: string) => toast(msg);
 
   const handleLangToggle = () => {
-    const nextLang = lang === 'en' ? 'kh' : 'en';
-    setLang(nextLang);
-    localStorage.setItem('khrent_lang', nextLang);
+    const nextLang: AppLanguage = lang === 'en' ? 'kh' : 'en';
+    document.cookie = `locale=${langToLocale(nextLang)}; path=/; max-age=31536000`;
     triggerToast(nextLang === 'kh' ? 'ភាសា៖ ខ្មែរ' : 'Language: English');
+    router.refresh();
   };
-
-  const t = TRANSLATIONS[lang];
 
   const activeRole = (session?.user?.role ?? '') as UserRole;
   const roleId = session?.user?.roleId ?? null;
@@ -86,7 +93,6 @@ export function RentProvider({ children }: { children: React.ReactNode }) {
       mounted,
       sessionLoading,
       lang,
-      t,
       handleLangToggle,
       triggerToast,
       activeRole,

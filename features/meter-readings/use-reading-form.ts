@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { MeterReading, Room, UserRole, AppLanguage } from '@/lib/types';
 import { getRoomNumber } from './meter-readings.helpers';
 
@@ -11,7 +12,6 @@ interface UseReadingFormArgs {
   canModify: boolean;
   activeRole: UserRole;
   lang: AppLanguage;
-  t: any;
   onAddReading: (reading: MeterReading) => void;
   logAction: (action: string, actionKh: string, details: string, detailsKh: string) => void;
 }
@@ -23,10 +23,11 @@ export function useReadingForm({
   canModify,
   activeRole,
   lang,
-  t,
   onAddReading,
   logAction,
 }: UseReadingFormArgs) {
+  const t = useTranslations('MeterReadings');
+  const tCommon = useTranslations('Common');
   const [showModal, setShowModal] = useState(false);
   const [targetRoomId, setTargetRoomId] = useState('');
   const [readingYear, setReadingYear] = useState<number>(2026);
@@ -72,27 +73,19 @@ export function useReadingForm({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!canModify) {
-      toast.error(t.insufficient_permissions);
+      toast.error(tCommon('insufficient_permissions'));
       return;
     }
     if (!targetRoomId || !readingYear || !readingMonth) {
-      toast.error(t.please_fill);
+      toast.error(tCommon('please_fill'));
       return;
     }
     if (currElec < prevElec) {
-      toast.error(
-        lang === 'en'
-          ? 'Error: Current Electric value cannot be less than previous Electric value!'
-          : 'កំហុស៖ លេខអគ្គិសនីថ្មី មិនអាចតូចជាងលេខអគ្គិសនីចាស់បានឡើយ!'
-      );
+      toast.error(t('error_elec_less'));
       return;
     }
     if (currWater < prevWater) {
-      toast.error(
-        lang === 'en'
-          ? 'Error: Current Water value cannot be less than previous Water value!'
-          : 'កំហុស៖ លេខទឹកស្អាតថ្មី មិនអាចតូចជាងលេខទឹកស្អាតចាស់បានឡើយ!'
-      );
+      toast.error(t('error_water_less'));
       return;
     }
     const duplicate = readings.some(
@@ -102,11 +95,7 @@ export function useReadingForm({
         r.month === Number(readingMonth)
     );
     if (duplicate) {
-      toast.error(
-        lang === 'en'
-          ? `A meter reading for this room is already recorded for ${readingMonth}/${readingYear}.`
-          : `កុងទ័រសម្រាប់ខែនេះ (${readingMonth}/${readingYear}) បានកត់ត្រារួចរាល់ហើយសម្រាប់បន្ទប់នេះ។`
-      );
+      toast.error(t('duplicate_reading', { month: readingMonth, year: readingYear }));
       return;
     }
 

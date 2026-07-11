@@ -12,7 +12,7 @@ import { useLogs } from '@/features/activity/activity.queries';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { lang, t } = useRent();
+  const { lang } = useRent();
 
   const { data: properties = [] } = useProperties();
   const { data: rooms = [] } = useRooms();
@@ -33,7 +33,6 @@ export default function DashboardPage() {
         invoices={invoices}
         logs={logs}
         lang={lang}
-        t={t}
         onNavigate={(tab) => router.push(`/${tab}`)}
       />
     </PageTransition>

@@ -1,5 +1,5 @@
 import { Building2, Building, Coins, AlertTriangle, ArrowUpRight } from 'lucide-react';
-import { AppLanguage } from '@/lib/types';
+import { useTranslations } from 'next-intl';
 import { formatUSD, formatKHRFromUSD } from '@/lib/format';
 import { DashboardStats } from '../dashboard.helpers';
 
@@ -7,15 +7,12 @@ const usd0 = (v: number) => formatUSD(v, 0);
 
 export function KpiCards({
   stats,
-  t,
-  lang,
   onNavigate,
 }: {
   stats: DashboardStats;
-  t: any;
-  lang: AppLanguage;
   onNavigate: (tab: string) => void;
 }) {
+  const t = useTranslations('Dashboard');
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-metric-cards-grid">
       {/* KPI: Total Properties */}
@@ -32,7 +29,7 @@ export function KpiCards({
         </div>
         <div className="mt-3">
           <span className="text-[10px] font-bold text-muted-foreground block tracking-wider uppercase font-mono">
-            {t.total_properties}
+            {t('total_properties')}
           </span>
           <span className="text-2xl font-bold text-foreground tracking-tight font-sans">
             {stats.totalProperties}
@@ -51,19 +48,19 @@ export function KpiCards({
             <Building className="w-5 h-5" />
           </div>
           <span className="text-[10px] font-bold bg-info/10 text-info px-2 py-0.5 rounded-full border border-info/20 font-mono">
-            {stats.occupiedRooms}/{stats.totalRooms} {lang === 'en' ? 'Occ' : 'ជួល'}
+            {stats.occupiedRooms}/{stats.totalRooms} {t('occ_short')}
           </span>
         </div>
         <div className="mt-3">
           <span className="text-[10px] font-bold text-muted-foreground block tracking-wider uppercase font-mono">
-            {t.total_rooms}
+            {t('total_rooms')}
           </span>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-foreground tracking-tight font-sans">
               {stats.totalRooms}
             </span>
             <span className="text-xs text-muted-foreground">
-              ({stats.vacantRooms} {t.vacant.toLowerCase()})
+              ({stats.vacantRooms} {t('vacant').toLowerCase()})
             </span>
           </div>
         </div>
@@ -81,12 +78,12 @@ export function KpiCards({
           </div>
           <span className="text-[10px] font-bold bg-chart-2/10 text-chart-2 px-2 py-0.5 rounded-full border border-chart-2/20 font-mono">
             {Math.round((stats.juneRevenueCollected / (stats.juneRevenueInvoiced || 1)) * 100)}%{' '}
-            {lang === 'en' ? 'Paid' : 'រួច'}
+            {t('paid_short')}
           </span>
         </div>
         <div className="mt-3">
           <span className="text-[10px] font-bold text-muted-foreground block tracking-wider uppercase font-mono">
-            {t.monthly_revenue}
+            {t('monthly_revenue')}
           </span>
           <span className="text-2xl font-bold text-foreground tracking-tight block">
             {usd0(stats.juneRevenueInvoiced)}
@@ -109,13 +106,13 @@ export function KpiCards({
           </div>
           {stats.overdueCount > 0 && (
             <span className="text-[10px] font-bold bg-destructive/10 text-destructive px-2 py-0.5 rounded-full border border-destructive/20 font-mono">
-              {stats.overdueCount} {lang === 'en' ? 'Overdue' : 'ហួសកំណត់'}
+              {stats.overdueCount} {t('overdue_short')}
             </span>
           )}
         </div>
         <div className="mt-3">
           <span className="text-[10px] font-bold text-muted-foreground block tracking-wider uppercase font-mono">
-            {t.outstanding_amount}
+            {t('outstanding_amount')}
           </span>
           <span className="text-2xl font-bold text-destructive tracking-tight block">
             {usd0(stats.totalOutstanding)}

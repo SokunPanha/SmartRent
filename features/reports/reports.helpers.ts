@@ -25,10 +25,10 @@ export interface ReportData {
   roomDetails: RoomRevenueRow[];
 }
 
-const MONTH_LABELS: Record<number, { en: string; kh: string }> = {
-  4: { en: 'April', kh: 'មេសា' },
-  5: { en: 'May', kh: 'ឧសភា' },
-  6: { en: 'June', kh: 'មិថុនា' },
+const MONTH_LABEL_KEYS: Record<number, string> = {
+  4: 'month_april',
+  5: 'month_may',
+  6: 'month_june',
 };
 
 export function getReportData(
@@ -37,7 +37,8 @@ export function getReportData(
   properties: Property[],
   selectedYear: number,
   selectedProperty: string,
-  lang: AppLanguage
+  lang: AppLanguage,
+  t: (key: string) => string
 ): ReportData {
   const filteredInvoices = invoices.filter((inv) => {
     const yearMatch = inv.year === selectedYear;
@@ -58,7 +59,7 @@ export function getReportData(
     const collected = monthInvoices.reduce((sum, inv) => sum + inv.amountPaidUSD, 0);
     return {
       month: m,
-      monthLabel: lang === 'en' ? MONTH_LABELS[m].en : MONTH_LABELS[m].kh,
+      monthLabel: t(MONTH_LABEL_KEYS[m]),
       rent,
       electricity,
       water,

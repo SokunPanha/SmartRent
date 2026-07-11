@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Property, Room, UserRole, AppLanguage } from '@/lib/types';
 import { PermissionBanner } from '@/components/shared/PermissionBanner';
 import { useCan } from '@/features/admin/permissions.queries';
@@ -14,7 +15,6 @@ interface PropertiesRoomsProps {
   rooms: Room[];
   activeRole: UserRole;
   lang: AppLanguage;
-  t: any;
   onAddProperty: (prop: Omit<Property, 'totalRooms'>) => void;
   onAddRoom: (room: Room) => void;
   onUpdateRoom: (room: Room) => void;
@@ -28,7 +28,6 @@ export default function PropertiesRooms({
   rooms,
   activeRole,
   lang,
-  t,
   onAddProperty,
   onAddRoom,
   onUpdateRoom,
@@ -36,6 +35,7 @@ export default function PropertiesRooms({
   onDeleteProperty,
   logAction,
 }: PropertiesRoomsProps) {
+  const t = useTranslations('Properties');
   const can = useCan();
   const canModify = can('properties.manage');
 
@@ -44,7 +44,6 @@ export default function PropertiesRooms({
     rooms,
     canModify,
     lang,
-    t,
     onAddProperty,
     onAddRoom,
     onUpdateRoom,
@@ -57,12 +56,7 @@ export default function PropertiesRooms({
     <div className="space-y-6" id="properties-rooms-container">
       {!canModify && (
         <PermissionBanner
-          lang={lang}
-          message={
-            lang === 'en'
-              ? `${activeRole.toUpperCase()} persona cannot add, edit or delete properties and rooms. Switch to Owner or Manager for full CRUD operations.`
-              : `តួនាទីជាប្រព័ន្ធ ${activeRole.toUpperCase()} មិនអនុញ្ញាតឱ្យបន្ថែម កែប្រែ ឬលុបបន្ទប់ឡើយ។ សូមផ្លាស់ប្តូរទៅកាន់ Owner ឬ Manager។`
-          }
+          message={t('cannot_modify_persona', { role: activeRole.toUpperCase() })}
         />
       )}
 
@@ -75,7 +69,6 @@ export default function PropertiesRooms({
           canModify={canModify}
           onAddClick={c.openPropModal}
           onDeleteProp={c.handleDeletePropClick}
-          t={t}
           lang={lang}
         />
         <RoomGrid
@@ -85,13 +78,12 @@ export default function PropertiesRooms({
           onAddRoom={c.openRoomModalForCreate}
           onEditRoom={c.handleEditRoomClick}
           onDeleteRoom={c.handleDeleteRoomClick}
-          t={t}
           lang={lang}
         />
       </div>
 
-      <PropertyModal c={c} t={t} lang={lang} />
-      <RoomModal c={c} t={t} lang={lang} />
+      <PropertyModal c={c} lang={lang} />
+      <RoomModal c={c} lang={lang} />
     </div>
   );
 }

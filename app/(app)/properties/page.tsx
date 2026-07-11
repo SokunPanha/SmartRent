@@ -12,7 +12,7 @@ import {
 import { useLogAction } from '@/features/activity/activity.queries';
 
 export default function PropertiesPage() {
-  const { activeRole, lang, t } = useRent();
+  const { activeRole, lang } = useRent();
   const { data: properties = [] } = useProperties();
   const { data: rooms = [] } = useRooms();
   const propertyMut = usePropertyMutations();
@@ -26,7 +26,6 @@ export default function PropertiesPage() {
         rooms={rooms}
         activeRole={activeRole}
         lang={lang}
-        t={t}
         onAddProperty={(prop) => propertyMut.create.mutate(prop)}
         onAddRoom={(room) => roomMut.create.mutate(room)}
         onUpdateRoom={(room) => roomMut.update.mutate(room)}

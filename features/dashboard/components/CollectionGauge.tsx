@@ -1,4 +1,4 @@
-import { AppLanguage } from '@/lib/types';
+import { useTranslations } from 'next-intl';
 import { formatUSD, formatKHRFromUSD } from '@/lib/format';
 
 const usd0 = (v: number) => formatUSD(v, 0);
@@ -7,25 +7,20 @@ export function CollectionGauge({
   percent,
   collected,
   outstanding,
-  t,
-  lang,
 }: {
   percent: number;
   collected: number;
   outstanding: number;
-  t: any;
-  lang: AppLanguage;
 }) {
+  const t = useTranslations('Dashboard');
   return (
     <div className="bg-card border border-border p-6 rounded-3xl flex flex-col shadow-lg shadow-black/20">
       <div className="mb-4">
         <h3 className="text-sm font-bold text-foreground tracking-wider uppercase font-mono">
-          {t.payment_collection_rate}
+          {t('payment_collection_rate')}
         </h3>
         <p className="text-xs text-muted-foreground mt-0.5">
-          {lang === 'en'
-            ? 'Cash flow performance against total billings allocated'
-            : 'លទ្ធផលលំហូរប្រាក់ធៀបការវិក្កយបត្រសរុប'}
+          {t('collection_rate_desc')}
         </p>
       </div>
 
@@ -33,7 +28,7 @@ export function CollectionGauge({
         <div>
           <div className="flex justify-between text-xs font-semibold mb-1">
             <span className="text-muted-foreground">
-              {lang === 'en' ? 'Overall Collection Efficiency' : 'ប្រសិទ្ធភាពនៃការប្រមូលប្រាក់ទូទៅ'}
+              {t('overall_collection_efficiency')}
             </span>
             <span className="text-chart-2 font-bold">{percent}%</span>
           </div>
@@ -48,7 +43,7 @@ export function CollectionGauge({
         <div className="grid grid-cols-2 gap-3 pt-2">
           <div className="p-3 bg-chart-2/5 rounded-xl border border-chart-2/10">
             <span className="text-[10px] font-bold text-chart-2 tracking-wider uppercase block font-mono">
-              {lang === 'en' ? 'Total Collected' : 'ប្រមូលប្រាក់រួច'}
+              {t('total_collected')}
             </span>
             <span className="text-lg font-bold text-chart-2 font-mono block mt-1">
               {usd0(collected)}
@@ -59,7 +54,7 @@ export function CollectionGauge({
           </div>
           <div className="p-3 bg-destructive/5 rounded-xl border border-destructive/10">
             <span className="text-[10px] font-bold text-destructive tracking-wider uppercase block font-mono">
-              {lang === 'en' ? 'Owed Balance' : 'ប្រាក់ជំពាក់នៅសល់'}
+              {t('owed_balance')}
             </span>
             <span className="text-lg font-bold text-destructive font-mono block mt-1 text-destructive">
               {usd0(outstanding)}
@@ -71,9 +66,7 @@ export function CollectionGauge({
         </div>
 
         <div className="text-[10px] text-center text-muted-foreground font-mono italic">
-          {lang === 'en'
-            ? '* Calculations are compiled from April - June 15, 2026 invoice sequences'
-            : '* ការគណនាត្រូវបានចងក្រងពីលំដាប់វិក្កយបត្រខែមេសា ដល់ ១៥ មិថុនា ២០២៦'}
+          {t('collection_calc_note')}
         </div>
       </div>
     </div>

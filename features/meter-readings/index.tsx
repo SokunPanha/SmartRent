@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { MeterReading, Room, Property, UserRole, AppLanguage } from '@/lib/types';
 import {
   getMonthNames,
@@ -19,7 +20,6 @@ interface MeterReadingsProps {
   properties: Property[];
   activeRole: UserRole;
   lang: AppLanguage;
-  t: any;
   onAddReading: (reading: MeterReading) => void;
   logAction: (action: string, actionKh: string, details: string, detailsKh: string) => void;
 }
@@ -30,17 +30,17 @@ export default function MeterReadings({
   properties,
   activeRole,
   lang,
-  t,
   onAddReading,
   logAction,
 }: MeterReadingsProps) {
+  const t = useTranslations('MeterReadings');
   const can = useCan();
   const canModify = can('readings.manage');
 
   const [selectedPropId, setSelectedPropId] = useState<string>('all');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
 
-  const monthNames = useMemo(() => getMonthNames(lang), [lang]);
+  const monthNames = useMemo(() => getMonthNames(t), [t]);
 
   const filteredReadings = useMemo(
     () => filterReadings(sortReadings(readings), rooms, selectedPropId, selectedMonth),
@@ -53,7 +53,6 @@ export default function MeterReadings({
     canModify,
     activeRole,
     lang,
-    t,
     onAddReading,
     logAction,
   });
@@ -71,7 +70,6 @@ export default function MeterReadings({
         onSelectMonth={setSelectedMonth}
         canModify={canModify}
         onRecord={form.openModal}
-        t={t}
         lang={lang}
       />
 
@@ -80,7 +78,6 @@ export default function MeterReadings({
         rooms={rooms}
         properties={properties}
         monthNames={monthNames}
-        t={t}
         lang={lang}
       />
 
@@ -89,7 +86,6 @@ export default function MeterReadings({
         rooms={rooms}
         properties={properties}
         monthNames={monthNames}
-        t={t}
         lang={lang}
       />
     </div>

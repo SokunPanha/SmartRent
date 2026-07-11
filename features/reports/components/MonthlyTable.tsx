@@ -1,4 +1,5 @@
 import { Layers } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { AppLanguage } from '@/lib/types';
 import { MonthlySummaryRow } from '../reports.helpers';
 
@@ -9,21 +10,20 @@ export function MonthlyTable({
   rows: MonthlySummaryRow[];
   lang: AppLanguage;
 }) {
+  const t = useTranslations('Reports');
   return (
     <div className="lg:col-span-12 bg-card rounded-2xl border border-border overflow-hidden shadow-3xs">
       <div className="p-4 bg-muted border-b border-border">
         <h4 className="text-xs font-bold text-foreground uppercase tracking-wider font-sans">
-          {lang === 'en'
-            ? 'MONTHLY INCOME STATEMENT SPECIFICATIONS'
-            : 'របាយការណ៍ហិរញ្ញវត្ថុលម្អិតប្រចាំខែ'}
+          {t('monthly_statement_title')}
         </h4>
       </div>
       <div className="overflow-x-auto scroll-x-hint">
         <table className="w-full text-left text-xs text-muted-foreground">
           <thead>
             <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase font-sans">
-              <th className="p-4 pl-6">{lang === 'en' ? 'Billed Cycle' : 'លំដាប់ខែ'}</th>
-              <th className="p-4 text-right">{lang === 'en' ? 'Rent Revenue (USD)' : 'ចំណូលឈ្នួលផ្ទះ ($)'}</th>
+              <th className="p-4 pl-6">{t('billed_cycle')}</th>
+              <th className="p-4 text-right">{t('rent_revenue')}</th>
               <th className="p-4 text-right">
                 <span className="inline-flex items-center gap-1">
                   <Layers className="w-3.5 h-3.5" /> Elect Cost (USD)
@@ -34,9 +34,9 @@ export function MonthlyTable({
                   <Layers className="w-3.5 h-3.5" /> Water Cost (USD)
                 </span>
               </th>
-              <th className="p-4 text-right">{lang === 'en' ? 'Aggregate Billed (USD)' : 'សរុបវិក្កយបត្រ ($)'}</th>
+              <th className="p-4 text-right">{t('aggregate_billed')}</th>
               <th className="p-4 text-right text-chart-2 font-bold">
-                {lang === 'en' ? 'Deposited Receipts (USD)' : 'ទឹកប្រាក់ទទួលបាន ($)'}
+                {t('deposited_receipts')}
               </th>
             </tr>
           </thead>

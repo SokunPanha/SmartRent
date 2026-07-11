@@ -1,0 +1,25 @@
+{
+  "Reports": {
+    "subtitle": "Detailed income statement & properties rent analysis",
+    "property_label": "Property:",
+    "all_locations": "All Locations",
+    "print_statement": "Print Statement",
+    "monthly_statement_title": "MONTHLY INCOME STATEMENT SPECIFICATIONS",
+    "billed_cycle": "Billed Cycle",
+    "rent_revenue": "Rent Revenue (USD)",
+    "aggregate_billed": "Aggregate Billed (USD)",
+    "deposited_receipts": "Deposited Receipts (USD)",
+    "room_income_title": "ROOM INCOME CONTRIBUTIONS ANALYTICS",
+    "room_number": "Room Number",
+    "location_property": "Location property",
+    "deposited_total": "Deposited Total (USD)",
+    "outstanding": "Outstanding (USD)",
+    "no_room_history": "No room billing history exists for matching parameters.",
+    "gross_revenue_invoiced": "Gross Revenue Invoiced",
+    "total_cash_receipts": "Total Cash Receipts Collected",
+    "outstanding_ar": "Outstanding AR Receivable",
+    "month_april": "April",
+    "month_may": "May",
+    "month_june": "June"
+  }
+}

@@ -1,6 +1,7 @@
 'use client';
 
 import { Loader2, Building2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,6 +16,7 @@ import { useLogin } from '../use-login';
 /** Presentational sign-in card. All behaviour lives in `useLogin`. */
 export function LoginForm() {
   const { email, setEmail, password, setPassword, error, loading, submit } = useLogin();
+  const t = useTranslations('Auth');
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -25,10 +27,10 @@ export function LoginForm() {
           </div>
           <div>
             <CardTitle className="text-lg font-extrabold uppercase tracking-tight">
-              Rental Invoice
+              {t('app_title')}
             </CardTitle>
             <CardDescription className="text-xs">
-              Cambodia Property Management — sign in to continue
+              {t('app_subtitle')}
             </CardDescription>
           </div>
         </CardHeader>
@@ -36,7 +38,7 @@ export function LoginForm() {
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-xs font-bold text-muted-foreground">
-                Email
+                {t('email_label')}
               </label>
               <Input
                 id="email"
@@ -50,7 +52,7 @@ export function LoginForm() {
             </div>
             <div className="space-y-1.5">
               <label htmlFor="password" className="text-xs font-bold text-muted-foreground">
-                Password
+                {t('password_label')}
               </label>
               <Input
                 id="password"
@@ -72,10 +74,10 @@ export function LoginForm() {
             <Button type="submit" className="w-full font-bold" disabled={loading}>
               {loading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Signing in…
+                  <Loader2 className="h-4 w-4 animate-spin" /> {t('signing_in')}
                 </>
               ) : (
-                'Sign in'
+                t('sign_in')
               )}
             </Button>
           </form>

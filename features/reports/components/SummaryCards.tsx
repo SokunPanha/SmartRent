@@ -1,4 +1,5 @@
 import { TrendingUp, Coins, Receipt } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { AppLanguage } from '@/lib/types';
 import { formatUSD, formatKHRFromUSD } from '@/lib/format';
 import { ReportData } from '../reports.helpers';
@@ -10,6 +11,7 @@ export function SummaryCards({
   data: ReportData;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('Reports');
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="bg-card p-5 rounded-2xl border border-border shadow-3xs hover:border-primary/30 transition">
@@ -18,7 +20,7 @@ export function SummaryCards({
         </div>
         <div className="mt-4">
           <span className="text-xs text-muted-foreground uppercase tracking-widest block font-bold">
-            {lang === 'en' ? 'Gross Revenue Invoiced' : 'ថ្លៃឈ្នួលវិក្កយបត្រសរុប'}
+            {t('gross_revenue_invoiced')}
           </span>
           <span className="text-2xl font-black text-foreground font-mono block mt-1">
             {formatUSD(data.totalInvoiced)}
@@ -35,7 +37,7 @@ export function SummaryCards({
         </div>
         <div className="mt-4">
           <span className="text-xs text-muted-foreground uppercase tracking-widest block font-bold">
-            {lang === 'en' ? 'Total Cash Receipts Collected' : 'ការប្រមូលប្រាក់សុទ្ធរួចរាល់'}
+            {t('total_cash_receipts')}
           </span>
           <span className="text-2xl font-black text-chart-2 font-mono block mt-1">
             {formatUSD(data.totalCollected)}
@@ -52,7 +54,7 @@ export function SummaryCards({
         </div>
         <div className="mt-4">
           <span className="text-xs text-muted-foreground uppercase tracking-widest block font-bold">
-            {lang === 'en' ? 'Outstanding AR Receivable' : 'គណនីត្រូវប្រមូលប្រាក់ ( Receivable)'}
+            {t('outstanding_ar')}
           </span>
           <span className="text-2xl font-black text-destructive font-mono block mt-1">
             {formatUSD(data.totalOutstanding)}

@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Modal } from './Modal';
 
@@ -38,6 +39,7 @@ export function ConfirmDialogProvider({ children }: { children: React.ReactNode 
   // promise. Only the head of the queue is shown; settling it advances to the next.
   const [queue, setQueue] = useState<PendingConfirm[]>([]);
   const current = queue[0] ?? null;
+  const t = useTranslations('Common');
 
   const confirm = useCallback((opts: ConfirmOptions) => {
     return new Promise<boolean>((resolve) => {
@@ -73,7 +75,7 @@ export function ConfirmDialogProvider({ children }: { children: React.ReactNode 
             </div>
             <div className="mt-5 flex justify-end gap-2">
               <Button variant="outline" size="sm" onClick={() => settle(false)}>
-                {current.options.cancelLabel ?? 'Cancel'}
+                {current.options.cancelLabel ?? t('cancel')}
               </Button>
               <Button
                 variant={current.options.variant === 'destructive' ? 'destructive' : 'default'}
@@ -81,7 +83,7 @@ export function ConfirmDialogProvider({ children }: { children: React.ReactNode 
                 autoFocus
                 onClick={() => settle(true)}
               >
-                {current.options.confirmLabel ?? 'Confirm'}
+                {current.options.confirmLabel ?? t('confirm')}
               </Button>
             </div>
           </div>

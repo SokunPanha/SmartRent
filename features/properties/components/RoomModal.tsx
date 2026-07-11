@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
@@ -7,18 +8,18 @@ type Controller = ReturnType<typeof usePropertiesController>;
 
 export function RoomModal({
   c,
-  t,
   lang,
 }: {
   c: Controller;
-  t: any;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('Properties');
+  const tCommon = useTranslations('Common');
   return (
     <Modal open={c.showRoomModal} onClose={c.closeRoomModal} size="sm">
       <div className="flex justify-between items-center p-4 border-b border-border">
         <h3 className="font-bold text-foreground text-base font-sans">
-          {c.editingRoomId ? (lang === 'en' ? 'Edit Room' : 'កែប្រែបញ្ជីបន្ទប់') : t.add_room}
+          {c.editingRoomId ? t('edit_room') : t('add_room')}
         </h3>
         <button
           onClick={c.closeRoomModal}
@@ -32,7 +33,7 @@ export function RoomModal({
         <div className="space-y-4">
           <div>
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              {t.room_number} *
+              {t('room_number')} *
             </label>
             <input
               type="text"
@@ -47,7 +48,7 @@ export function RoomModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                {lang === 'en' ? 'Floor' : 'ជាន់ទី'} *
+                {t('floor')} *
               </label>
               <input
                 type="number"
@@ -78,16 +79,16 @@ export function RoomModal({
 
           <div>
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              {t.status} *
+              {tCommon('status')} *
             </label>
             <select
               value={c.roomStatus}
               onChange={(e) => c.setRoomStatus(e.target.value as typeof c.roomStatus)}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
             >
-              <option value="vacant">{t.vacant}</option>
-              <option value="occupied">{t.occupied}</option>
-              <option value="maintenance">{lang === 'en' ? 'Under Maintenance' : 'កំពុងជួសជុល'}</option>
+              <option value="vacant">{t('vacant')}</option>
+              <option value="occupied">{t('occupied')}</option>
+              <option value="maintenance">{t('maintenance')}</option>
             </select>
           </div>
         </div>
@@ -98,13 +99,13 @@ export function RoomModal({
             onClick={c.closeRoomModal}
             className="flex-1 py-2 rounded-lg text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
           >
-            {t.cancel}
+            {tCommon('cancel')}
           </button>
           <button
             type="submit"
             className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans"
           >
-            {t.save}
+            {tCommon('save')}
           </button>
         </div>
       </form>

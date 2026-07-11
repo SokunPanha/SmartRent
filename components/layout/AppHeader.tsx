@@ -1,6 +1,7 @@
 'use client';
 
 import { Languages } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
@@ -9,6 +10,7 @@ import { ThemeToggle } from './ThemeToggle';
 
 export function AppHeader() {
   const { lang, handleLangToggle } = useRent();
+  const t = useTranslations('Common');
 
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-card px-4 shadow-sm print:hidden">
@@ -16,7 +18,7 @@ export function AppHeader() {
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-1 h-4 shrink-0" />
         <h2 className="truncate font-sans text-sm font-extrabold uppercase tracking-tight">
-          {lang === 'en' ? 'Property Management' : 'ការគ្រប់គ្រងអចលនទ្រព្យ'}
+          {t('property_management')}
         </h2>
       </div>
 
@@ -24,9 +26,9 @@ export function AppHeader() {
         {/* Cambodia exchange-rate indicator */}
         <div className="hidden items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1 font-mono text-[10px] tracking-wide text-muted-foreground lg:flex">
           <span className="mr-1 font-sans text-[9px] font-bold uppercase tracking-wider text-primary">
-            Fix rate:
+            {t('fix_rate_label')}
           </span>
-          $1 = 4,100 KHR (៛)
+          {t('fix_rate_value')}
         </div>
 
         <Button
@@ -36,7 +38,7 @@ export function AppHeader() {
           className="gap-1.5 font-bold"
         >
           <Languages className="h-3.5 w-3.5 text-primary" />
-          <span>{lang === 'en' ? 'ភាសាខ្មែរ' : 'EN'}</span>
+          <span>{lang === 'en' ? t('khemar_lang') : t('english_lang')}</span>
         </Button>
 
         <ThemeToggle />

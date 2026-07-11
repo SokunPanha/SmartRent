@@ -1,4 +1,4 @@
-import { Property, Room, Contract, Invoice, AppLanguage } from '@/lib/types';
+import { Property, Room, Contract, Invoice } from '@/lib/types';
 
 /** Fixed "today" the seeded dataset is built around. */
 export const SIMULATION_DATE = new Date('2026-06-15');
@@ -65,18 +65,21 @@ export interface MonthlyRevenuePoint {
   collected: number;
 }
 
-const MONTH_LABELS: Record<number, { en: string; kh: string }> = {
-  4: { en: 'April', kh: 'មេសា' },
-  5: { en: 'May', kh: 'ឧសភា' },
-  6: { en: 'June', kh: 'មិថុនា' },
+const MONTH_LABEL_KEYS: Record<number, string> = {
+  4: 'month_4',
+  5: 'month_5',
+  6: 'month_6',
 };
 
 /** Invoiced vs collected totals for April–June 2026. */
-export function getMonthlyRevenue(invoices: Invoice[], lang: AppLanguage): MonthlyRevenuePoint[] {
+export function getMonthlyRevenue(
+  invoices: Invoice[],
+  t: (key: string) => string
+): MonthlyRevenuePoint[] {
   return [4, 5, 6].map((m) => {
     const monthInvoices = invoices.filter((inv) => inv.year === 2026 && inv.month === m);
     return {
-      label: lang === 'en' ? MONTH_LABELS[m].en : MONTH_LABELS[m].kh,
+      label: t(MONTH_LABEL_KEYS[m]),
       invoiced: Math.round(monthInvoices.reduce((sum, inv) => sum + inv.totalAmountUSD, 0)),
       collected: Math.round(monthInvoices.reduce((sum, inv) => sum + inv.amountPaidUSD, 0)),
     };

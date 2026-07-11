@@ -1,4 +1,5 @@
 import { Lightbulb, Droplet } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { MeterReading, Room, Property, AppLanguage } from '@/lib/types';
 import {
   MonthOption,
@@ -11,47 +12,44 @@ export function ReadingsTable({
   rooms,
   properties,
   monthNames,
-  t,
   lang,
 }: {
   readings: MeterReading[];
   rooms: Room[];
   properties: Property[];
   monthNames: MonthOption[];
-  t: any;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('MeterReadings');
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden shadow-3xs">
       <div className="overflow-x-auto scroll-x-hint">
         <table className="w-full text-left border-collapse" id="utility-readings-ledger-table">
           <thead>
             <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans">
-              <th className="p-4 pl-6">{t.room_number}</th>
-              <th className="p-4">{lang === 'en' ? 'Billing Cycle' : 'លំដាប់ខែ'}</th>
+              <th className="p-4 pl-6">{t('room_number')}</th>
+              <th className="p-4">{t('billing_cycle')}</th>
               <th className="p-4">
                 <span className="flex items-center gap-1">
                   <Lightbulb className="w-3.5 h-3.5 text-chart-1" />
-                  {lang === 'en' ? 'Electricity Meter (kWh)' : 'កុងទ័រភ្លើង (kWh)'}
+                  {t('electricity_meter_kwh')}
                 </span>
               </th>
               <th className="p-4">
                 <span className="flex items-center gap-1">
                   <Droplet className="w-3.5 h-3.5 text-info" />
-                  {lang === 'en' ? 'Water Meter (m³)' : 'កុងទ័រទឹក (m³)'}
+                  {t('water_meter_m3')}
                 </span>
               </th>
-              <th className="p-4">{t.reading_date}</th>
-              <th className="p-4 pr-6">{t.recorded_by}</th>
+              <th className="p-4">{t('reading_date')}</th>
+              <th className="p-4 pr-6">{t('recorded_by')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border text-xs text-muted-foreground font-sans">
             {readings.length === 0 ? (
               <tr>
                 <td colSpan={6} className="p-12 text-center text-muted-foreground font-sans italic">
-                  {lang === 'en'
-                    ? 'No utility meter readings logged matching parameters.'
-                    : 'មិនមានប្រវត្តិទិន្នន័យកុងទ័រឡើយ។'}
+                  {t('no_readings_found')}
                 </td>
               </tr>
             ) : (

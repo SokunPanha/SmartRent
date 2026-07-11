@@ -7,15 +7,12 @@ import {
   BarChart3,
   type LucideIcon,
 } from 'lucide-react';
-import { TRANSLATIONS } from '@/lib/data';
-
-type TranslationKey = keyof (typeof TRANSLATIONS)['en'];
 
 export interface NavItem {
   /** Route segment this item links to. */
   href: string;
-  /** Translation key used for the label in the active language. */
-  labelKey: TranslationKey;
+  /** Key in the "Common" next-intl namespace used for the label. */
+  labelKey: string;
   icon: LucideIcon;
 }
 
