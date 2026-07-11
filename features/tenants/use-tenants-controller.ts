@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { Tenant, Contract, Room, Property, AppLanguage } from '@/lib/types';
 import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
 import { getRoomName, getTenantName } from './tenants.helpers';
@@ -15,7 +16,6 @@ interface Args {
   properties: Property[];
   canModify: boolean;
   lang: AppLanguage;
-  t: any;
   onAddTenant: (tenant: Tenant) => void;
   onAddContract: (contract: Contract) => void;
   onUpdateContractStatus: (contractId: string, status: ContractStatus) => void;
@@ -32,7 +32,6 @@ export function useTenantsController({
   properties,
   canModify,
   lang,
-  t,
   onAddTenant,
   onAddContract,
   onUpdateContractStatus,
@@ -40,6 +39,8 @@ export function useTenantsController({
   onDeleteContract,
   logAction,
 }: Args) {
+  const t = useTranslations('Tenants');
+  const tCommon = useTranslations('Common');
   const confirm = useConfirm();
   const vacantRooms = rooms.filter((r) => r.status === 'vacant');
 
@@ -53,7 +54,6 @@ export function useTenantsController({
   const [tenantEmail, setTenantEmail] = useState('');
   const [tenantCheckIn, setTenantCheckIn] = useState('2026-06-15');
   const [tenantEmergency, setTenantEmergency] = useState('');
-  const [tenantTelegramChatId, setTenantTelegramChatId] = useState('');
   const [tenantTelegramAutoSend, setTenantTelegramAutoSend] = useState(true);
 
   const [conRoomId, setConRoomId] = useState('');
@@ -81,8 +81,8 @@ export function useTenantsController({
 
   function handleCreateTenant(e: React.FormEvent) {
     e.preventDefault();
-    if (!canModify) return toast.error(t.insufficient_permissions);
-    if (!tenantName || !tenantNameKh || !tenantPhone || !tenantNID) return toast.error(t.please_fill);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
+    if (!tenantName || !tenantNameKh || !tenantPhone || !tenantNID) return toast.error(tCommon('please_fill'));
 
     onAddTenant({
       id: 'tenant-' + Date.now(),
@@ -93,14 +93,13 @@ export function useTenantsController({
       email: tenantEmail || undefined,
       checkInDate: tenantCheckIn,
       emergencyContact: tenantEmergency,
-      telegramChatId: tenantTelegramChatId || undefined,
       telegramAutoSend: tenantTelegramAutoSend,
     });
     logAction(
       'Registered Tenant',
       'បានចុះឈ្មោះអ្នកជួលថ្មី',
-      `Registered tenant "${tenantName}" ${tenantTelegramChatId ? `(Telegram Chat ID: ${tenantTelegramChatId})` : ''}`,
-      `បានចុះឈ្មោះប័ណ្ណស្នាក់នៅរបស់អតិថិជនឈ្មោះ "${tenantNameKh}" ${tenantTelegramChatId ? `(លេខសម្គាល់ Telegram: ${tenantTelegramChatId})` : ''}`
+      `Registered tenant "${tenantName}"`,
+      `បានចុះឈ្មោះប័ណ្ណស្នាក់នៅរបស់អតិថិជនឈ្មោះ "${tenantNameKh}"`
     );
 
     setTenantName('');
@@ -110,7 +109,6 @@ export function useTenantsController({
     setTenantEmail('');
     setTenantCheckIn('2026-06-15');
     setTenantEmergency('');
-    setTenantTelegramChatId('');
     setTenantTelegramAutoSend(true);
     setShowTenantModal(false);
   }
@@ -126,7 +124,7 @@ export function useTenantsController({
 
   function handleCreateContract(e: React.FormEvent) {
     e.preventDefault();
-    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
     if (
       !conRoomId ||
       !conTenantId ||
@@ -137,7 +135,7 @@ export function useTenantsController({
       !conElecRate ||
       !conWaterRate
     ) {
-      return toast.error(t.please_fill);
+      return toast.error(tCommon('please_fill'));
     }
 
     onAddContract({
@@ -170,7 +168,7 @@ export function useTenantsController({
   }
 
   function handleUpdateStatus(conId: string, status: ContractStatus) {
-    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
     onUpdateContractStatus(conId, status);
     const contract = contracts.find((c) => c.id === conId);
     const rName = getRoomName(rooms, properties, contract?.roomId || '', lang);
@@ -183,10 +181,10 @@ export function useTenantsController({
   }
 
   async function handleDeleteContractClick(conId: string) {
-    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
     const ok = await confirm({
-      title: t.confirm_delete,
-      confirmLabel: t.delete ?? 'Delete',
+      title: tCommon('confirm_delete'),
+      confirmLabel: tCommon('delete'),
       variant: 'destructive',
     });
     if (ok) {
@@ -201,18 +199,14 @@ export function useTenantsController({
   }
 
   async function handleDeleteTenantClick(tenantId: string, name: string) {
-    if (!canModify) return toast.error(t.insufficient_permissions);
+    if (!canModify) return toast.error(tCommon('insufficient_permissions'));
     const hasActive = contracts.some((c) => c.tenantId === tenantId && c.status === 'active');
     if (hasActive) {
-      return toast.error(
-        lang === 'en'
-          ? 'Cannot delete! This tenant currently holds an active rental contract.'
-          : 'មិនអាចលុបបានទេ! អ្នកជួលនេះបច្ចុប្បន្នកំពុងមានកិច្ចសន្យាជួលដ៏សកម្មមួយ។'
-      );
+      return toast.error(t('cannot_delete_active_contract'));
     }
     const ok = await confirm({
-      title: t.confirm_delete,
-      confirmLabel: t.delete ?? 'Delete',
+      title: tCommon('confirm_delete'),
+      confirmLabel: tCommon('delete'),
       variant: 'destructive',
     });
     if (ok) {
@@ -245,8 +239,6 @@ export function useTenantsController({
     setTenantCheckIn,
     tenantEmergency,
     setTenantEmergency,
-    tenantTelegramChatId,
-    setTenantTelegramChatId,
     tenantTelegramAutoSend,
     setTenantTelegramAutoSend,
     handleCreateTenant,

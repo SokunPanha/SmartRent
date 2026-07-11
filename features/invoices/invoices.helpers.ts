@@ -5,11 +5,11 @@ export interface MonthOption {
   label: string;
 }
 
-export function getActiveMonths(lang: AppLanguage): MonthOption[] {
+export function getActiveMonths(t: (key: string) => string): MonthOption[] {
   return [
-    { value: 4, label: lang === 'en' ? 'April' : 'មេសា' },
-    { value: 5, label: lang === 'en' ? 'May' : 'ឧសភា' },
-    { value: 6, label: lang === 'en' ? 'June' : 'មិថុនា' },
+    { value: 4, label: t('month_4') },
+    { value: 5, label: t('month_5') },
+    { value: 6, label: t('month_6') },
   ];
 }
 

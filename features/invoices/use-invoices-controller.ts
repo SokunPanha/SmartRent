@@ -2,11 +2,21 @@
 
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
 import { getRoomNameByInvoice, generateTelegramInvoiceHTML } from './invoices.helpers';
 
 type PayMethod = 'cash' | 'aba' | 'wing' | 'other';
 type TestStatus = 'success' | 'failed' | 'loading' | '';
+
+async function dispatchToTelegram(tenantId: string, text: string) {
+  const res = await fetch('/api/telegram/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tenantId, text }),
+  });
+  return { ok: res.ok, data: await res.json() };
+}
 
 interface Args {
   invoices: Invoice[];
@@ -16,7 +26,6 @@ interface Args {
   canGenerate: boolean;
   canPay: boolean;
   lang: AppLanguage;
-  t: any;
   onAutoGenerateInvoices: () => void;
   onRecordPayment: (
     invoiceId: string,
@@ -28,8 +37,6 @@ interface Args {
   onUpdateInvoices?: (updatedInvoices: Invoice[]) => void;
 }
 
-const MOCK = 'MOCK_TELEGRAM_TOKEN';
-
 /** Owns filtering, payment, telegram-dispatch and print state for the invoices feature. */
 export function useInvoicesController({
   invoices,
@@ -39,12 +46,13 @@ export function useInvoicesController({
   canGenerate,
   canPay,
   lang,
-  t,
   onAutoGenerateInvoices,
   onRecordPayment,
   logAction,
   onUpdateInvoices,
 }: Args) {
+  const t = useTranslations('Invoices');
+  const tCommon = useTranslations('Common');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
 
@@ -54,15 +62,6 @@ export function useInvoicesController({
   const [payMethod, setPayMethod] = useState<PayMethod>('aba');
   const [payNotes, setPayNotes] = useState('');
 
-  const [telegramBotToken, setTelegramBotToken] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return (
-        localStorage.getItem('khrent_telegram_bot_token') ||
-        '7829482938:AAE_MOCK_TELEGRAM_TOKEN_DEFAULT'
-      );
-    }
-    return '7829482938:AAE_MOCK_TELEGRAM_TOKEN_DEFAULT';
-  });
   const [telegramScheduledDate, setTelegramScheduledDate] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('khrent_telegram_scheduled_date') || '2026-06-18';
@@ -99,11 +98,6 @@ export function useInvoicesController({
 
   const roomName = (inv: Invoice) => getRoomNameByInvoice(inv, rooms, properties, lang);
 
-  function handleSaveToken(token: string) {
-    setTelegramBotToken(token);
-    if (typeof window !== 'undefined') localStorage.setItem('khrent_telegram_bot_token', token);
-  }
-
   function handleSaveScheduledDate(date: string) {
     setTelegramScheduledDate(date);
     if (typeof window !== 'undefined')
@@ -119,19 +113,11 @@ export function useInvoicesController({
   }
 
   async function handleTestBotConnection() {
-    if (!telegramBotToken || telegramBotToken.trim() === '') {
-      toast.error(lang === 'en' ? 'Please enter a Bot Token first.' : 'សូមបញ្ចូលលេខសម្គាល់ Bot សិន។');
-      return;
-    }
     setTelegramTestStatus('loading');
-    if (telegramBotToken.includes(MOCK)) {
-      setTimeout(() => setTelegramTestStatus('success'), 1000);
-      return;
-    }
     try {
-      const res = await fetch(`https://api.telegram.org/bot${telegramBotToken}/getMe`);
+      const res = await fetch('/api/telegram/status');
       const body = await res.json();
-      setTelegramTestStatus(res.ok && body.ok ? 'success' : 'failed');
+      setTelegramTestStatus(res.ok && body.connected ? 'success' : 'failed');
     } catch {
       setTelegramTestStatus('failed');
     }
@@ -140,57 +126,19 @@ export function useInvoicesController({
   async function handleDispatchSingleInvoice(invoice: Invoice) {
     const tenant = tenants.find((tIdx) => tIdx.id === invoice.tenantId);
     if (!tenant || !tenant.telegramChatId) {
-      toast.error(
-        lang === 'en'
-          ? "Error: This tenant doesn't have a Telegram Chat ID configured. Register or update the Tenant's Chat ID first."
-          : 'កំហុស៖ អតិថិជននេះមិនទាន់មានលេខសម្គាល់ Telegram ឡើយ។ '
-      );
+      toast.error(t('telegram_missing_chat_id'));
       return;
     }
 
     setTelegramIsDispatching(true);
-    setTelegramLogs([`${lang === 'en' ? 'Dispatching' : 'កំពុងបញ្ជូន'} Invoice ${invoice.invoiceNumber}...`]);
+    setTelegramLogs([`${t('dispatching')} Invoice ${invoice.invoiceNumber}...`]);
 
-    const isMock = telegramBotToken.includes(MOCK);
     const rName = roomName(invoice);
     const textHTML = generateTelegramInvoiceHTML(invoice, tenant.name, rName, lang);
 
-    if (isMock) {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      const updated = invoices.map((i) =>
-        i.id === invoice.id
-          ? {
-              ...i,
-              telegramStatus: 'sent' as const,
-              telegramSentDate: new Date().toISOString().split('T')[0],
-              telegramScheduledDate,
-              telegramError: undefined,
-            }
-          : i
-      );
-      onUpdateInvoices?.(updated);
-      setTelegramLogs((prev) => [
-        ...prev,
-        `✅ MOCK DISPATCH SUCCESS: Message sent to chat ${tenant.telegramChatId}`,
-      ]);
-      setTelegramIsDispatching(false);
-      logAction(
-        'Telegram Dispatch (Simulation)',
-        'បញ្ជូនវិក្កយបត្រតាមតេឡេក្រាម (សម្តែង)',
-        `Dispatched simulated invoice notification ${invoice.invoiceNumber} to ${tenant.name}`,
-        `បានបញ្ជូនវិក្កយបត្រសម្តែង ${invoice.invoiceNumber} ទៅកាន់ ${tenant.nameKh} ជោគជ័យ`
-      );
-      return;
-    }
-
     try {
-      const res = await fetch('/api/telegram/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: telegramBotToken, chatId: tenant.telegramChatId, text: textHTML }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
+      const { ok: resOk, data } = await dispatchToTelegram(tenant.id, textHTML);
+      if (resOk && data.success) {
         const updated = invoices.map((i) =>
           i.id === invoice.id
             ? {
@@ -233,11 +181,7 @@ export function useInvoicesController({
     });
 
     if (dispatchable.length === 0) {
-      toast.error(
-        lang === 'en'
-          ? 'No dispatchable invoices found. Ensure tenants have a configured Telegram Chat ID and that invoices are unpaid.'
-          : 'មិនមានវិក្កយបត្រដែលអាចបញ្ជូនបានឡើយ។ សូមពិនិត្យថាតើអតិថិជនមាន លេខសម្គាល់ Telegram និងវិក្កយបត្រពុំទាន់ទូទាត់ប្រាក់។'
-      );
+      toast.error(t('no_dispatchable_invoices'));
       return;
     }
 
@@ -245,7 +189,6 @@ export function useInvoicesController({
     setTelegramProgress(0);
     setTelegramLogs([`🚀 Starting scheduled auto-send cycle for ${dispatchable.length} invoices...`]);
 
-    const isMock = telegramBotToken.includes(MOCK);
     let successCount = 0;
     let failedCount = 0;
     let localInvoices = [...invoices];
@@ -263,60 +206,38 @@ export function useInvoicesController({
 
       const textHTML = generateTelegramInvoiceHTML(invoice, tenant.name, rName, lang);
 
-      if (isMock) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        localInvoices = localInvoices.map((i) =>
-          i.id === invoice.id
-            ? {
-                ...i,
-                telegramStatus: 'sent' as const,
-                telegramSentDate: new Date().toISOString().split('T')[0],
-                telegramScheduledDate,
-                telegramError: undefined,
-              }
-            : i
-        );
-        successCount++;
-        setTelegramLogs((prev) => [...prev, `   ✅ Simulated sent successfully to Chat ID ${tenant.telegramChatId}`]);
-      } else {
-        try {
-          const res = await fetch('/api/telegram/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: telegramBotToken, chatId: tenant.telegramChatId, text: textHTML }),
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            localInvoices = localInvoices.map((i) =>
-              i.id === invoice.id
-                ? {
-                    ...i,
-                    telegramStatus: 'sent' as const,
-                    telegramSentDate: new Date().toISOString().split('T')[0],
-                    telegramScheduledDate,
-                    telegramError: undefined,
-                  }
-                : i
-            );
-            successCount++;
-            setTelegramLogs((prev) => [...prev, `   ✅ Dispatched message ID: ${data.messageId || 'N/A'}`]);
-          } else {
-            const errMsg = data.error || 'Server proxy failed';
-            localInvoices = localInvoices.map((i) =>
-              i.id === invoice.id ? { ...i, telegramStatus: 'failed' as const, telegramError: errMsg } : i
-            );
-            failedCount++;
-            setTelegramLogs((prev) => [...prev, `   ❌ Failed: ${errMsg}`]);
-          }
-        } catch (err: any) {
+      try {
+        const { ok: resOk, data } = await dispatchToTelegram(tenant.id, textHTML);
+        if (resOk && data.success) {
           localInvoices = localInvoices.map((i) =>
             i.id === invoice.id
-              ? { ...i, telegramStatus: 'failed' as const, telegramError: err.message || 'Network connection failed' }
+              ? {
+                  ...i,
+                  telegramStatus: 'sent' as const,
+                  telegramSentDate: new Date().toISOString().split('T')[0],
+                  telegramScheduledDate,
+                  telegramError: undefined,
+                }
               : i
           );
+          successCount++;
+          setTelegramLogs((prev) => [...prev, `   ✅ Dispatched message ID: ${data.messageId || 'N/A'}`]);
+        } else {
+          const errMsg = data.error || 'Server proxy failed';
+          localInvoices = localInvoices.map((i) =>
+            i.id === invoice.id ? { ...i, telegramStatus: 'failed' as const, telegramError: errMsg } : i
+          );
           failedCount++;
-          setTelegramLogs((prev) => [...prev, `   ❌ Error: ${err.message || 'Connection error'}`]);
+          setTelegramLogs((prev) => [...prev, `   ❌ Failed: ${errMsg}`]);
         }
+      } catch (err: any) {
+        localInvoices = localInvoices.map((i) =>
+          i.id === invoice.id
+            ? { ...i, telegramStatus: 'failed' as const, telegramError: err.message || 'Network connection failed' }
+            : i
+        );
+        failedCount++;
+        setTelegramLogs((prev) => [...prev, `   ❌ Error: ${err.message || 'Connection error'}`]);
       }
     }
 
@@ -337,11 +258,7 @@ export function useInvoicesController({
 
   function handleOpenPaymentClick(inv: Invoice) {
     if (!canPay) {
-      toast.error(
-        lang === 'en'
-          ? 'Action Denied: Your staff persona lacks credit logging permission.'
-          : 'ប្រតិបត្តិការត្រូវបានរារាំង៖ បុគ្គលិកកត់កុងទ័រមិនមានសិទ្ធិកត់ត្រាការទូទាត់ប្រាក់ឡើយ។'
-      );
+      toast.error(t('payment_action_denied'));
       return;
     }
     const remaining = inv.totalAmountUSD - inv.amountPaidUSD;
@@ -356,7 +273,7 @@ export function useInvoicesController({
     e.preventDefault();
     if (!canPay) return;
     if (!payAmount || payAmount <= 0) {
-      toast.error(lang === 'en' ? 'Please enter a valid payment sum.' : 'សូមបញ្ចូលចំនួនទឹកប្រាក់ត្រឹមត្រូវ។');
+      toast.error(t('invalid_payment_amount'));
       return;
     }
     const currentInv = invoices.find((inv) => inv.id === targetInvoiceId);
@@ -364,11 +281,7 @@ export function useInvoicesController({
 
     const remaining = currentInv.totalAmountUSD - currentInv.amountPaidUSD;
     if (payAmount > Number((remaining + 0.01).toFixed(2))) {
-      toast.error(
-        lang === 'en'
-          ? `Error: Payment amount cannot exceed the remaining balance ($${remaining.toFixed(2)}).`
-          : `កំហុស៖ ចំនួនទឹកប្រាក់ទូទាត់ មិនអាចលើសពីចំនួននៅខ្វះឡើយ ($${remaining.toFixed(2)})។`
-      );
+      toast.error(t('payment_exceeds_balance', { amount: remaining.toFixed(2) }));
       return;
     }
 
@@ -385,7 +298,7 @@ export function useInvoicesController({
 
   function handleGenerateClick() {
     if (!canGenerate) {
-      toast.error(t.insufficient_permissions);
+      toast.error(tCommon('insufficient_permissions'));
       return;
     }
     onAutoGenerateInvoices();
@@ -416,7 +329,6 @@ export function useInvoicesController({
     printInvoice,
     setPrintInvoice,
     // telegram
-    telegramBotToken,
     telegramScheduledDate,
     telegramIsSettingsOpen,
     setTelegramIsSettingsOpen,
@@ -425,7 +337,6 @@ export function useInvoicesController({
     setTelegramLogs,
     telegramProgress,
     telegramTestStatus,
-    handleSaveToken,
     handleSaveScheduledDate,
     handleTestBotConnection,
     handleDispatchSingleInvoice,

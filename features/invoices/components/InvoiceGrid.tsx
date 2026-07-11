@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Coins, Printer, CheckCircle2, Lightbulb, Droplet, ClipboardList, Send } from 'lucide-react';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
 import { formatUSD, formatKHR } from '@/lib/format';
@@ -17,7 +18,6 @@ export function InvoiceGrid({
   onPrint,
   onDispatch,
   onPay,
-  t,
   lang,
 }: {
   invoices: Invoice[];
@@ -29,18 +29,16 @@ export function InvoiceGrid({
   onPrint: (inv: Invoice) => void;
   onDispatch: (inv: Invoice) => void;
   onPay: (inv: Invoice) => void;
-  t: any;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('Invoices');
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="invoices-registry-grid-list">
       {invoices.length === 0 ? (
         <div className="md:col-span-2 lg:col-span-3 bg-card border border-border p-16 rounded-xl text-center shadow-3xs">
           <ClipboardList className="w-10 h-10 text-muted-foreground mx-auto stroke-1" />
           <p className="text-sm text-muted-foreground mt-2.5 font-sans italic">
-            {lang === 'en'
-              ? 'No invoices match active criteria filters.'
-              : 'មិនមានវិក្កយបត្រត្រូវនឹងតម្រងដែលបានជ្រើសរើសឡើយ។'}
+            {t('no_invoices_match_filters')}
           </p>
         </div>
       ) : (
@@ -52,16 +50,16 @@ export function InvoiceGrid({
           const waterUnits = inv.waterCurr - inv.waterPrev;
 
           let badgeStyle = 'bg-destructive/10 border-destructive/20 text-destructive';
-          let label = t.unpaid;
+          let label = t('unpaid');
           if (inv.status === 'paid') {
             badgeStyle = 'bg-chart-2/10 border-chart-2/20 text-chart-2';
-            label = t.paid;
+            label = t('paid');
           } else if (inv.status === 'partial') {
             badgeStyle = 'bg-chart-1/10 border-chart-1/20 text-chart-1';
-            label = t.partial;
+            label = t('partial');
           } else if (inv.status === 'overdue') {
             badgeStyle = 'bg-destructive/20 border-destructive/30 text-destructive animate-pulse';
-            label = t.overdue;
+            label = t('overdue');
           }
 
           return (
@@ -84,11 +82,11 @@ export function InvoiceGrid({
 
                 <div className="py-4 space-y-2 border-b border-dashed border-border text-xs font-sans">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t.tenant_name}</span>
+                    <span className="text-muted-foreground">{t('tenant_name')}</span>
                     <span className="font-semibold text-foreground">{tenantName}</span>
                   </div>
                   <div className="flex justify-between font-mono">
-                    <span className="text-muted-foreground font-sans">{lang === 'en' ? 'Billing Cycle:' : 'លំដាប់ខែ៖'}</span>
+                    <span className="text-muted-foreground font-sans">{t('billing_cycle')}</span>
                     <span className="text-foreground font-bold">
                       {cycleMonth} {inv.year}
                     </span>
@@ -96,27 +94,27 @@ export function InvoiceGrid({
 
                   <div className="p-2.5 bg-muted rounded-lg flex flex-col gap-1 text-[11px] text-muted-foreground font-sans mt-2">
                     <div className="flex justify-between">
-                      <span>{lang === 'en' ? 'Base Rent Amount:' : 'ថ្លៃឈ្នួលបន្ទប់មូលដ្ឋាន៖'}</span>
+                      <span>{t('base_rent_amount')}</span>
                       <span className="font-mono font-bold text-foreground">${inv.rentAmountUSD}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="flex items-center gap-0.5 text-chart-1 font-semibold">
                         <Lightbulb className="w-3.5 h-3.5" />
-                        {lang === 'en' ? 'Electric Cost ' : 'ថ្លៃអគ្គិសនី '} ({elecUnits} kWh)
+                        {t('electric_cost')} ({elecUnits} kWh)
                       </span>
                       <span className="font-mono text-foreground">${inv.electricityCostUSD.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="flex items-center gap-0.5 text-info font-semibold">
                         <Droplet className="w-3.5 h-3.5" />
-                        {lang === 'en' ? 'Water Cost ' : 'ថ្លៃទឹក '} ({waterUnits} m³)
+                        {t('water_cost')} ({waterUnits} m³)
                       </span>
                       <span className="font-mono text-foreground">${inv.waterCostUSD.toFixed(2)}</span>
                     </div>
                   </div>
 
                   <div className="flex justify-between pt-2 border-t border-border">
-                    <span className="font-bold text-foreground">{t.total_amount}</span>
+                    <span className="font-bold text-foreground">{t('total_amount')}</span>
                     <div className="text-right">
                       <span className="font-bold text-base text-chart-2 font-mono block">
                         {formatUSD(inv.totalAmountUSD)}
@@ -130,7 +128,7 @@ export function InvoiceGrid({
               </div>
 
               <div className="mt-3.5 pt-2 border-t border-dashed border-border flex items-center justify-between text-[10px]">
-                <span className="text-muted-foreground font-sans">{lang === 'en' ? 'Telegram delivery:' : 'ផ្ញើក្នុងតេឡេក្រាម៖'}</span>
+                <span className="text-muted-foreground font-sans">{t('telegram_delivery')}</span>
                 {inv.telegramStatus === 'sent' ? (
                   <span className="text-chart-2 font-mono font-bold flex items-center gap-1 bg-chart-2/10 border border-chart-2/20 px-1.5 py-0.5 rounded">
                     <span className="w-1.5 h-1.5 rounded-full bg-chart-2"></span>
@@ -156,16 +154,16 @@ export function InvoiceGrid({
                 <button
                   onClick={() => onPrint(inv)}
                   className="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-muted hover:bg-muted border border-border text-foreground transition flex items-center justify-center gap-1 cursor-pointer"
-                  title={t.print_invoice}
+                  title={t('print_invoice')}
                 >
                   <Printer className="w-3.5 h-3.5 text-muted-foreground" />
-                  {lang === 'en' ? 'Receipt' : 'បោះពុម្ព'}
+                  {t('receipt')}
                 </button>
 
                 <button
                   onClick={() => onDispatch(inv)}
                   className="py-1.5 px-3 rounded-lg bg-info/10 hover:bg-info/20 border border-info/30 text-info font-bold transition flex items-center justify-center gap-1 cursor-pointer"
-                  title={lang === 'en' ? 'Send Telegram' : 'ផ្ញើតេឡេក្រាម'}
+                  title={t('send_telegram')}
                 >
                   <Send className="w-3.5 h-3.5 text-info" />
                 </button>
@@ -176,19 +174,19 @@ export function InvoiceGrid({
                     className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-chart-2 hover:bg-chart-2/90 text-white transition flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <Coins className="w-3.5 h-3.5" />
-                    {lang === 'en' ? 'Pay' : 'បង់പ്രាក់'}
+                    {t('pay')}
                   </button>
                 ) : inv.status !== 'paid' ? (
                   <button
                     disabled
                     className="flex-1 py-1.5 text-xs text-center border border-dashed border-border text-muted-foreground rounded-lg cursor-not-allowed animate-pulse"
                   >
-                    {lang === 'en' ? 'Unpaid' : 'មិនទាន់បង់'}
+                    {t('unpaid')}
                   </button>
                 ) : (
                   <div className="flex-1 py-1.5 text-xs bg-chart-2/10 text-chart-2 font-bold border border-chart-2/20 rounded-lg flex items-center justify-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5 text-chart-2" />
-                    {lang === 'en' ? 'Cleared' : 'បង់រួច'}
+                    {t('cleared')}
                   </div>
                 )}
               </div>

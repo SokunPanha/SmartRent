@@ -12,6 +12,26 @@ export function useTenants() {
   return useQuery({ queryKey: tenantKeys.all, queryFn: tenantsApi.list });
 }
 
+/** Fetches a tenant's message thread. Only enabled while the panel for that tenant is open. */
+export function useTenantMessages(tenantId: string | null) {
+  return useQuery({
+    queryKey: [...tenantKeys.all, tenantId, 'messages'],
+    queryFn: () => tenantsApi.getMessages(tenantId!),
+    enabled: !!tenantId,
+  });
+}
+
+export function useSendTenantMessage(tenantId: string | null) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: string) => tenantsApi.sendMessage(tenantId!, body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: [...tenantKeys.all, tenantId, 'messages'] });
+    },
+    onError: (e) => toast.error(e.message),
+  });
+}
+
 export function useContracts() {
   return useQuery({ queryKey: contractKeys.all, queryFn: contractsApi.list });
 }
@@ -37,7 +57,12 @@ export function useTenantMutations() {
     onError: (e) => toast.error(e.message),
   });
 
-  return { create, remove };
+  const generateTelegramCode = useMutation({
+    mutationFn: tenantsApi.generateTelegramCode,
+    onError: (e) => toast.error(e.message),
+  });
+
+  return { create, remove, generateTelegramCode };
 }
 
 /** Contract mutations also touch room status, so rooms are invalidated too. */

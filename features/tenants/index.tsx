@@ -1,9 +1,11 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Tenant, Contract, Room, Property, UserRole, AppLanguage } from '@/lib/types';
 import { PermissionBanner } from '@/components/shared/PermissionBanner';
 import { useCan } from '@/features/admin/permissions.queries';
 import { useTenantsController } from './use-tenants-controller';
+import { useTenantMutations } from './tenants.queries';
 import { TenantList } from './components/TenantList';
 import { ContractList } from './components/ContractList';
 import { TenantModal } from './components/TenantModal';
@@ -16,7 +18,6 @@ interface TenantsContractsProps {
   properties: Property[];
   activeRole: UserRole;
   lang: AppLanguage;
-  t: any;
   onAddTenant: (tenant: Tenant) => void;
   onAddContract: (contract: Contract) => void;
   onUpdateContractStatus: (contractId: string, status: 'active' | 'suspended' | 'expired') => void;
@@ -32,7 +33,6 @@ export default function TenantsContracts({
   properties,
   activeRole,
   lang,
-  t,
   onAddTenant,
   onAddContract,
   onUpdateContractStatus,
@@ -40,8 +40,10 @@ export default function TenantsContracts({
   onDeleteContract,
   logAction,
 }: TenantsContractsProps) {
+  const t = useTranslations('Tenants');
   const can = useCan();
   const canModify = can('tenants.manage');
+  const { generateTelegramCode } = useTenantMutations();
 
   const c = useTenantsController({
     tenants,
@@ -50,7 +52,6 @@ export default function TenantsContracts({
     properties,
     canModify,
     lang,
-    t,
     onAddTenant,
     onAddContract,
     onUpdateContractStatus,
@@ -62,14 +63,7 @@ export default function TenantsContracts({
   return (
     <div className="space-y-6" id="tenants-contracts-container">
       {!canModify && (
-        <PermissionBanner
-          lang={lang}
-          message={
-            lang === 'en'
-              ? `${activeRole.toUpperCase()} persona cannot execute contracts or enroll tenants. Switch roles to modify records.`
-              : `តួនាទីជាប្រព័ន្ធ ${activeRole.toUpperCase()} មិនអនុញ្ញាតឱ្យកែប្រែកិច្ចសន្យាឡើយ។ សូមផ្លាស់ប្តូរទៅកាន់ Owner ឬ Manager។`
-          }
-        />
+        <PermissionBanner message={t('permission_banner_message', { role: activeRole.toUpperCase() })} />
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -78,7 +72,7 @@ export default function TenantsContracts({
           canModify={canModify}
           onAdd={c.openTenantModal}
           onDelete={c.handleDeleteTenantClick}
-          t={t}
+          onGenerateTelegramCode={(tenantId) => generateTelegramCode.mutateAsync(tenantId)}
           lang={lang}
         />
         <ContractList
@@ -91,13 +85,12 @@ export default function TenantsContracts({
           onAdd={c.openContractModal}
           onUpdateStatus={c.handleUpdateStatus}
           onDelete={c.handleDeleteContractClick}
-          t={t}
           lang={lang}
         />
       </div>
 
-      <TenantModal c={c} t={t} lang={lang} />
-      <ContractModal c={c} tenants={tenants} rooms={rooms} properties={properties} t={t} lang={lang} />
+      <TenantModal c={c} lang={lang} />
+      <ContractModal c={c} tenants={tenants} rooms={rooms} properties={properties} lang={lang} />
     </div>
   );
 }

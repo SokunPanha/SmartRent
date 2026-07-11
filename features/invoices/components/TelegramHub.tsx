@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Send, Settings, Loader2, CalendarDays } from 'lucide-react';
 import { Tenant, AppLanguage } from '@/lib/types';
 import { useInvoicesController } from '../use-invoices-controller';
@@ -13,9 +14,10 @@ export function TelegramHub({
   tenants: Tenant[];
   lang: AppLanguage;
 }) {
-  const recipients = tenants.filter((t) => !!t.telegramChatId).length;
+  const t = useTranslations('Invoices');
+  const recipients = tenants.filter((tn) => !!tn.telegramChatId).length;
   const queued = c.filteredInvoices.filter(
-    (inv) => inv.status !== 'paid' && tenants.some((t) => t.id === inv.tenantId && t.telegramChatId)
+    (inv) => inv.status !== 'paid' && tenants.some((tn) => tn.id === inv.tenantId && tn.telegramChatId)
   ).length;
   const sent = c.filteredInvoices.filter((inv) => inv.telegramStatus === 'sent').length;
   const failed = c.filteredInvoices.filter((inv) => inv.telegramStatus === 'failed').length;
@@ -35,14 +37,10 @@ export function TelegramHub({
           </div>
           <h3 className="text-lg font-bold font-sans tracking-tight flex items-center gap-1.5">
             <Send className="w-5 h-5 text-primary" />
-            {lang === 'en'
-              ? 'Telegram Invoice Delivery & Scheduler Hub'
-              : 'ប្រព័ន្ធស្វ័យប្រវត្តិបញ្ជូនវិក្កយបត្រតេឡេក្រាម'}
+            {t('telegram_hub_title')}
           </h3>
           <p className="text-xs text-muted-foreground font-sans max-w-xl">
-            {lang === 'en'
-              ? 'Generate, schedule, and instantly dispatch rental invoices directly to tenants on Telegram. Set custom automated dates for monthly delivery sweeps.'
-              : 'បង្កើត គ្រោងទុក និងបញ្ជូនវិក្កយបត្រថ្លៃឈ្នួលបន្ទប់សរុប ទៅទូរស័ព្ទរបស់អតិថិជននៅលើតេឡេក្រាមប្រចាំខែ។'}
+            {t('telegram_hub_subtitle')}
           </p>
         </div>
 
@@ -51,14 +49,14 @@ export function TelegramHub({
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-card/10 hover:bg-card/20 text-primary hover:text-foreground rounded-lg transition border border-border cursor-pointer"
         >
           <Settings className="w-4 h-4" />
-          {lang === 'en' ? 'Bot Credentials' : 'កំណត់លេខសម្គាល់ Bot'}
+          {t('bot_credentials')}
         </button>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
         <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
-            {lang === 'en' ? 'Active Recipients' : 'អ្នកជួលភ្ជាប់តេឡេក្រាម'}
+            {t('active_recipients')}
           </p>
           <p className="text-xl font-mono font-bold text-primary mt-1">
             {recipients} <span className="text-xs text-muted-foreground font-sans">/ {tenants.length}</span>
@@ -66,19 +64,19 @@ export function TelegramHub({
         </div>
         <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
-            {lang === 'en' ? 'Scheduled Queue' : 'វិក្កយបត្រត្រូវបាញ់'}
+            {t('scheduled_queue')}
           </p>
           <p className="text-xl font-mono font-bold text-chart-1 mt-1">{queued}</p>
         </div>
         <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
-            {lang === 'en' ? 'Successful Sends' : 'វិក្កយបត្រផ្ញើរួច'}
+            {t('successful_sends')}
           </p>
           <p className="text-xl font-mono font-bold text-chart-2 mt-1">{sent}</p>
         </div>
         <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
-            {lang === 'en' ? 'Deliveries Failed' : 'ការផ្ញើបរាជ័យ'}
+            {t('deliveries_failed')}
           </p>
           <p className="text-xl font-mono font-bold text-destructive mt-1">{failed}</p>
         </div>
@@ -88,7 +86,7 @@ export function TelegramHub({
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center shrink-0">
           <div className="space-y-1">
             <label className="text-[10px] uppercase font-bold text-primary font-sans tracking-wider block">
-              {lang === 'en' ? 'Scheduled Auto-Send Date' : 'កាលបរិច្ឆេទស្កេនបញ្ជូនស្វ័យប្រវត្តិ'}
+              {t('scheduled_auto_send_date')}
             </label>
             <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground">
               <CalendarDays className="w-4 h-4 text-muted-foreground" />
@@ -115,12 +113,12 @@ export function TelegramHub({
             {c.telegramIsDispatching ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                {lang === 'en' ? 'Dispatching Queue...' : 'កំពុងបញ្ជូនស្វ័យប្រវត្តិ...'}
+                {t('dispatching_queue')}
               </>
             ) : (
               <>
                 <Send className="w-4 h-4" />
-                {lang === 'en' ? 'Run Scheduled Send Sweep' : 'ដំណើរការបញ្ជូនស្វ័យប្រវត្តិប្រចាំខែ'}
+                {t('run_scheduled_send_sweep')}
               </>
             )}
           </button>
@@ -131,89 +129,44 @@ export function TelegramHub({
         <div className="bg-background/80 p-4 rounded-xl border border-border space-y-3 font-sans text-xs text-muted-foreground">
           <h4 className="font-bold text-foreground text-sm flex items-center gap-1">
             <Settings className="w-4 h-4 text-primary" />
-            {lang === 'en'
-              ? 'Telegram Bot Channel Identity & Authentication'
-              : 'ការកំណត់អត្តសញ្ញាណប៊្លូធូសមេសសិញតេឡេក្រាម'}
+            {t('telegram_bot_connection')}
           </h4>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="space-y-1 md:col-span-2">
-              <label className="text-[10px] text-muted-foreground font-bold uppercase block tracking-wider">
-                Bot Token (from @BotFather)
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="password"
-                  placeholder="e.g. 729184938:AAE89..."
-                  value={c.telegramBotToken}
-                  onChange={(e) => c.handleSaveToken(e.target.value)}
-                  className="w-full bg-card border border-border px-3 py-2 rounded-lg font-mono text-foreground text-[11px] focus:outline-none focus:border-primary shrink"
-                />
-                <button
-                  onClick={c.handleTestBotConnection}
-                  disabled={c.telegramTestStatus === 'loading'}
-                  className="px-3 py-2 bg-card/10 hover:bg-card/15 text-primary font-semibold rounded-lg shrink-0 transition cursor-pointer"
-                >
-                  {c.telegramTestStatus === 'loading' ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : lang === 'en' ? (
-                    'Validate'
-                  ) : (
-                    'តេស្ត'
-                  )}
-                </button>
-              </div>
-              {c.telegramTestStatus === 'success' && (
-                <p className="text-[10px] text-chart-2 font-bold font-mono">✓ API authentication successful! Bot is ready.</p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={c.handleTestBotConnection}
+              disabled={c.telegramTestStatus === 'loading'}
+              className="px-3 py-2 bg-card/10 hover:bg-card/15 text-primary font-semibold rounded-lg shrink-0 transition cursor-pointer"
+            >
+              {c.telegramTestStatus === 'loading' ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                t('test_connection')
               )}
-              {c.telegramTestStatus === 'failed' && (
-                <p className="text-[10px] text-destructive font-bold font-mono">✗ API Connection failed. Verify Token or Bot setup.</p>
-              )}
-            </div>
-
-            <div className="bg-card/5 p-3 rounded-lg border border-border space-y-1.5 flex flex-col justify-center">
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={c.telegramBotToken.includes('MOCK_TELEGRAM_TOKEN')}
-                  onChange={(e) =>
-                    c.handleSaveToken(e.target.checked ? '7829482938:AAE_MOCK_TELEGRAM_TOKEN_DEFAULT' : '')
-                  }
-                  className="rounded border-border text-primary focus:ring-ring"
-                />
-                <div>
-                  <span className="font-bold text-foreground text-[11px] block">
-                    {lang === 'en' ? 'Sandbox / Simulate Mode' : 'របៀបសាកល្បង / បញ្ជូនសម្តែង'}
-                  </span>
-                  <span className="text-[9px] text-muted-foreground block">
-                    {lang === 'en'
-                      ? 'Simulates realistic deliveries with active terminal logs.'
-                      : 'ដំណើរការបញ្ជូនដោយមិនទាមទារ Bot Token។'}
-                  </span>
-                </div>
-              </label>
-            </div>
+            </button>
+            {c.telegramTestStatus === 'success' && (
+              <p className="text-[10px] text-chart-2 font-bold font-mono">✓ {t('bot_connected')}</p>
+            )}
+            {c.telegramTestStatus === 'failed' && (
+              <p className="text-[10px] text-destructive font-bold font-mono">
+                ✗ {t('bot_not_reachable')}
+              </p>
+            )}
           </div>
 
           <div className="pt-2 border-t border-border text-[11px] text-muted-foreground space-y-1">
             <p className="font-semibold text-primary">
-              {lang === 'en' ? 'How to set up Telegram Bot?' : 'របៀបបង្កើត Bot តេឡេក្រាម៖'}
+              {t('connecting_a_tenant')}
             </p>
             <ol className="list-decimal pl-4 space-y-0.5">
               <li>
-                {lang === 'en'
-                  ? 'Search for @BotFather in Telegram and send "/newbot" to generate a your Bot Agent.'
-                  : 'ស្កេនរក @BotFather រួចផ្ញើពាក្យ "/newbot" ដើម្បីបង្កើត Robot របស់អ្នក។'}
+                {t('connect_step_1')}
               </li>
               <li>
-                {lang === 'en'
-                  ? 'Copy the Token provided into the input field above.'
-                  : 'ចម្លង Token ដែលផ្តល់ដោយវា រួចដាក់បញ្ជូលក្នុងប្រអប់ខាងលើ។'}
+                {t('connect_step_2')}
               </li>
               <li>
-                {lang === 'en'
-                  ? 'Ask tenants to find their unique Chat ID via @CheckMyIDBot and save it onto their profile page.'
-                  : 'សុំអោយអ្នកជួលរកលេខសម្គាល់គណនីរបស់ពួកគេតាមរយះ Robot @CheckMyIDBot រួចកត់ទុកក្នុងទំព័រព័ត៌មានអ្នកជួល។'}
+                {t('connect_step_3')}
               </li>
             </ol>
           </div>

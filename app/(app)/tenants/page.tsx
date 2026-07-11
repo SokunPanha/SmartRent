@@ -13,7 +13,7 @@ import {
 import { useLogAction } from '@/features/activity/activity.queries';
 
 export default function TenantsPage() {
-  const { activeRole, lang, t } = useRent();
+  const { activeRole, lang } = useRent();
   const { data: tenants = [] } = useTenants();
   const { data: contracts = [] } = useContracts();
   const { data: rooms = [] } = useRooms();
@@ -31,7 +31,6 @@ export default function TenantsPage() {
         properties={properties}
         activeRole={activeRole}
         lang={lang}
-        t={t}
         onAddTenant={(tenant) => tenantMut.create.mutate(tenant)}
         onAddContract={(contract) => contractMut.create.mutate(contract)}
         onUpdateContractStatus={(id, status) => contractMut.updateStatus.mutate({ id, status })}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { ClipboardList } from 'lucide-react';
 import { Invoice, Contract, Room, Tenant, Property, MeterReading, UserRole, AppLanguage } from '@/lib/types';
 import { useCan } from '@/features/admin/permissions.queries';
@@ -20,7 +21,6 @@ interface InvoicesPaymentsProps {
   readings: MeterReading[];
   activeRole: UserRole;
   lang: AppLanguage;
-  t: any;
   onAutoGenerateInvoices: () => void;
   onRecordPayment: (
     invoiceId: string,
@@ -39,17 +39,17 @@ export default function InvoicesPayments({
   properties,
   activeRole,
   lang,
-  t,
   onAutoGenerateInvoices,
   onRecordPayment,
   logAction,
   onUpdateInvoices,
 }: InvoicesPaymentsProps) {
+  const t = useTranslations('Invoices');
   const can = useCan();
   const canGenerate = can('invoices.generate');
   const canPay = can('invoices.pay');
 
-  const activeMonths = getActiveMonths(lang);
+  const activeMonths = getActiveMonths(t);
 
   const c = useInvoicesController({
     invoices,
@@ -59,7 +59,6 @@ export default function InvoicesPayments({
     canGenerate,
     canPay,
     lang,
-    t,
     onAutoGenerateInvoices,
     onRecordPayment,
     logAction,
@@ -72,12 +71,8 @@ export default function InvoicesPayments({
         <div className="bg-chart-1/10 border border-chart-1/30 text-chart-1 rounded-xl p-3 text-xs flex items-center gap-2 font-sans">
           <ClipboardList className="w-4 h-4 text-chart-1 shrink-0" />
           <div>
-            <span className="font-bold">
-              {lang === 'en' ? 'STAFF PERSONA DETECTED - ' : 'កំណត់សម្គាល់តួនាទីបុគ្គលិក - '}
-            </span>
-            {lang === 'en'
-              ? 'Your profile limits payments logging. You can generate auto invoices and record readings.'
-              : 'អ្នកអាចបង្កើតអគ្គិសនីវិក្កយបត្របាន ប៉ុន្តែមិនមានសិទ្ធិកាត់កង់បង់ទឹកប្រាក់ឡើយ។'}
+            <span className="font-bold">{t('staff_persona_detected')}</span>
+            {t('staff_persona_limit_msg')}
           </div>
         </div>
       )}
@@ -90,7 +85,6 @@ export default function InvoicesPayments({
         onSelectMonth={c.setSelectedMonth}
         canGenerate={canGenerate}
         onGenerate={c.handleGenerateClick}
-        t={t}
         lang={lang}
       />
 
@@ -106,11 +100,10 @@ export default function InvoicesPayments({
         onPrint={c.setPrintInvoice}
         onDispatch={c.handleDispatchSingleInvoice}
         onPay={c.handleOpenPaymentClick}
-        t={t}
         lang={lang}
       />
 
-      <PaymentModal c={c} t={t} lang={lang} />
+      <PaymentModal c={c} lang={lang} />
 
       <PrintInvoiceModal
         invoice={c.printInvoice}
@@ -119,7 +112,6 @@ export default function InvoicesPayments({
         properties={properties}
         activeMonths={activeMonths}
         onClose={() => c.setPrintInvoice(null)}
-        t={t}
         lang={lang}
       />
     </div>

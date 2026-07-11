@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { FileText, Plus, Trash2, KeyRound, CalendarDays } from 'lucide-react';
 import { Tenant, Contract, Room, Property, AppLanguage } from '@/lib/types';
 import { getRoomName, getTenantName } from '../tenants.helpers';
@@ -12,7 +13,6 @@ export function ContractList({
   onAdd,
   onUpdateStatus,
   onDelete,
-  t,
   lang,
 }: {
   contracts: Contract[];
@@ -24,15 +24,15 @@ export function ContractList({
   onAdd: () => void;
   onUpdateStatus: (id: string, status: 'active' | 'suspended' | 'expired') => void;
   onDelete: (id: string) => void;
-  t: any;
   lang: AppLanguage;
 }) {
+  const t = useTranslations('Tenants');
   return (
     <div className="lg:col-span-7 space-y-4">
       <div className="flex justify-between items-center bg-card p-3.5 rounded-xl border border-border shadow-3xs">
         <h3 className="text-sm font-bold text-foreground tracking-tight uppercase flex items-center gap-1.5 font-sans">
           <FileText className="w-4 h-4 text-primary" />
-          {t.contracts_list}
+          {t('contracts_list')}
         </h3>
         {canModify && vacantRooms.length > 0 && tenants.length > 0 && (
           <button
@@ -41,7 +41,7 @@ export function ContractList({
             id="open-add-contract-modal"
           >
             <Plus className="w-3.5 h-3.5" />
-            {t.add_contract}
+            {t('add_contract')}
           </button>
         )}
       </div>
@@ -51,7 +51,7 @@ export function ContractList({
           <div className="bg-card border border-border rounded-xl p-12 text-center shadow-xs">
             <FileText className="w-8 h-8 text-muted-foreground mx-auto" />
             <p className="text-sm text-muted-foreground mt-2 font-sans italic">
-              {lang === 'en' ? 'No contracts on record.' : 'មិនមានកិច្ចសន្យាជួលក្នុងកំណត់ត្រាឡើយ។'}
+              {t('no_contracts')}
             </p>
           </div>
         ) : (
@@ -60,13 +60,13 @@ export function ContractList({
             const tenantNameStr = getTenantName(tenants, contract.tenantId, lang);
 
             let statusBadge = 'bg-chart-2/10 text-chart-2 border-chart-2/20';
-            let statusLabel = t.active;
+            let statusLabel = t('active');
             if (contract.status === 'suspended') {
               statusBadge = 'bg-chart-1/10 text-chart-1 border-chart-1/20';
-              statusLabel = t.suspended;
+              statusLabel = t('suspended');
             } else if (contract.status === 'expired') {
               statusBadge = 'bg-destructive/10 text-destructive border-destructive/20';
-              statusLabel = t.expired;
+              statusLabel = t('expired');
             }
 
             return (
@@ -97,14 +97,14 @@ export function ContractList({
                         }
                         className="bg-muted border border-border text-[11px] rounded-lg p-1 px-1.5 focus:outline-none font-sans"
                       >
-                        <option value="active">{t.active}</option>
-                        <option value="suspended">{t.suspended}</option>
-                        <option value="expired">{t.expired}</option>
+                        <option value="active">{t('active')}</option>
+                        <option value="suspended">{t('suspended')}</option>
+                        <option value="expired">{t('expired')}</option>
                       </select>
                       <button
                         onClick={() => onDelete(contract.id)}
                         className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-destructive/10 transition cursor-pointer"
-                        title={lang === 'en' ? 'Terminate Record' : 'លុបចោល'}
+                        title={t('terminate_record')}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -114,22 +114,22 @@ export function ContractList({
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-b border-border text-xs font-sans">
                   <div>
-                    <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">{t.tenant_name}</span>
+                    <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">{t('tenant_name')}</span>
                     <span className="font-semibold text-foreground block mt-1">{tenantNameStr}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">{t.monthly_rent}</span>
+                    <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">{t('monthly_rent')}</span>
                     <span className="font-bold text-foreground font-mono block mt-1 text-sm bg-muted px-2 py-0.5 rounded-md inline-block">
                       ${contract.rentAmount}
                     </span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">{t.deposit}</span>
+                    <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">{t('deposit')}</span>
                     <span className="font-bold text-chart-2 font-mono block mt-1">${contract.depositAmount}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground uppercase tracking-wider text-[10px] block">
-                      {lang === 'en' ? 'Rental Period' : 'រយៈពេលជួល'}
+                      {t('rental_period')}
                     </span>
                     <span className="text-muted-foreground block mt-1 text-[11px] flex items-center gap-1">
                       <CalendarDays className="w-3.5 h-3.5 text-muted-foreground inline" />
@@ -141,10 +141,10 @@ export function ContractList({
                 <div className="pt-3 flex justify-between items-center text-[11px] text-muted-foreground font-sans">
                   <div className="flex gap-4">
                     <span>
-                      {t.el_rate}: <strong className="text-chart-1 font-mono">{contract.electricityRate} ៛/kWh</strong>
+                      {t('el_rate')}: <strong className="text-chart-1 font-mono">{contract.electricityRate} ៛/kWh</strong>
                     </span>
                     <span>
-                      {t.wt_rate}: <strong className="text-info font-mono">{contract.waterRate} ៛/m³</strong>
+                      {t('wt_rate')}: <strong className="text-info font-mono">{contract.waterRate} ៛/m³</strong>
                     </span>
                   </div>
                   <span className="text-[10px] text-muted-foreground font-mono italic">

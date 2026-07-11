@@ -46,6 +46,41 @@ export const tenants = pgTable('tenants', {
   emergencyContact: text('emergency_contact').notNull(),
   telegramChatId: text('telegram_chat_id'),
   telegramAutoSend: boolean('telegram_auto_send'),
+  // Updated whenever staff opens this tenant's message thread in the admin
+  // panel. Unread = "tenant has a message newer than this." One shared
+  // cursor (not per-staff-user) — matches this app's small-team scale.
+  telegramMessagesReadAt: timestamp('telegram_messages_read_at', {
+    withTimezone: true,
+    mode: 'string',
+  }),
+});
+
+// Two-way chat between a tenant (via the Telegram Mini App portal) and staff
+// (via the admin Tenants panel). `senderUserId` is a users.id for staff
+// messages, null for tenant-authored ones.
+export const tenantMessages = pgTable('tenant_messages', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  senderType: text('sender_type').notNull(), // 'tenant' | 'staff'
+  senderUserId: text('sender_user_id'),
+  body: text('body').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+    .notNull()
+    .defaultNow(),
+});
+
+// Short-lived one-time codes used to privately link a tenant's Telegram
+// account: staff generates one, the tenant redeems it via the bot's
+// `/start <code>` deep link, which sets `tenants.telegramChatId`.
+export const tenantConnectCodes = pgTable('tenant_connect_codes', {
+  id: text('id').primaryKey(),
+  tenantId: text('tenant_id').notNull(),
+  code: text('code').notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
+  usedAt: timestamp('used_at', { withTimezone: true, mode: 'string' }),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+    .notNull()
+    .defaultNow(),
 });
 
 export const contracts = pgTable('contracts', {

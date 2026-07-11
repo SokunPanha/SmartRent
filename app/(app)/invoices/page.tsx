@@ -14,7 +14,7 @@ import {
 import { useLogAction } from '@/features/activity/activity.queries';
 
 export default function InvoicesPage() {
-  const { activeRole, lang, t } = useRent();
+  const { activeRole, lang } = useRent();
   const { data: invoices = [] } = useInvoices();
   const { data: contracts = [] } = useContracts();
   const { data: rooms = [] } = useRooms();
@@ -36,7 +36,6 @@ export default function InvoicesPage() {
         readings={readings}
         activeRole={activeRole}
         lang={lang}
-        t={t}
         onAutoGenerateInvoices={() => generate.mutate({ year: 2026, month: 6 })}
         onRecordPayment={(invoiceId, amount, method, notes) =>
           recordPayment.mutate({ invoiceId, amount, method, notes })

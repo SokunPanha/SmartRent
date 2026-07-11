@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
@@ -5,11 +6,13 @@ import { useTenantsController } from '../use-tenants-controller';
 
 type Controller = ReturnType<typeof useTenantsController>;
 
-export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLanguage }) {
+export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
+  const t = useTranslations('Tenants');
+  const tCommon = useTranslations('Common');
   return (
     <Modal open={c.showTenantModal} onClose={c.closeTenantModal} size="sm">
       <div className="flex justify-between items-center p-4 border-b border-border">
-        <h3 className="font-bold text-foreground text-base font-sans">{t.add_tenant}</h3>
+        <h3 className="font-bold text-foreground text-base font-sans">{t('add_tenant')}</h3>
         <button
           onClick={c.closeTenantModal}
           className="p-1 hover:bg-muted rounded-lg text-muted-foreground hover:text-muted-foreground cursor-pointer"
@@ -51,7 +54,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                {t.phone} *
+                {t('phone')} *
               </label>
               <input
                 type="text"
@@ -65,7 +68,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
 
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                {t.national_id} *
+                {t('national_id')} *
               </label>
               <input
                 type="text"
@@ -91,42 +94,27 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3 bg-info/10 p-3.5 rounded-xl border border-info/20">
-            <div>
-              <label className="text-[10px] font-bold text-info uppercase tracking-wider block mb-1 font-sans">
-                Telegram Chat ID
-              </label>
+          <div className="bg-info/10 p-3.5 rounded-xl border border-info/20 space-y-1.5">
+            <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
-                type="text"
-                value={c.tenantTelegramChatId}
-                onChange={(e) => c.setTenantTelegramChatId(e.target.value)}
-                placeholder="e.g. 129482938"
-                className="w-full px-3 py-1.5 rounded-lg border border-info/30 text-xs focus:border-info focus:outline-none font-mono focus:bg-card bg-card/70 text-info font-bold"
+                type="checkbox"
+                checked={c.tenantTelegramAutoSend}
+                onChange={(e) => c.setTenantTelegramAutoSend(e.target.checked)}
+                className="rounded border-info/40 text-info focus:ring-info w-4 h-4 cursor-pointer"
               />
-              <span className="text-[8px] text-info block mt-0.5">Find via @CheckMyIDBot</span>
-            </div>
-            <div className="flex flex-col justify-center">
-              <label className="text-[10px] font-bold text-info uppercase tracking-wider block mb-1 font-sans">
-                Autosend Invoice
-              </label>
-              <label className="inline-flex items-center gap-2 mt-1 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={c.tenantTelegramAutoSend}
-                  onChange={(e) => c.setTenantTelegramAutoSend(e.target.checked)}
-                  className="rounded border-info/40 text-info focus:ring-info w-4 h-4 cursor-pointer"
-                />
-                <span className="text-xs text-info font-semibold">
-                  {lang === 'en' ? 'Yes, automated' : 'បាទ ស្វ័យប្រវត្តិ'}
-                </span>
-              </label>
-            </div>
+              <span className="text-xs text-info font-semibold">
+                {t('auto_send_invoices')}
+              </span>
+            </label>
+            <p className="text-[10px] text-info/80">
+              {t('telegram_connect_hint')}
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                {t.check_in} *
+                {t('check_in')} *
               </label>
               <input
                 type="date"
@@ -139,7 +127,7 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
 
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                {t.emergency_contact}
+                {t('emergency_contact')}
               </label>
               <input
                 type="text"
@@ -158,13 +146,13 @@ export function TenantModal({ c, t, lang }: { c: Controller; t: any; lang: AppLa
             onClick={c.closeTenantModal}
             className="flex-1 py-2 rounded-lg text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
           >
-            {t.cancel}
+            {tCommon('cancel')}
           </button>
           <button
             type="submit"
             className="flex-1 py-2 rounded-lg text-sm bg-primary hover:bg-primary/90 text-primary-foreground transition font-semibold cursor-pointer font-sans"
           >
-            {t.save}
+            {tCommon('save')}
           </button>
         </div>
       </form>
