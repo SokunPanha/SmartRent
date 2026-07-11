@@ -1,7 +1,9 @@
+import { NextResponse } from 'next/server';
 import { desc } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { activityLogs } from '@/lib/db/schema';
 import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
+import { requireUser } from '@/lib/api/guard';
 
 // GET /api/logs?limit= — activity log, newest first
 export async function GET(req: Request) {
@@ -20,6 +22,8 @@ export async function GET(req: Request) {
 
 // POST /api/logs — append an activity log entry
 export async function POST(req: Request) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const body = await readJson(req);
     if (!body) return badRequest('Invalid JSON body');
