@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { Tenant, Room, Property, AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getRoomName } from '../tenants.helpers';
 import { useTenantsController } from '../use-tenants-controller';
 
@@ -40,21 +41,18 @@ export function ContractModal({
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
               Select Available Vacant Room *
             </label>
-            <select
-              value={c.conRoomId}
-              onChange={(e) => c.handleRoomSelectInContract(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
-              required
-            >
-              <option value="" disabled>
-                {t('select_room_placeholder')}
-              </option>
-              {c.vacantRooms.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {getRoomName(rooms, properties, r.id, lang)} (${r.rentAmount})
-                </option>
-              ))}
-            </select>
+            <Select value={c.conRoomId} onValueChange={c.handleRoomSelectInContract}>
+              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
+                <SelectValue placeholder={t('select_room_placeholder')} />
+              </SelectTrigger>
+              <SelectContent>
+                {c.vacantRooms.map((r) => (
+                  <SelectItem key={r.id} value={r.id}>
+                    {getRoomName(rooms, properties, r.id, lang)} (${r.rentAmount})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {c.vacantRooms.length === 0 && (
               <span className="text-[10px] text-destructive italic mt-0.5 block">
                 {t('no_vacant_rooms')}
@@ -66,21 +64,18 @@ export function ContractModal({
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
               Select Tenant Customer *
             </label>
-            <select
-              value={c.conTenantId}
-              onChange={(e) => c.setConTenantId(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
-              required
-            >
-              <option value="" disabled>
-                {t('select_tenant_placeholder')}
-              </option>
-              {tenants.map((tn) => (
-                <option key={tn.id} value={tn.id}>
-                  {lang === 'en' ? tn.name : tn.nameKh} ({tn.phone})
-                </option>
-              ))}
-            </select>
+            <Select value={c.conTenantId} onValueChange={c.setConTenantId}>
+              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
+                <SelectValue placeholder={t('select_tenant_placeholder')} />
+              </SelectTrigger>
+              <SelectContent>
+                {tenants.map((tn) => (
+                  <SelectItem key={tn.id} value={tn.id}>
+                    {lang === 'en' ? tn.name : tn.nameKh} ({tn.phone})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

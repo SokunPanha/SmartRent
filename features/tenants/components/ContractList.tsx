@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { FileText, Plus, Trash2, KeyRound, CalendarDays } from 'lucide-react';
 import { Tenant, Contract, Room, Property, AppLanguage } from '@/lib/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getRoomName, getTenantName } from '../tenants.helpers';
 
 export function ContractList({
@@ -90,17 +91,21 @@ export function ContractList({
 
                   {canModify && (
                     <div className="flex items-center gap-2">
-                      <select
+                      <Select
                         value={contract.status}
-                        onChange={(e) =>
-                          onUpdateStatus(contract.id, e.target.value as 'active' | 'suspended' | 'expired')
+                        onValueChange={(v) =>
+                          onUpdateStatus(contract.id, v as 'active' | 'suspended' | 'expired')
                         }
-                        className="bg-muted border border-border text-[11px] rounded-lg p-1 px-1.5 focus:outline-none font-sans"
                       >
-                        <option value="active">{t('active')}</option>
-                        <option value="suspended">{t('suspended')}</option>
-                        <option value="expired">{t('expired')}</option>
-                      </select>
+                        <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 rounded-lg bg-muted p-1 px-1.5 text-[11px] font-sans shadow-none">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">{t('active')}</SelectItem>
+                          <SelectItem value="suspended">{t('suspended')}</SelectItem>
+                          <SelectItem value="expired">{t('expired')}</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <button
                         onClick={() => onDelete(contract.id)}
                         className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-destructive/10 transition cursor-pointer"

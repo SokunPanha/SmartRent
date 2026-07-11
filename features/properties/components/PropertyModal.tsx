@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { usePropertiesController } from '../use-properties-controller';
 
 type Controller = ReturnType<typeof usePropertiesController>;
@@ -61,16 +62,20 @@ export function PropertyModal({
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
               {t('property_type')} *
             </label>
-            <select
+            <Select
               value={c.propType}
-              onChange={(e) => c.setPropType(e.target.value as typeof c.propType)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
+              onValueChange={(v) => c.setPropType(v as typeof c.propType)}
             >
-              <option value="apartment">Apartment / អាផាតមិន</option>
-              <option value="borey">Borey (Villa/Flat) / បុរី</option>
-              <option value="condo">Condominium / ខុនដូ</option>
-              <option value="guesthouse">Guesthouse / ផ្ទះសំណាក់</option>
-            </select>
+              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="apartment">Apartment / អាផាតមិន</SelectItem>
+                <SelectItem value="borey">Borey (Villa/Flat) / បុរី</SelectItem>
+                <SelectItem value="condo">Condominium / ខុនដូ</SelectItem>
+                <SelectItem value="guesthouse">Guesthouse / ផ្ទះសំណាក់</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div>

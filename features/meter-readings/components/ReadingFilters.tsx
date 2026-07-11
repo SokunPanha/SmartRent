@@ -1,6 +1,7 @@
 import { Plus, Briefcase } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Property, UserRole, AppLanguage } from '@/lib/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MonthOption } from '../meter-readings.helpers';
 
 export function RoleBanner({
@@ -52,34 +53,36 @@ export function ReadingFilters({
       <div className="flex flex-wrap gap-3 items-center w-full md:w-auto">
         <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('property_label')}</span>
-          <select
-            value={selectedPropId}
-            onChange={(e) => onSelectProp(e.target.value)}
-            className="bg-transparent font-bold text-foreground outline-none cursor-pointer"
-          >
-            <option value="all">{t('all_properties')}</option>
-            {properties.map((p) => (
-              <option key={p.id} value={p.id}>
-                {lang === 'en' ? p.name : p.nameKh}
-              </option>
-            ))}
-          </select>
+          <Select value={selectedPropId} onValueChange={onSelectProp}>
+            <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('all_properties')}</SelectItem>
+              {properties.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {lang === 'en' ? p.name : p.nameKh}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('month_label')}</span>
-          <select
-            value={selectedMonth}
-            onChange={(e) => onSelectMonth(e.target.value)}
-            className="bg-transparent font-bold text-foreground outline-none cursor-pointer"
-          >
-            <option value="all">{t('all_months')}</option>
-            {monthNames.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
+          <Select value={selectedMonth} onValueChange={onSelectMonth}>
+            <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('all_months')}</SelectItem>
+              {monthNames.map((m) => (
+                <SelectItem key={m.value} value={String(m.value)}>
+                  {m.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { usePropertiesController } from '../use-properties-controller';
 
 type Controller = ReturnType<typeof usePropertiesController>;
@@ -81,15 +82,19 @@ export function RoomModal({
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
               {tCommon('status')} *
             </label>
-            <select
+            <Select
               value={c.roomStatus}
-              onChange={(e) => c.setRoomStatus(e.target.value as typeof c.roomStatus)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none bg-card font-sans"
+              onValueChange={(v) => c.setRoomStatus(v as typeof c.roomStatus)}
             >
-              <option value="vacant">{t('vacant')}</option>
-              <option value="occupied">{t('occupied')}</option>
-              <option value="maintenance">{t('maintenance')}</option>
-            </select>
+              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="vacant">{t('vacant')}</SelectItem>
+                <SelectItem value="occupied">{t('occupied')}</SelectItem>
+                <SelectItem value="maintenance">{t('maintenance')}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

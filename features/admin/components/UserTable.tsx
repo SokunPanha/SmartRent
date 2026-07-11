@@ -1,7 +1,13 @@
 import { useTranslations } from 'next-intl';
 import { Trash2, ShieldCheck } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AdminUser } from '../users.api';
 import { Role } from '../roles.api';
+
+// Radix Select reserves the empty string for "no selection" internally, so the
+// "— none —" option (a real, selectable state meaning "no role assigned")
+// needs a distinct sentinel value instead of "".
+const NO_ROLE_VALUE = '__none__';
 
 export function UserTable({
   users,
@@ -63,20 +69,26 @@ export function UserTable({
                     </td>
                     <td className="p-4 font-mono text-muted-foreground">{u.email}</td>
                     <td className="p-4">
-                      <select
-                        value={u.roleId ?? ''}
+                      <Select
+                        value={u.roleId ?? NO_ROLE_VALUE}
                         disabled={busy || lockRole}
-                        onChange={(e) => onChangeRole(u.id, e.target.value)}
-                        className="bg-muted border border-border rounded-lg p-1 px-1.5 text-[11px] font-sans focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                        title={lockRole ? 'This account’s role is locked here' : undefined}
+                        onValueChange={(v) => onChangeRole(u.id, v === NO_ROLE_VALUE ? '' : v)}
                       >
-                        {u.roleId === null && <option value="">— none —</option>}
-                        {roles.map((r) => (
-                          <option key={r.id} value={r.id}>
-                            {r.name}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger
+                          className="w-fit data-[size=default]:h-auto gap-1 rounded-lg bg-muted p-1 px-1.5 text-[11px] font-sans shadow-none"
+                          title={lockRole ? 'This account’s role is locked here' : undefined}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {u.roleId === null && <SelectItem value={NO_ROLE_VALUE}>— none —</SelectItem>}
+                          {roles.map((r) => (
+                            <SelectItem key={r.id} value={r.id}>
+                              {r.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </td>
                     <td className="p-4 pr-6 text-right">
                       <button

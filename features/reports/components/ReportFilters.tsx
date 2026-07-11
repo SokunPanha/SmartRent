@@ -1,6 +1,7 @@
 import { BarChart3, Printer } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Property, AppLanguage } from '@/lib/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function ReportFilters({
   properties,
@@ -30,18 +31,19 @@ export function ReportFilters({
       <div className="flex flex-wrap gap-3 items-center">
         <div className="flex items-center gap-1.5 bg-muted border border-border p-1 px-2.5 rounded-lg text-xs">
           <span className="text-muted-foreground">{t('property_label')}</span>
-          <select
-            value={selectedProperty}
-            onChange={(e) => onSelectProperty(e.target.value)}
-            className="bg-transparent font-bold text-foreground focus:outline-none cursor-pointer"
-          >
-            <option value="all">{t('all_locations')}</option>
-            {properties.map((p) => (
-              <option key={p.id} value={p.id}>
-                {lang === 'en' ? p.name : p.nameKh}
-              </option>
-            ))}
-          </select>
+          <Select value={selectedProperty} onValueChange={onSelectProperty}>
+            <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('all_locations')}</SelectItem>
+              {properties.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {lang === 'en' ? p.name : p.nameKh}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <button

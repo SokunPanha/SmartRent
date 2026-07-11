@@ -2,6 +2,7 @@ import { X, Lightbulb, Droplet } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Room, Property, AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   MonthOption,
   getRoomNumber,
@@ -44,21 +45,18 @@ export function RecordReadingModal({
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
               {t('room_number_required')}
             </label>
-            <select
-              value={form.targetRoomId}
-              onChange={(e) => form.handleRoomSelectionChange(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-chart-2 focus:outline-none bg-card font-sans font-semibold"
-              required
-            >
-              <option value="" disabled>
-                {t('select_room_placeholder')}
-              </option>
-              {rooms.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {getRoomNumber(rooms, r.id)} ({getPropertyName(rooms, properties, r.id, lang)})
-                </option>
-              ))}
-            </select>
+            <Select value={form.targetRoomId} onValueChange={form.handleRoomSelectionChange}>
+              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans font-semibold focus-visible:border-chart-2 focus-visible:ring-chart-2/30">
+                <SelectValue placeholder={t('select_room_placeholder')} />
+              </SelectTrigger>
+              <SelectContent>
+                {rooms.map((r) => (
+                  <SelectItem key={r.id} value={r.id}>
+                    {getRoomNumber(rooms, r.id)} ({getPropertyName(rooms, properties, r.id, lang)})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -66,17 +64,21 @@ export function RecordReadingModal({
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
                 {t('billing_month_required')}
               </label>
-              <select
-                value={form.readingMonth}
-                onChange={(e) => form.setReadingMonth(Number(e.target.value))}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:border-chart-2 focus:outline-none bg-card font-sans"
+              <Select
+                value={String(form.readingMonth)}
+                onValueChange={(v) => form.setReadingMonth(Number(v))}
               >
-                {monthNames.map((m) => (
-                  <option key={m.value} value={m.value}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-xs font-sans focus-visible:border-chart-2 focus-visible:ring-chart-2/30">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthNames.map((m) => (
+                    <SelectItem key={m.value} value={String(m.value)}>
+                      {m.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>

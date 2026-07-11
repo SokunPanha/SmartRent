@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { Modal } from '@/components/shared/Modal';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { NewUserInput } from '../users.api';
 import { Role } from '../roles.api';
 
@@ -94,21 +95,18 @@ export function UserFormModal({
           <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block font-sans">
             Role *
           </label>
-          <select
-            value={roleId}
-            onChange={(e) => setRoleId(e.target.value)}
-            required
-            className="w-full px-3 py-2.5 rounded-lg border border-border text-sm bg-card font-sans focus:border-primary focus:outline-none"
-          >
-            <option value="" disabled>
-              {t('select_role')}
-            </option>
-            {roles.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.name}
-              </option>
-            ))}
-          </select>
+          <Select value={roleId} onValueChange={setRoleId}>
+            <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
+              <SelectValue placeholder={t('select_role')} />
+            </SelectTrigger>
+            <SelectContent>
+              {roles.map((r) => (
+                <SelectItem key={r.id} value={r.id}>
+                  {r.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex gap-2 pt-2">
