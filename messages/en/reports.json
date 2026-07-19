@@ -3,6 +3,8 @@
     "subtitle": "Detailed income statement & properties rent analysis",
     "property_label": "Property:",
     "all_locations": "All Locations",
+    "year_label": "Year:",
+    "outstanding_only_label": "Outstanding only",
     "print_statement": "Print Statement",
     "monthly_statement_title": "MONTHLY INCOME STATEMENT SPECIFICATIONS",
     "billed_cycle": "Billed Cycle",

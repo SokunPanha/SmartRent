@@ -24,6 +24,10 @@ export const properties = pgTable('properties', {
   address: text('address').notNull(),
   addressKh: text('address_kh').notNull(),
   totalRooms: integer('total_rooms').notNull().default(0),
+  // Per-zone utility price override (KHR). Null = use the system default from
+  // `systemSettings`.
+  electricityRate: doublePrecision('electricity_rate'),
+  waterRate: doublePrecision('water_rate'),
 });
 
 export const rooms = pgTable('rooms', {
@@ -183,6 +187,19 @@ export const rolePermissions = pgTable(
     pk: primaryKey({ columns: [t.roleId, t.permission] }),
   })
 );
+
+// Single-row, system-wide configuration (id is always 'global'). Holds the
+// USD/KHR exchange rate and default utility prices used as fallbacks when a
+// property has no per-zone override.
+export const systemSettings = pgTable('system_settings', {
+  id: text('id').primaryKey().default('global'),
+  exchangeRateKhr: doublePrecision('exchange_rate_khr').notNull().default(4100),
+  defaultElectricityRate: doublePrecision('default_electricity_rate').notNull().default(1000), // KHR/kWh
+  defaultWaterRate: doublePrecision('default_water_rate').notNull().default(2000), // KHR/m3
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+    .notNull()
+    .defaultNow(),
+});
 
 export const activityLogs = pgTable('activity_logs', {
   id: text('id').primaryKey(),

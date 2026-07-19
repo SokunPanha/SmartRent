@@ -24,13 +24,22 @@ export default function FinancialReports({
   lang,
 }: FinancialReportsProps) {
   const t = useTranslations('Reports');
-  const [selectedYear] = useState<number>(2026);
+  const availableYears = useMemo(
+    () => Array.from(new Set(invoices.map((inv) => inv.year))).sort((a, b) => b - a),
+    [invoices]
+  );
+  const [selectedYear, setSelectedYear] = useState<number>(availableYears[0] ?? new Date().getFullYear());
   const [selectedProperty, setSelectedProperty] = useState<string>('all');
+  const [outstandingOnly, setOutstandingOnly] = useState(false);
 
   const reportData = useMemo(
     () => getReportData(invoices, rooms, properties, selectedYear, selectedProperty, lang, t),
     [invoices, rooms, properties, selectedYear, selectedProperty, lang, t]
   );
+
+  const roomRows = outstandingOnly
+    ? reportData.roomDetails.filter((row) => row.totalOwed > 0)
+    : reportData.roomDetails;
 
   return (
     <div className="space-y-6" id="financial-reports-content">
@@ -38,13 +47,18 @@ export default function FinancialReports({
         properties={properties}
         selectedProperty={selectedProperty}
         onSelectProperty={setSelectedProperty}
+        availableYears={availableYears}
+        selectedYear={selectedYear}
+        onSelectYear={setSelectedYear}
+        outstandingOnly={outstandingOnly}
+        onToggleOutstandingOnly={setOutstandingOnly}
         lang={lang}
       />
       <SummaryCards data={reportData} lang={lang} />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <MonthlyTable rows={reportData.monthlySummary} lang={lang} />
-        <RoomRevenueTable rows={reportData.roomDetails} lang={lang} />
+        <RoomRevenueTable rows={roomRows} lang={lang} />
       </div>
     </div>
   );

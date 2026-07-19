@@ -68,7 +68,9 @@ export default function TenantsContracts({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <TenantList
-          tenants={tenants}
+          tenants={c.filteredTenants}
+          search={c.tenantSearch}
+          onSearchChange={c.setTenantSearch}
           canModify={canModify}
           onAdd={c.openTenantModal}
           onDelete={c.handleDeleteTenantClick}
@@ -76,11 +78,15 @@ export default function TenantsContracts({
           lang={lang}
         />
         <ContractList
-          contracts={contracts}
+          contracts={c.filteredContracts}
           rooms={rooms}
           properties={properties}
           tenants={tenants}
           vacantRooms={c.vacantRooms}
+          statusFilter={c.contractStatusFilter}
+          onStatusFilterChange={c.setContractStatusFilter}
+          propertyFilter={c.contractPropertyFilter}
+          onPropertyFilterChange={c.setContractPropertyFilter}
           canModify={canModify}
           onAdd={c.openContractModal}
           onUpdateStatus={c.handleUpdateStatus}

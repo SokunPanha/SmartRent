@@ -94,6 +94,16 @@
     "payment_exceeds_balance": "កំហុស៖ ចំនួនទឹកប្រាក់ទូទាត់ មិនអាចលើសពីចំនួននៅខ្វះឡើយ (${amount})។",
     "month_4": "មេសា",
     "month_5": "ឧសភា",
-    "month_6": "មិថុនា"
+    "month_6": "មិថុនា",
+    "year_label": "ឆ្នាំ៖",
+    "all_years": "គ្រប់ឆ្នាំទាំងអស់",
+    "property_label": "ទីតាំង៖",
+    "all_properties": "គ្រប់ទីតាំងទាំងអស់",
+    "telegram_status_label": "តេឡេក្រាម៖",
+    "all_telegram_statuses": "គ្រប់ស្ថានភាពទាំងអស់",
+    "telegram_unscheduled": "មិនទាន់កំណត់ពេល",
+    "telegram_scheduled": "បានកំណត់ពេល",
+    "telegram_sent": "បានផ្ញើ",
+    "telegram_failed": "បរាជ័យ"
   }
 }

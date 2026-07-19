@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { ShieldCheck } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DeleteButton } from '@/components/shared/DeleteButton';
+import { Pagination, usePagination } from '@/components/shared/Pagination';
 import { AdminUser } from '../users.api';
 import { Role } from '../roles.api';
 
@@ -26,12 +27,13 @@ export function UserTable({
   onDelete: (user: AdminUser) => void;
 }) {
   const t = useTranslations('Admin');
+  const { page, totalPages, pageRows, setPage, pageSize } = usePagination(users);
   return (
-    <div className="bg-card rounded-xl border border-border overflow-hidden shadow-3xs">
-      <div className="overflow-x-auto scroll-x-hint">
+    <div className="bg-card rounded-(--radius-card) border border-border overflow-hidden">
+      <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scroll-x-hint">
         <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans">
+          <thead className="sticky top-0 z-10">
+            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans dark:font-mono">
               <th className="p-4 pl-6">{t('table_user')}</th>
               <th className="p-4">{t('table_email')}</th>
               <th className="p-4">{t('table_role')}</th>
@@ -46,7 +48,7 @@ export function UserTable({
                 </td>
               </tr>
             ) : (
-              users.map((u) => {
+              pageRows.map((u) => {
                 const isSelf = u.email === currentEmail;
                 // System-role users (super admins) can't be reassigned away from here.
                 const lockRole = isSelf || !!u.isSystemRole;
@@ -106,6 +108,13 @@ export function UserTable({
           </tbody>
         </table>
       </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        totalItems={users.length}
+        pageSize={pageSize}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

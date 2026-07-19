@@ -33,6 +33,13 @@ export async function PATCH(req: Request, { params }: Params) {
     for (const key of allowed) {
       if (body[key] !== undefined) patch[key] = body[key];
     }
+    // Nullable zone rate overrides: explicit `null` clears the override (falls
+    // back to the system default), a number sets it. `undefined` = untouched.
+    for (const key of ['electricityRate', 'waterRate'] as const) {
+      if (body[key] !== undefined) {
+        patch[key] = body[key] === null ? null : Number(body[key]);
+      }
+    }
     if (Object.keys(patch).length === 0) return badRequest('No updatable fields provided');
 
     const [updated] = await db

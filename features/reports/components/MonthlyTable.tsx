@@ -1,6 +1,7 @@
 import { Layers } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { AppLanguage } from '@/lib/types';
+import { Pagination, usePagination } from '@/components/shared/Pagination';
 import { MonthlySummaryRow } from '../reports.helpers';
 
 export function MonthlyTable({
@@ -11,17 +12,18 @@ export function MonthlyTable({
   lang: AppLanguage;
 }) {
   const t = useTranslations('Reports');
+  const { page, totalPages, pageRows, setPage, pageSize } = usePagination(rows);
   return (
-    <div className="lg:col-span-12 bg-card rounded-2xl border border-border overflow-hidden shadow-3xs">
+    <div className="lg:col-span-12 bg-card rounded-(--radius-card) border border-border overflow-hidden">
       <div className="p-4 bg-muted border-b border-border">
-        <h4 className="text-xs font-bold text-foreground uppercase tracking-wider font-sans">
+        <h4 className="text-xs font-bold text-foreground uppercase tracking-wider font-sans dark:font-mono">
           {t('monthly_statement_title')}
         </h4>
       </div>
-      <div className="overflow-x-auto scroll-x-hint">
+      <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scroll-x-hint">
         <table className="w-full text-left text-xs text-muted-foreground">
-          <thead>
-            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase font-sans">
+          <thead className="sticky top-0 z-10">
+            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase font-sans dark:font-mono">
               <th className="p-4 pl-6">{t('billed_cycle')}</th>
               <th className="p-4 text-right">{t('rent_revenue')}</th>
               <th className="p-4 text-right">
@@ -41,7 +43,7 @@ export function MonthlyTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-border font-mono text-foreground">
-            {rows.map((row) => (
+            {pageRows.map((row) => (
               <tr key={row.month} className="hover:bg-muted/50 transition">
                 <td className="p-4 pl-6 font-bold text-foreground font-sans">{row.monthLabel}</td>
                 <td className="p-4 text-right">${row.rent.toFixed(2)}</td>
@@ -56,6 +58,13 @@ export function MonthlyTable({
           </tbody>
         </table>
       </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        totalItems={rows.length}
+        pageSize={pageSize}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

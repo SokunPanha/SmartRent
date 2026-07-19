@@ -42,6 +42,11 @@
     "loading_system": "កំពុងផ្ទុកប្រព័ន្ធអចលនទ្រព្យកម្ពុជា...",
     "confirm": "បញ្ជាក់",
     "back_to_home": "ត្រឡប់ទៅផ្ទាំងព័ត៌មាន",
-    "statistics": "ស្ថិតិ"
+    "statistics": "ស្ថិតិ",
+    "pagination_showing": "បង្ហាញ {start}–{end} នៃ {total}",
+    "pagination_page": "ទំព័រ {page} នៃ {totalPages}",
+    "pagination_prev": "ទំព័រមុន",
+    "pagination_next": "ទំព័របន្ទាប់",
+    "system_settings": "ការកំណត់ប្រព័ន្ធ"
   }
 }

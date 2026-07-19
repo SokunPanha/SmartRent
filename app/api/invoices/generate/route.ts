@@ -4,9 +4,8 @@ import { db } from '@/lib/db';
 import { contracts, rooms, invoices, meterReadings, activityLogs } from '@/lib/db/schema';
 import { ok, serverError, readJson, genId } from '@/lib/api/http';
 import { requirePermission } from '@/lib/api/guard';
+import { getOrCreateSettings } from '@/lib/api/settings';
 import type { Invoice, MeterReading } from '@/lib/types';
-
-const EXCHANGE_RATE = 4100;
 
 /**
  * POST /api/invoices/generate
@@ -30,12 +29,14 @@ export async function POST(req: Request) {
     const issueDate = `${year}-${mm}-12`;
     const dueDate = `${year}-${mm}-20`;
 
-    const [activeLeases, existingInvoices, allReadings, allRooms] = await Promise.all([
+    const [activeLeases, existingInvoices, allReadings, allRooms, settings] = await Promise.all([
       db.select().from(contracts).where(eq(contracts.status, 'active')),
       db.select().from(invoices),
       db.select().from(meterReadings),
       db.select().from(rooms),
+      getOrCreateSettings(),
     ]);
+    const EXCHANGE_RATE = settings.exchangeRateKhr;
 
     const newInvoices: (typeof invoices.$inferInsert)[] = [];
     const newReadings: (typeof meterReadings.$inferInsert)[] = [];

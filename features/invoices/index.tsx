@@ -83,6 +83,14 @@ export default function InvoicesPayments({
         onSelectStatus={c.setSelectedStatus}
         selectedMonth={c.selectedMonth}
         onSelectMonth={c.setSelectedMonth}
+        properties={properties}
+        selectedProperty={c.selectedProperty}
+        onSelectProperty={c.setSelectedProperty}
+        availableYears={c.availableYears}
+        selectedYear={c.selectedYear}
+        onSelectYear={c.setSelectedYear}
+        selectedTelegramStatus={c.selectedTelegramStatus}
+        onSelectTelegramStatus={c.setSelectedTelegramStatus}
         canGenerate={canGenerate}
         onGenerate={c.handleGenerateClick}
         lang={lang}

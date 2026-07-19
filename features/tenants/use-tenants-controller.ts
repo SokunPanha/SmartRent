@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { Tenant, Contract, Room, Property, AppLanguage } from '@/lib/types';
 import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
+import { useSettings } from '@/features/settings/settings.queries';
 import { getRoomName, getTenantName } from './tenants.helpers';
 
 type ContractStatus = 'active' | 'suspended' | 'expired';
@@ -42,7 +43,46 @@ export function useTenantsController({
   const t = useTranslations('Tenants');
   const tCommon = useTranslations('Common');
   const confirm = useConfirm();
+  const { data: settings } = useSettings();
   const vacantRooms = rooms.filter((r) => r.status === 'vacant');
+
+  // A room's property may override the electricity/water rate for its zone;
+  // otherwise fall back to the system-wide default from Settings.
+  function resolveRatesForRoom(roomId: string): { elec: number; water: number } {
+    const room = rooms.find((r) => r.id === roomId);
+    const property = properties.find((p) => p.id === room?.propertyId);
+    return {
+      elec: property?.electricityRate ?? settings?.defaultElectricityRate ?? 1000,
+      water: property?.waterRate ?? settings?.defaultWaterRate ?? 2000,
+    };
+  }
+
+  const [tenantSearch, setTenantSearch] = useState('');
+  const [contractStatusFilter, setContractStatusFilter] = useState<'all' | ContractStatus>('all');
+  const [contractPropertyFilter, setContractPropertyFilter] = useState('all');
+
+  const filteredTenants = useMemo(() => {
+    const query = tenantSearch.trim().toLowerCase();
+    if (!query) return tenants;
+    return tenants.filter(
+      (tenant) =>
+        tenant.name.toLowerCase().includes(query) ||
+        tenant.nameKh.toLowerCase().includes(query) ||
+        tenant.phone.toLowerCase().includes(query)
+    );
+  }, [tenants, tenantSearch]);
+
+  const filteredContracts = useMemo(
+    () =>
+      contracts.filter((contract) => {
+        const statusMatch = contractStatusFilter === 'all' || contract.status === contractStatusFilter;
+        if (!statusMatch) return false;
+        if (contractPropertyFilter === 'all') return true;
+        const room = rooms.find((r) => r.id === contract.roomId);
+        return room?.propertyId === contractPropertyFilter;
+      }),
+    [contracts, rooms, contractStatusFilter, contractPropertyFilter]
+  );
 
   const [showTenantModal, setShowTenantModal] = useState(false);
   const [showContractModal, setShowContractModal] = useState(false);
@@ -74,6 +114,9 @@ export function useTenantsController({
     if (vacantRooms[0]) {
       setConRent(vacantRooms[0].rentAmount);
       setConDeposit(vacantRooms[0].rentAmount * 2);
+      const rates = resolveRatesForRoom(vacantRooms[0].id);
+      setConElecRate(rates.elec);
+      setConWaterRate(rates.water);
     }
     setShowContractModal(true);
   }
@@ -119,6 +162,9 @@ export function useTenantsController({
     if (room) {
       setConRent(room.rentAmount);
       setConDeposit(room.rentAmount * 2);
+      const rates = resolveRatesForRoom(roomId);
+      setConElecRate(rates.elec);
+      setConWaterRate(rates.water);
     }
   }
 
@@ -222,6 +268,14 @@ export function useTenantsController({
 
   return {
     vacantRooms,
+    tenantSearch,
+    setTenantSearch,
+    filteredTenants,
+    contractStatusFilter,
+    setContractStatusFilter,
+    contractPropertyFilter,
+    setContractPropertyFilter,
+    filteredContracts,
     showTenantModal,
     openTenantModal,
     closeTenantModal,

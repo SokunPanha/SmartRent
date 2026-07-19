@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import PropertiesRooms from '@/features/properties';
 import { PageTransition } from '@/components/layout/PageTransition';
 import { useRent } from '@/store/rent-store';
@@ -21,18 +22,22 @@ export default function PropertiesPage() {
 
   return (
     <PageTransition>
-      <PropertiesRooms
-        properties={properties}
-        rooms={rooms}
-        activeRole={activeRole}
-        lang={lang}
-        onAddProperty={(prop) => propertyMut.create.mutate(prop)}
-        onAddRoom={(room) => roomMut.create.mutate(room)}
-        onUpdateRoom={(room) => roomMut.update.mutate(room)}
-        onDeleteRoom={(id) => roomMut.remove.mutate(id)}
-        onDeleteProperty={(id) => propertyMut.remove.mutate(id)}
-        logAction={logAction}
-      />
+      {/* usePropertiesController reads the ?property= query param, which
+          requires a Suspense boundary around any useSearchParams() consumer. */}
+      <Suspense fallback={null}>
+        <PropertiesRooms
+          properties={properties}
+          rooms={rooms}
+          activeRole={activeRole}
+          lang={lang}
+          onAddProperty={(prop) => propertyMut.create.mutate(prop)}
+          onAddRoom={(room) => roomMut.create.mutate(room)}
+          onUpdateRoom={(room) => roomMut.update.mutate(room)}
+          onDeleteRoom={(id) => roomMut.remove.mutate(id)}
+          onDeleteProperty={(id) => propertyMut.remove.mutate(id)}
+          logAction={logAction}
+        />
+      </Suspense>
     </PageTransition>
   );
 }

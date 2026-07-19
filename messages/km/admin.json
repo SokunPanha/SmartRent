@@ -25,6 +25,9 @@
     "table_email": "Email",
     "table_role": "តួនាទី",
     "table_actions": "សកម្មភាព",
-    "no_users_found": "មិនមានអ្នកប្រើប្រាស់ឡើយ។"
+    "no_users_found": "មិនមានអ្នកប្រើប្រាស់ឡើយ។",
+    "search_placeholder": "ស្វែងរកតាមឈ្មោះ ឬអ៊ីមែល…",
+    "role_filter_label": "តួនាទី៖",
+    "all_roles": "គ្រប់តួនាទីទាំងអស់"
   }
 }

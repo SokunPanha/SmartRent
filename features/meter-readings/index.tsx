@@ -7,6 +7,7 @@ import {
   getMonthNames,
   sortReadings,
   filterReadings,
+  getAvailableYears,
 } from './meter-readings.helpers';
 import { useCan } from '@/features/admin/permissions.queries';
 import { useReadingForm } from './use-reading-form';
@@ -39,12 +40,14 @@ export default function MeterReadings({
 
   const [selectedPropId, setSelectedPropId] = useState<string>('all');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
+  const [selectedYear, setSelectedYear] = useState<string>('all');
 
   const monthNames = useMemo(() => getMonthNames(t), [t]);
+  const availableYears = useMemo(() => getAvailableYears(readings), [readings]);
 
   const filteredReadings = useMemo(
-    () => filterReadings(sortReadings(readings), rooms, selectedPropId, selectedMonth),
-    [readings, rooms, selectedPropId, selectedMonth]
+    () => filterReadings(sortReadings(readings), rooms, selectedPropId, selectedMonth, selectedYear),
+    [readings, rooms, selectedPropId, selectedMonth, selectedYear]
   );
 
   const form = useReadingForm({
@@ -68,6 +71,9 @@ export default function MeterReadings({
         onSelectProp={setSelectedPropId}
         selectedMonth={selectedMonth}
         onSelectMonth={setSelectedMonth}
+        availableYears={availableYears}
+        selectedYear={selectedYear}
+        onSelectYear={setSelectedYear}
         canModify={canModify}
         onRecord={form.openModal}
         lang={lang}

@@ -1,0 +1,23 @@
+{
+  "Settings": {
+    "title": "System Settings",
+    "description": "Configure the exchange rate and utility prices used across the whole system.",
+    "loading": "Loading...",
+    "redirecting": "Redirecting...",
+    "save": "Save",
+    "global_rates_title": "Currency & Default Utility Rates",
+    "global_rates_desc": "Applied system-wide unless a zone below has its own override.",
+    "exchange_rate_label": "Exchange Rate (KHR per $1)",
+    "exchange_rate_help": "Used to convert every USD amount shown in Riel (៛) across the app.",
+    "default_electricity_rate_label": "Default Electricity Rate (KHR/kWh)",
+    "default_water_rate_label": "Default Water Rate (KHR/m³)",
+    "zone_overrides_title": "Per-Zone Utility Overrides",
+    "zone_overrides_desc": "Set a different electricity/water rate for a specific property. Leave blank to use the system default above.",
+    "zone": "Zone (Property)",
+    "electricity_rate": "Electricity Rate (KHR/kWh)",
+    "water_rate": "Water Rate (KHR/m³)",
+    "actions": "Actions",
+    "no_zones": "No property locations yet.",
+    "use_system_default": "Use system default"
+  }
+}

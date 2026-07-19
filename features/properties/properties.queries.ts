@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { Property } from '@/lib/types';
 import { propertiesApi, roomsApi } from './properties.api';
 
 export const propertyKeys = { all: ['properties'] as const };
@@ -32,6 +33,16 @@ export function usePropertyMutations() {
     onError: (e) => toast.error(e.message),
   });
 
+  const update = useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: Partial<Pick<Property, 'electricityRate' | 'waterRate'>> }) =>
+      propertiesApi.update(id, patch),
+    onSuccess: () => {
+      invalidate();
+      toast('Saved zone utility rate!');
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
   const remove = useMutation({
     mutationFn: propertiesApi.remove,
     onSuccess: () => {
@@ -41,7 +52,7 @@ export function usePropertyMutations() {
     onError: (e) => toast.error(e.message),
   });
 
-  return { create, remove };
+  return { create, update, remove };
 }
 
 /** Mutations for rooms; keeps the parent property's totalRooms fresh by invalidating both. */

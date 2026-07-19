@@ -1,14 +1,20 @@
 import { useTranslations } from 'next-intl';
 import { Plus, MapPin, Building2 } from 'lucide-react';
 import { Property, Room, AppLanguage } from '@/lib/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DeleteButton } from '@/components/shared/DeleteButton';
+import { EmptyState } from '@/components/shared/EmptyState';
 import { pickLocale } from '@/lib/i18n';
+
+type PropType = 'apartment' | 'borey' | 'condo' | 'guesthouse';
 
 export function PropertyList({
   properties,
   rooms,
   selectedPropId,
   onSelect,
+  typeFilter,
+  onTypeFilterChange,
   canModify,
   onAddClick,
   onDeleteProp,
@@ -18,6 +24,8 @@ export function PropertyList({
   rooms: Room[];
   selectedPropId: string;
   onSelect: (id: string) => void;
+  typeFilter: 'all' | PropType;
+  onTypeFilterChange: (type: 'all' | PropType) => void;
   canModify: boolean;
   onAddClick: () => void;
   onDeleteProp: (id: string, name: string, nameKh: string) => void;
@@ -43,7 +51,26 @@ export function PropertyList({
         )}
       </div>
 
+      <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs w-fit">
+        <span className="text-muted-foreground font-sans">{t('type_filter_label')}</span>
+        <Select value={typeFilter} onValueChange={(v) => onTypeFilterChange(v as 'all' | PropType)}>
+          <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t('all_types')}</SelectItem>
+            <SelectItem value="apartment">{t('type_apartment')}</SelectItem>
+            <SelectItem value="borey">{t('type_borey')}</SelectItem>
+            <SelectItem value="condo">{t('type_condo')}</SelectItem>
+            <SelectItem value="guesthouse">{t('type_guesthouse')}</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="space-y-3" id="properties-vertical-stack">
+        {properties.length === 0 && (
+          <EmptyState icon={Building2} title={t('no_properties_match_filter')} className="p-8 shadow-xs" />
+        )}
         {properties.map((prop) => {
           const isSelected = prop.id === selectedPropId;
           const propRooms = rooms.filter((r) => r.propertyId === prop.id);

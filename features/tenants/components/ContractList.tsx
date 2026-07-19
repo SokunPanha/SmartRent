@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { StatusBadge, StatusBadgeTone } from '@/components/shared/StatusBadge';
 import { DeleteButton } from '@/components/shared/DeleteButton';
 import { EmptyState } from '@/components/shared/EmptyState';
+import { pickLocale } from '@/lib/i18n';
 import { getRoomName, getTenantName } from '../tenants.helpers';
 
 export function ContractList({
@@ -13,6 +14,10 @@ export function ContractList({
   properties,
   tenants,
   vacantRooms,
+  statusFilter,
+  onStatusFilterChange,
+  propertyFilter,
+  onPropertyFilterChange,
   canModify,
   onAdd,
   onUpdateStatus,
@@ -24,6 +29,10 @@ export function ContractList({
   properties: Property[];
   tenants: Tenant[];
   vacantRooms: Room[];
+  statusFilter: 'all' | 'active' | 'suspended' | 'expired';
+  onStatusFilterChange: (status: 'all' | 'active' | 'suspended' | 'expired') => void;
+  propertyFilter: string;
+  onPropertyFilterChange: (id: string) => void;
   canModify: boolean;
   onAdd: () => void;
   onUpdateStatus: (id: string, status: 'active' | 'suspended' | 'expired') => void;
@@ -33,7 +42,7 @@ export function ContractList({
   const t = useTranslations('Tenants');
   return (
     <div className="lg:col-span-7 space-y-4">
-      <div className="flex justify-between items-center bg-card p-3.5 rounded-xl border border-border shadow-3xs">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-card p-3.5 rounded-xl border border-border shadow-3xs">
         <h3 className="text-sm font-bold text-foreground tracking-tight uppercase flex items-center gap-1.5 font-sans">
           <FileText className="w-4 h-4 text-primary" />
           {t('contracts_list')}
@@ -48,6 +57,40 @@ export function ContractList({
             {t('add_contract')}
           </button>
         )}
+      </div>
+
+      <div className="flex flex-wrap gap-3 items-center">
+        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+          <span className="text-muted-foreground font-sans">{t('status_label')}</span>
+          <Select value={statusFilter} onValueChange={(v) => onStatusFilterChange(v as typeof statusFilter)}>
+            <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('all_statuses')}</SelectItem>
+              <SelectItem value="active">{t('active')}</SelectItem>
+              <SelectItem value="suspended">{t('suspended')}</SelectItem>
+              <SelectItem value="expired">{t('expired')}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+          <span className="text-muted-foreground font-sans">{t('property_label')}</span>
+          <Select value={propertyFilter} onValueChange={onPropertyFilterChange}>
+            <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('all_properties')}</SelectItem>
+              {properties.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {pickLocale(lang, p.name, p.nameKh)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="space-y-4" id="contracts-list-view">

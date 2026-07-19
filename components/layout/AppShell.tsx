@@ -1,8 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useRent } from '@/store/rent-store';
+import { setUsdKhrRate } from '@/lib/format';
+import { useSettings } from '@/features/settings/settings.queries';
 import { AppSidebar } from './AppSidebar';
 import { AppHeader } from './AppHeader';
 
@@ -13,6 +16,14 @@ import { AppHeader } from './AppHeader';
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { mounted } = useRent();
   const t = useTranslations('Common');
+  const { data: settings } = useSettings();
+
+  // usdToKhr/formatKHRFromUSD read a module-level rate rather than a prop, so
+  // this is the one place that needs to sync it once the configurable
+  // exchange rate loads.
+  useEffect(() => {
+    if (settings) setUsdKhrRate(settings.exchangeRateKhr);
+  }, [settings]);
 
   if (!mounted) {
     return (

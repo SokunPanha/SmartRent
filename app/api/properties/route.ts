@@ -33,6 +33,8 @@ export async function POST(req: Request) {
       address: body.address as string,
       addressKh: body.addressKh as string,
       totalRooms: typeof body.totalRooms === 'number' ? body.totalRooms : 0,
+      electricityRate: typeof body.electricityRate === 'number' ? body.electricityRate : null,
+      waterRate: typeof body.waterRate === 'number' ? body.waterRate : null,
     };
 
     const [inserted] = await db.insert(properties).values(row).returning();

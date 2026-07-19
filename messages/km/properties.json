@@ -25,6 +25,12 @@
     "no_property_selected": "សូមបង្កើតទីតាំងអចលនទ្រព្យជាមុនសិន។",
     "edit_room": "កែប្រែបញ្ជីបន្ទប់",
     "duplicate_room_number": "បន្ទប់លេខនេះមានរួចមកហើយនៅក្នុងទីតាំងនេះ។",
-    "cannot_delete_property_with_rooms": "មិនអាចលុបទីតាំងបានទេ! សូមលុបបន្ទប់ទាំង {count} នៅក្នុងនោះជាមុនសិន។"
+    "cannot_delete_property_with_rooms": "មិនអាចលុបទីតាំងបានទេ! សូមលុបបន្ទប់ទាំង {count} នៅក្នុងនោះជាមុនសិន។",
+    "type_filter_label": "ប្រភេទ៖",
+    "all_types": "គ្រប់ប្រភេទទាំងអស់",
+    "type_condo": "កុងដូ",
+    "no_properties_match_filter": "រកមិនឃើញទីតាំងដែលត្រូវនឹងប្រភេទបានជ្រើសរើសឡើយ។",
+    "status_filter_label": "ស្ថានភាព៖",
+    "all_statuses": "គ្រប់ស្ថានភាពទាំងអស់"
   }
 }

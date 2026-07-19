@@ -94,6 +94,16 @@
     "payment_exceeds_balance": "Error: Payment amount cannot exceed the remaining balance (${amount}).",
     "month_4": "April",
     "month_5": "May",
-    "month_6": "June"
+    "month_6": "June",
+    "year_label": "Year:",
+    "all_years": "All Years",
+    "property_label": "Property:",
+    "all_properties": "All Properties",
+    "telegram_status_label": "Telegram:",
+    "all_telegram_statuses": "All Telegram Statuses",
+    "telegram_unscheduled": "Unscheduled",
+    "telegram_scheduled": "Scheduled",
+    "telegram_sent": "Sent",
+    "telegram_failed": "Failed"
   }
 }

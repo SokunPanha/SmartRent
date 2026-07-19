@@ -47,6 +47,7 @@ export default function TelegramPortalPage() {
   const [tenant, setTenant] = useState<TenantSummary | null>(null);
   const [tab, setTab] = useState<'invoices' | 'messages'>('invoices');
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [invoiceStatusFilter, setInvoiceStatusFilter] = useState<'all' | Invoice['status']>('all');
   const [messages, setMessages] = useState<TenantMessage[]>([]);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
@@ -184,12 +185,35 @@ export default function TelegramPortalPage() {
 
               {tab === 'invoices' && (
                 <div className="space-y-2">
-                  {invoices.length === 0 && (
+                  <div className="flex gap-1.5 overflow-x-auto pb-1">
+                    {(['all', 'unpaid', 'partial', 'overdue', 'paid'] as const).map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => setInvoiceStatusFilter(key)}
+                        className={`shrink-0 px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider transition cursor-pointer ${
+                          invoiceStatusFilter === key
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'bg-card text-muted-foreground border-border'
+                        }`}
+                      >
+                        {key === 'all'
+                          ? lang === 'en'
+                            ? 'All'
+                            : 'ទាំងអស់'
+                          : STATUS_LABEL[key][lang === 'en' ? 'en' : 'kh']}
+                      </button>
+                    ))}
+                  </div>
+
+                  {invoices.filter((inv) => invoiceStatusFilter === 'all' || inv.status === invoiceStatusFilter)
+                    .length === 0 && (
                     <p className="text-xs text-muted-foreground text-center py-8">
                       {lang === 'en' ? 'No invoices yet.' : 'មិនទាន់មានវិក្កយបត្រ។'}
                     </p>
                   )}
-                  {invoices.map((inv) => (
+                  {invoices
+                    .filter((inv) => invoiceStatusFilter === 'all' || inv.status === invoiceStatusFilter)
+                    .map((inv) => (
                     <div key={inv.id} className="bg-card border border-border rounded-xl p-3.5 space-y-1.5">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-foreground">{inv.invoiceNumber}</span>

@@ -1,6 +1,7 @@
 import { Lightbulb, Droplet } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { MeterReading, Room, Property, AppLanguage } from '@/lib/types';
+import { Pagination, usePagination } from '@/components/shared/Pagination';
 import {
   MonthOption,
   getRoomNumber,
@@ -21,12 +22,13 @@ export function ReadingsTable({
   lang: AppLanguage;
 }) {
   const t = useTranslations('MeterReadings');
+  const { page, totalPages, pageRows, setPage, pageSize } = usePagination(readings);
   return (
-    <div className="bg-card rounded-xl border border-border overflow-hidden shadow-3xs">
-      <div className="overflow-x-auto scroll-x-hint">
+    <div className="bg-card rounded-(--radius-card) border border-border overflow-hidden">
+      <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scroll-x-hint">
         <table className="w-full text-left border-collapse" id="utility-readings-ledger-table">
-          <thead>
-            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans">
+          <thead className="sticky top-0 z-10">
+            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans dark:font-mono">
               <th className="p-4 pl-6">{t('room_number')}</th>
               <th className="p-4">{t('billing_cycle')}</th>
               <th className="p-4">
@@ -53,7 +55,7 @@ export function ReadingsTable({
                 </td>
               </tr>
             ) : (
-              readings.map((r) => {
+              pageRows.map((r) => {
                 const rNum = getRoomNumber(rooms, r.roomId);
                 const pName = getPropertyName(rooms, properties, r.roomId, lang);
                 const mName = monthNames.find((item) => item.value === r.month)?.label || r.month;
@@ -106,6 +108,13 @@ export function ReadingsTable({
           </tbody>
         </table>
       </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        totalItems={readings.length}
+        pageSize={pageSize}
+        onPageChange={setPage}
+      />
     </div>
   );
 }

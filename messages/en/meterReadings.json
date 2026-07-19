@@ -15,6 +15,8 @@
     "all_properties": "All Properties",
     "month_label": "Month:",
     "all_months": "All Months",
+    "year_label": "Year:",
+    "all_years": "All Years",
     "billing_cycle": "Billing Cycle",
     "electricity_meter_kwh": "Electricity Meter (kWh)",
     "water_meter_m3": "Water Meter (m³)",

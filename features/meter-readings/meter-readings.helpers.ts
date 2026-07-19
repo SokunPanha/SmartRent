@@ -37,15 +37,21 @@ export function filterReadings(
   readings: MeterReading[],
   rooms: Room[],
   selectedPropId: string,
-  selectedMonth: string
+  selectedMonth: string,
+  selectedYear: string = 'all'
 ): MeterReading[] {
   return readings.filter((r) => {
     const room = rooms.find((roomItem) => roomItem.id === r.roomId);
     if (!room) return false;
     const propMatch = selectedPropId === 'all' || room.propertyId === selectedPropId;
     const monthMatch = selectedMonth === 'all' || r.month === Number(selectedMonth);
-    return propMatch && monthMatch;
+    const yearMatch = selectedYear === 'all' || r.year === Number(selectedYear);
+    return propMatch && monthMatch && yearMatch;
   });
+}
+
+export function getAvailableYears(readings: MeterReading[]): number[] {
+  return Array.from(new Set(readings.map((r) => r.year))).sort((a, b) => b - a);
 }
 
 export function getRoomNumber(rooms: Room[], roomId: string): string {

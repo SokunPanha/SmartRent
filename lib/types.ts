@@ -6,6 +6,18 @@ export interface Property {
   address: string;
   addressKh: string;
   totalRooms: number;
+  // Per-zone utility price override (KHR). Null/undefined = use the system default.
+  electricityRate?: number | null;
+  waterRate?: number | null;
+}
+
+/** Single-row system-wide configuration: exchange rate + default utility prices. */
+export interface SystemSettings {
+  id: string;
+  exchangeRateKhr: number;
+  defaultElectricityRate: number; // KHR/kWh
+  defaultWaterRate: number; // KHR/m3
+  updatedAt: string;
 }
 
 export interface Room {

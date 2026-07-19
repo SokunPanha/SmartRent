@@ -34,6 +34,9 @@ export function ReadingFilters({
   onSelectProp,
   selectedMonth,
   onSelectMonth,
+  availableYears,
+  selectedYear,
+  onSelectYear,
   canModify,
   onRecord,
   lang,
@@ -44,6 +47,9 @@ export function ReadingFilters({
   onSelectProp: (id: string) => void;
   selectedMonth: string;
   onSelectMonth: (m: string) => void;
+  availableYears: number[];
+  selectedYear: string;
+  onSelectYear: (y: string) => void;
   canModify: boolean;
   onRecord: () => void;
   lang: AppLanguage;
@@ -80,6 +86,23 @@ export function ReadingFilters({
               {monthNames.map((m) => (
                 <SelectItem key={m.value} value={String(m.value)}>
                   {m.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+          <span className="text-muted-foreground font-sans">{t('year_label')}</span>
+          <Select value={selectedYear} onValueChange={onSelectYear}>
+            <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t('all_years')}</SelectItem>
+              {availableYears.map((y) => (
+                <SelectItem key={y} value={String(y)}>
+                  {y}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -25,6 +25,9 @@
     "table_email": "Email",
     "table_role": "Role",
     "table_actions": "Actions",
-    "no_users_found": "No users found."
+    "no_users_found": "No users found.",
+    "search_placeholder": "Search by name or email…",
+    "role_filter_label": "Role:",
+    "all_roles": "All Roles"
   }
 }

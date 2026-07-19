@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { Property, Room, AppLanguage } from '@/lib/types';
@@ -38,7 +39,38 @@ export function usePropertiesController({
   const t = useTranslations('Properties');
   const tCommon = useTranslations('Common');
   const confirm = useConfirm();
-  const [selectedPropId, setSelectedPropId] = useState<string>(properties[0]?.id || '');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // The selected property is derived from the `?property=` query param (falling
+  // back to the first property) so a specific property's room view is
+  // bookmarkable/shareable and survives a refresh, instead of resetting to
+  // whatever property happens to be first every time.
+  const paramPropId = searchParams.get('property');
+  const selectedPropId =
+    paramPropId && properties.some((p) => p.id === paramPropId) ? paramPropId : properties[0]?.id || '';
+
+  const setSelectedPropId = useCallback(
+    (id: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (id) {
+        params.set('property', id);
+      } else {
+        params.delete('property');
+      }
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [router, pathname, searchParams]
+  );
+
+  const [propertyTypeFilter, setPropertyTypeFilter] = useState<'all' | PropType>('all');
+  const [roomStatusFilter, setRoomStatusFilter] = useState<'all' | RoomStatus>('all');
+
+  const filteredProperties = useMemo(
+    () => (propertyTypeFilter === 'all' ? properties : properties.filter((p) => p.type === propertyTypeFilter)),
+    [properties, propertyTypeFilter]
+  );
 
   const [showPropModal, setShowPropModal] = useState(false);
   const [showRoomModal, setShowRoomModal] = useState(false);
@@ -57,6 +89,10 @@ export function usePropertiesController({
 
   const activeProperty = properties.find((p) => p.id === selectedPropId) || properties[0];
   const activeRooms = rooms.filter((r) => r.propertyId === selectedPropId);
+  const filteredActiveRooms = useMemo(
+    () => (roomStatusFilter === 'all' ? activeRooms : activeRooms.filter((r) => r.status === roomStatusFilter)),
+    [activeRooms, roomStatusFilter]
+  );
 
   function openPropModal() {
     setPropName('');
@@ -217,6 +253,12 @@ export function usePropertiesController({
     setSelectedPropId,
     activeProperty,
     activeRooms,
+    filteredActiveRooms,
+    roomStatusFilter,
+    setRoomStatusFilter,
+    propertyTypeFilter,
+    setPropertyTypeFilter,
+    filteredProperties,
     // property modal
     showPropModal,
     openPropModal,

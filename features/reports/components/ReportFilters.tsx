@@ -8,11 +8,21 @@ export function ReportFilters({
   properties,
   selectedProperty,
   onSelectProperty,
+  availableYears,
+  selectedYear,
+  onSelectYear,
+  outstandingOnly,
+  onToggleOutstandingOnly,
   lang,
 }: {
   properties: Property[];
   selectedProperty: string;
   onSelectProperty: (id: string) => void;
+  availableYears: number[];
+  selectedYear: number;
+  onSelectYear: (y: number) => void;
+  outstandingOnly: boolean;
+  onToggleOutstandingOnly: (v: boolean) => void;
   lang: AppLanguage;
 }) {
   const t = useTranslations('Reports');
@@ -31,6 +41,22 @@ export function ReportFilters({
 
       <div className="flex flex-wrap gap-3 items-center">
         <div className="flex items-center gap-1.5 bg-muted border border-border p-1 px-2.5 rounded-lg text-xs">
+          <span className="text-muted-foreground">{t('year_label')}</span>
+          <Select value={String(selectedYear)} onValueChange={(v) => onSelectYear(Number(v))}>
+            <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {availableYears.map((y) => (
+                <SelectItem key={y} value={String(y)}>
+                  {y}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-center gap-1.5 bg-muted border border-border p-1 px-2.5 rounded-lg text-xs">
           <span className="text-muted-foreground">{t('property_label')}</span>
           <Select value={selectedProperty} onValueChange={onSelectProperty}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -46,6 +72,19 @@ export function ReportFilters({
             </SelectContent>
           </Select>
         </div>
+
+        <button
+          type="button"
+          onClick={() => onToggleOutstandingOnly(!outstandingOnly)}
+          aria-pressed={outstandingOnly}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition cursor-pointer ${
+            outstandingOnly
+              ? 'bg-destructive/10 border-destructive/30 text-destructive'
+              : 'bg-muted border-border text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          {t('outstanding_only_label')}
+        </button>
 
         <button
           onClick={() => window.print()}

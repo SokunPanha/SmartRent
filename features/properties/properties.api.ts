@@ -5,6 +5,8 @@ import { Property, Room } from '@/lib/types';
 export const propertiesApi = {
   list: () => apiGet<Property[]>('/api/properties'),
   create: (data: Omit<Property, 'totalRooms'>) => apiPost<Property>('/api/properties', data),
+  update: (id: string, patch: Partial<Pick<Property, 'electricityRate' | 'waterRate'>>) =>
+    apiPatch<Property>(`/api/properties/${id}`, patch),
   remove: (id: string) => apiDelete<{ id: string }>(`/api/properties/${id}`),
 };
 

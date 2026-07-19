@@ -5,6 +5,12 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  dev: {
+    // Disable file watching in dev mode to prevent flickering during agent edits.
+    // HMR is disabled in AI Studio via DISABLE_HMR env var.
+    // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
+    port: 3001,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

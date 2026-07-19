@@ -88,7 +88,7 @@ export function Modal({
         aria-modal="true"
         tabIndex={-1}
         className={cn(
-          'flex w-full max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-card shadow-xl outline-none animate-slide-up',
+          'flex w-full max-h-[85vh] flex-col overflow-hidden rounded-(--radius-modal) bg-card shadow-(--shadow-modal) outline-none animate-slide-up',
           SIZE[size],
           className
         )}

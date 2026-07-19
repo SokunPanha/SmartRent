@@ -7,9 +7,20 @@
 
 export const USD_KHR_RATE = 4100;
 
-/** Convert a USD amount to Khmer Riel using the fixed peg. */
+// The effective rate used by `usdToKhr`/`formatKHRFromUSD`. Defaults to the
+// fixed peg above and is updated once at app startup from the configurable
+// system setting (see `setUsdKhrRate` / features/settings). Kept as a mutable
+// module-level value (rather than threading a rate prop through every call
+// site) since these are pure display-formatting helpers used all over the UI.
+let currentUsdKhrRate = USD_KHR_RATE;
+
+export function setUsdKhrRate(rate: number): void {
+  if (Number.isFinite(rate) && rate > 0) currentUsdKhrRate = rate;
+}
+
+/** Convert a USD amount to Khmer Riel using the current exchange rate. */
 export function usdToKhr(usd: number): number {
-  return Math.round(usd * USD_KHR_RATE);
+  return Math.round(usd * currentUsdKhrRate);
 }
 
 /** Format a USD amount, e.g. `formatUSD(1234.5)` → "$1,234.50". */

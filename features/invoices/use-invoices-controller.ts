@@ -55,6 +55,14 @@ export function useInvoicesController({
   const tCommon = useTranslations('Common');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
+  const [selectedProperty, setSelectedProperty] = useState<string>('all');
+  const [selectedYear, setSelectedYear] = useState<string>('all');
+  const [selectedTelegramStatus, setSelectedTelegramStatus] = useState<string>('all');
+
+  const availableYears = useMemo(
+    () => Array.from(new Set(invoices.map((inv) => inv.year))).sort((a, b) => b - a),
+    [invoices]
+  );
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [targetInvoiceId, setTargetInvoiceId] = useState('');
@@ -91,9 +99,16 @@ export function useInvoicesController({
       sortedInvoices.filter((inv) => {
         const statusMatch = selectedStatus === 'all' || inv.status === selectedStatus;
         const monthMatch = selectedMonth === 'all' || inv.month === Number(selectedMonth);
-        return statusMatch && monthMatch;
+        const yearMatch = selectedYear === 'all' || inv.year === Number(selectedYear);
+        const telegramMatch =
+          selectedTelegramStatus === 'all' ||
+          (inv.telegramStatus || 'unscheduled') === selectedTelegramStatus;
+        if (!statusMatch || !monthMatch || !yearMatch || !telegramMatch) return false;
+        if (selectedProperty === 'all') return true;
+        const room = rooms.find((r) => r.id === inv.roomId);
+        return room?.propertyId === selectedProperty;
       }),
-    [sortedInvoices, selectedStatus, selectedMonth]
+    [sortedInvoices, rooms, selectedStatus, selectedMonth, selectedYear, selectedTelegramStatus, selectedProperty]
   );
 
   const roomName = (inv: Invoice) => getRoomNameByInvoice(inv, rooms, properties, lang);
@@ -312,6 +327,13 @@ export function useInvoicesController({
     setSelectedStatus,
     selectedMonth,
     setSelectedMonth,
+    selectedProperty,
+    setSelectedProperty,
+    selectedYear,
+    setSelectedYear,
+    availableYears,
+    selectedTelegramStatus,
+    setSelectedTelegramStatus,
     filteredInvoices,
     handleGenerateClick,
     // payment

@@ -46,6 +46,12 @@
     "messages": "Messages",
     "no_messages_yet": "No messages yet.",
     "message_placeholder": "Type a reply...",
-    "send": "Send"
+    "send": "Send",
+    "search_placeholder": "Search by name or phone…",
+    "no_tenants_match_search": "No tenants match your search.",
+    "status_label": "Status:",
+    "all_statuses": "All Statuses",
+    "property_label": "Property:",
+    "all_properties": "All Properties"
   }
 }

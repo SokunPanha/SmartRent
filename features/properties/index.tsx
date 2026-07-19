@@ -62,10 +62,12 @@ export default function PropertiesRooms({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <PropertyList
-          properties={properties}
+          properties={c.filteredProperties}
           rooms={rooms}
           selectedPropId={c.selectedPropId}
           onSelect={c.setSelectedPropId}
+          typeFilter={c.propertyTypeFilter}
+          onTypeFilterChange={c.setPropertyTypeFilter}
           canModify={canModify}
           onAddClick={c.openPropModal}
           onDeleteProp={c.handleDeletePropClick}
@@ -73,7 +75,9 @@ export default function PropertiesRooms({
         />
         <RoomGrid
           activeProperty={c.activeProperty}
-          activeRooms={c.activeRooms}
+          activeRooms={c.filteredActiveRooms}
+          statusFilter={c.roomStatusFilter}
+          onStatusFilterChange={c.setRoomStatusFilter}
           canModify={canModify}
           onAddRoom={c.openRoomModalForCreate}
           onEditRoom={c.handleEditRoomClick}

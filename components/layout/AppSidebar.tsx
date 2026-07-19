@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { LogOut, UserCircle, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { LogOut, UserCircle, ShieldCheck, SlidersHorizontal, Settings } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -32,6 +32,7 @@ export function AppSidebar() {
   const t = useTranslations('Common');
 
   const canAdmin = isSuperAdmin || can('admin.access');
+  const canSettings = isSuperAdmin || can('admin.settings');
   const roleLabel = activeRole || t('no_role');
 
   return (
@@ -86,43 +87,63 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {canAdmin && (
+        {(canAdmin || canSettings) && (
           <SidebarGroup>
             <SidebarGroupLabel>
               {t('administration')}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === '/admin/users'}
-                    tooltip={t('users_permissions')}
-                  >
-                    <Link href="/admin/users" onClick={() => setOpenMobile(false)}>
-                      <ShieldCheck
-                        className={cn(pathname === '/admin/users' ? 'text-primary' : '')}
-                      />
-                      <span className="font-sans">{t('users')}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === '/admin/roles'}
-                    tooltip={t('roles_permissions')}
-                  >
-                    <Link href="/admin/roles" onClick={() => setOpenMobile(false)}>
-                      <SlidersHorizontal
-                        className={cn(pathname === '/admin/roles' ? 'text-primary' : '')}
-                      />
-                      <span className="font-sans">
-                        {t('roles_permissions')}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {canAdmin && (
+                  <>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === '/admin/users'}
+                        tooltip={t('users_permissions')}
+                      >
+                        <Link href="/admin/users" onClick={() => setOpenMobile(false)}>
+                          <ShieldCheck
+                            className={cn(pathname === '/admin/users' ? 'text-primary' : '')}
+                          />
+                          <span className="font-sans">{t('users')}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === '/admin/roles'}
+                        tooltip={t('roles_permissions')}
+                      >
+                        <Link href="/admin/roles" onClick={() => setOpenMobile(false)}>
+                          <SlidersHorizontal
+                            className={cn(pathname === '/admin/roles' ? 'text-primary' : '')}
+                          />
+                          <span className="font-sans">
+                            {t('roles_permissions')}
+                          </span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </>
+                )}
+                {canSettings && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === '/admin/settings'}
+                      tooltip={t('system_settings')}
+                    >
+                      <Link href="/admin/settings" onClick={() => setOpenMobile(false)}>
+                        <Settings
+                          className={cn(pathname === '/admin/settings' ? 'text-primary' : '')}
+                        />
+                        <span className="font-sans">{t('system_settings')}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Users, UserPlus, Phone, UserSquare, AlertCircle, Send, Copy, Check, MessageCircle } from 'lucide-react';
+import { Users, UserPlus, Search, Phone, UserSquare, AlertCircle, Send, Copy, Check, MessageCircle } from 'lucide-react';
 import { Tenant, AppLanguage } from '@/lib/types';
 import { Modal } from '@/components/shared/Modal';
 import { DeleteButton } from '@/components/shared/DeleteButton';
+import { EmptyState } from '@/components/shared/EmptyState';
 import { pickLocale } from '@/lib/i18n';
 import { TelegramConnectCode } from '../tenants.api';
 import { useTenantMessages, useSendTenantMessage } from '../tenants.queries';
 
 export function TenantList({
   tenants,
+  search,
+  onSearchChange,
   canModify,
   onAdd,
   onDelete,
@@ -17,6 +20,8 @@ export function TenantList({
   lang,
 }: {
   tenants: Tenant[];
+  search: string;
+  onSearchChange: (value: string) => void;
   canModify: boolean;
   onAdd: () => void;
   onDelete: (id: string, name: string) => void;
@@ -84,7 +89,21 @@ export function TenantList({
         )}
       </div>
 
+      <div className="relative">
+        <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <input
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder={t('search_placeholder')}
+          className="w-full pl-8 pr-3 py-2 rounded-lg border border-border text-xs bg-card text-foreground font-sans focus:outline-none focus:border-primary"
+          id="tenant-search-input"
+        />
+      </div>
+
       <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1" id="tenants-stack-scroller">
+        {tenants.length === 0 && (
+          <EmptyState icon={Users} title={t('no_tenants_match_search')} className="p-8 shadow-xs" />
+        )}
         {tenants.map((tenant) => (
           <div
             key={tenant.id}

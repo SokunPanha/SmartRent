@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { useRent } from '@/store/rent-store';
+import { formatKHR } from '@/lib/format';
+import { useSettings } from '@/features/settings/settings.queries';
 import { ThemeToggle } from './ThemeToggle';
 import { UserMenu } from './UserMenu';
 
@@ -18,6 +20,8 @@ export function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === HOME_PATH;
+  const { data: settings } = useSettings();
+  const fixRateValue = settings ? `$1 = ${formatKHR(settings.exchangeRateKhr)}` : t('fix_rate_value');
 
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-card px-4 shadow-sm print:hidden">
@@ -54,7 +58,7 @@ export function AppHeader() {
           <span className="mr-1 font-sans text-[9px] font-bold uppercase tracking-wider text-primary">
             {t('fix_rate_label')}
           </span>
-          {t('fix_rate_value')}
+          {fixRateValue}
         </div>
 
         <Button

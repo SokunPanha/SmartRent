@@ -10,6 +10,7 @@ export const PERMISSION_KEYS = [
   'invoices.generate',
   'invoices.pay',
   'admin.access',
+  'admin.settings',
 ] as const;
 
 export type PermissionKey = (typeof PERMISSION_KEYS)[number];
@@ -27,6 +28,7 @@ export const PERMISSION_META: PermissionMeta[] = [
   { key: 'invoices.generate', label: 'Generate Invoices', description: 'Run the monthly invoice generator.' },
   { key: 'invoices.pay', label: 'Record Payments', description: 'Log rent / utility payments against invoices.' },
   { key: 'admin.access', label: 'Administer Users & Roles', description: 'Manage user accounts, roles and permissions.' },
+  { key: 'admin.settings', label: 'Configure System Settings', description: 'Set the USD/KHR exchange rate and default utility prices.' },
 ];
 
 export function isPermissionKey(value: string): value is PermissionKey {

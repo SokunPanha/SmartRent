@@ -46,6 +46,12 @@
     "messages": "សារ",
     "no_messages_yet": "មិនទាន់មានសារនៅឡើយ។",
     "message_placeholder": "វាយសារឆ្លើយតប...",
-    "send": "ផ្ញើ"
+    "send": "ផ្ញើ",
+    "search_placeholder": "ស្វែងរកតាមឈ្មោះ ឬលេខទូរស័ព្ទ…",
+    "no_tenants_match_search": "រកមិនឃើញអ្នកជួលដែលត្រូវនឹងការស្វែងរកឡើយ។",
+    "status_label": "ស្ថានភាព៖",
+    "all_statuses": "គ្រប់ស្ថានភាពទាំងអស់",
+    "property_label": "ទីតាំង៖",
+    "all_properties": "គ្រប់ទីតាំងទាំងអស់"
   }
 }
