@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { systemSettings } from '@/lib/db/schema';
-import { ok, badRequest, serverError, readJson } from '@/lib/api/http';
+import { ok, badRequest, forbidden, serverError, readJson } from '@/lib/api/http';
 import { requireUser, requirePermission } from '@/lib/api/guard';
 import { getOrCreateSettings } from '@/lib/api/settings';
+import { verifyUserPassword } from '@/lib/api/verify-password';
 
 // GET /api/settings — any signed-in user can read (exchange rate + default
 // utility prices are shown/used throughout the app, not just by admins).
@@ -26,6 +27,12 @@ export async function PATCH(req: Request) {
   try {
     const body = await readJson(req);
     if (!body) return badRequest('Invalid JSON body');
+
+    // Re-confirm the acting admin's identity before changing rates that affect
+    // every invoice in the system.
+    if (!(await verifyUserPassword(gate.id, body.password))) {
+      return forbidden('Incorrect password.');
+    }
 
     const allowed = ['exchangeRateKhr', 'defaultElectricityRate', 'defaultWaterRate'] as const;
     const patch: Record<string, unknown> = {};

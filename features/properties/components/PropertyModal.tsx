@@ -25,13 +25,13 @@ export function PropertyModal({
         <div className="space-y-4">
           <div>
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Property Name (English) *
+              {t('prop_name_en_label')} *
             </label>
             <input
               type="text"
               value={c.propName}
               onChange={(e) => c.setPropName(e.target.value)}
-              placeholder="e.g. Sensok Cozy Apartment"
+              placeholder={t('prop_name_placeholder')}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
@@ -39,13 +39,13 @@ export function PropertyModal({
 
           <div>
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              ឈ្មោះអចលនទ្រព្យ (Khmer) *
+              {t('prop_name_kh_label')} *
             </label>
             <input
               type="text"
               value={c.propNameKh}
               onChange={(e) => c.setPropNameKh(e.target.value)}
-              placeholder="ឧ. សែនសុខ ខូហ្ស៊ី អាផាតមិន"
+              placeholder={t('prop_name_kh_placeholder')}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
@@ -73,13 +73,13 @@ export function PropertyModal({
 
           <div>
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Address (English) *
+              {t('prop_address_en_label')} *
             </label>
             <input
               type="text"
               value={c.propAddress}
               onChange={(e) => c.setPropAddress(e.target.value)}
-              placeholder="e.g. Street 1986, Sen Sok, Phnom Penh"
+              placeholder={t('prop_address_placeholder')}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
@@ -87,13 +87,13 @@ export function PropertyModal({
 
           <div>
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              អាសយដ្ឋាន (Khmer) *
+              {t('prop_address_kh_label')} *
             </label>
             <input
               type="text"
               value={c.propAddressKh}
               onChange={(e) => c.setPropAddressKh(e.target.value)}
-              placeholder="ឧ. ផ្លូវ ១៩៨៦, ខណ្ឌសែនសុខ, ភ្នំពេញ"
+              placeholder={t('prop_address_kh_placeholder')}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />

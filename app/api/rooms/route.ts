@@ -1,17 +1,26 @@
 import { NextResponse } from 'next/server';
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, inArray, sql, type SQL } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { rooms, properties } from '@/lib/db/schema';
-import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { ok, created, badRequest, forbidden, serverError, readJson, missingField, genId } from '@/lib/api/http';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { scopedPropertyIds, isPropertyInScope } from '@/lib/api/scope';
 
-// GET /api/rooms?propertyId=... — list rooms, optionally scoped to a property
+// GET /api/rooms?propertyId=... — list rooms in the user's scoped buildings,
+// optionally narrowed to a single property.
 export async function GET(req: Request) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const propertyId = new URL(req.url).searchParams.get('propertyId');
-    const rows = propertyId
-      ? await db.select().from(rooms).where(eq(rooms.propertyId, propertyId))
-      : await db.select().from(rooms);
+    const ids = await scopedPropertyIds(gate);
+    const filters: SQL[] = [];
+    if (propertyId) filters.push(eq(rooms.propertyId, propertyId));
+    if (ids) filters.push(inArray(rooms.propertyId, ids));
+    const rows = await db
+      .select()
+      .from(rooms)
+      .where(filters.length ? and(...filters) : undefined);
     return ok(rows);
   } catch (err) {
     return serverError(err);
@@ -28,6 +37,10 @@ export async function POST(req: Request) {
 
     const missing = missingField(body, ['propertyId', 'roomNumber', 'floor', 'rentAmount']);
     if (missing) return badRequest(`Missing required field: ${missing}`);
+
+    if (!(await isPropertyInScope(gate, body.propertyId as string))) {
+      return forbidden('Outside your assigned buildings.');
+    }
 
     const row = {
       id: (body.id as string) || genId('room'),

@@ -158,6 +158,7 @@ export const invoices = pgTable('invoices', {
 export const roles = pgTable('roles', {
   id: text('id').primaryKey(),
   name: text('name').notNull().unique(),
+  description: text('description'),
   isSystem: boolean('is_system').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
     .notNull()
@@ -185,6 +186,21 @@ export const rolePermissions = pgTable(
   },
   (t) => ({
     pk: primaryKey({ columns: [t.roleId, t.permission] }),
+  })
+);
+
+// Per-(user, building) assignment — the data-scoping layer on top of role
+// capabilities. A user with ANY rows here is restricted to exactly those
+// buildings; a user with NO rows (and every super admin) sees all buildings,
+// which preserves the pre-scoping behavior for existing accounts.
+export const userProperties = pgTable(
+  'user_properties',
+  {
+    userId: text('user_id').notNull(),
+    propertyId: text('property_id').notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.propertyId] }),
   })
 );
 

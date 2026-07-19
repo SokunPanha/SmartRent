@@ -9,8 +9,17 @@ import { pickLocale } from '@/lib/i18n';
 import { Input } from '@/components/ui/input';
 import { Property } from '@/lib/types';
 import { useCan, useMyPermissions } from '@/features/admin/permissions.queries';
-import { useProperties, usePropertyMutations } from '@/features/properties/properties.queries';
-import { useSettings, useUpdateSettings } from './settings.queries';
+import { useProperties } from '@/features/properties/properties.queries';
+import { PasswordConfirmModal } from '@/components/shared/PasswordConfirmModal';
+import { useSettings, useUpdateSettings, useUpdateZoneRates } from './settings.queries';
+
+/** A save the user has requested but must confirm with their password first. */
+type PendingSave =
+  | {
+      type: 'global';
+      patch: { exchangeRateKhr: number; defaultElectricityRate: number; defaultWaterRate: number };
+    }
+  | { type: 'zone'; id: string; patch: { electricityRate: number | null; waterRate: number | null } };
 
 export default function SystemSettings() {
   const t = useTranslations('Settings');
@@ -28,7 +37,31 @@ export default function SystemSettings() {
   const { data: settings, isLoading: settingsLoading } = useSettings();
   const { data: properties = [], isLoading: propertiesLoading } = useProperties();
   const updateSettings = useUpdateSettings();
-  const propertyMut = usePropertyMutations();
+  const updateZone = useUpdateZoneRates();
+
+  const [pending, setPending] = useState<PendingSave | null>(null);
+  const [pwError, setPwError] = useState<string | null>(null);
+
+  function closePassword() {
+    setPending(null);
+    setPwError(null);
+  }
+
+  function handleConfirmPassword(password: string) {
+    if (!pending) return;
+    setPwError(null);
+    if (pending.type === 'global') {
+      updateSettings.mutate(
+        { ...pending.patch, password },
+        { onSuccess: closePassword, onError: (e) => setPwError(e.message) }
+      );
+    } else {
+      updateZone.mutate(
+        { id: pending.id, patch: { ...pending.patch, password } },
+        { onSuccess: closePassword, onError: (e) => setPwError(e.message) }
+      );
+    }
+  }
 
   if (!authReady || !allowed) {
     const label = !authReady ? t('loading') : t('redirecting');
@@ -57,7 +90,7 @@ export default function SystemSettings() {
         <GlobalRatesCard
           settings={settings}
           saving={updateSettings.isPending}
-          onSave={(patch) => updateSettings.mutate(patch)}
+          onSave={(patch) => setPending({ type: 'global', patch })}
         />
       )}
 
@@ -88,8 +121,8 @@ export default function SystemSettings() {
                     key={property.id}
                     property={property}
                     name={pickLocale(lang, property.name, property.nameKh)}
-                    saving={propertyMut.update.isPending}
-                    onSave={(patch) => propertyMut.update.mutate({ id: property.id, patch })}
+                    saving={updateZone.isPending}
+                    onSave={(patch) => setPending({ type: 'zone', id: property.id, patch })}
                   />
                 ))}
               </tbody>
@@ -97,6 +130,14 @@ export default function SystemSettings() {
           </div>
         )}
       </div>
+
+      <PasswordConfirmModal
+        open={!!pending}
+        busy={updateSettings.isPending || updateZone.isPending}
+        error={pwError}
+        onClose={closePassword}
+        onConfirm={handleConfirmPassword}
+      />
     </div>
   );
 }

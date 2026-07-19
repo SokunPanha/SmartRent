@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import { contracts, rooms, invoices, meterReadings, activityLogs } from '@/lib/db/schema';
 import { ok, serverError, readJson, genId } from '@/lib/api/http';
 import { requirePermission } from '@/lib/api/guard';
+import { scopedPropertyIds } from '@/lib/api/scope';
 import { getOrCreateSettings } from '@/lib/api/settings';
 import type { Invoice, MeterReading } from '@/lib/types';
 
@@ -38,10 +39,23 @@ export async function POST(req: Request) {
     ]);
     const EXCHANGE_RATE = settings.exchangeRateKhr;
 
+    // Only bill leases whose room is in the caller's assigned buildings. A
+    // building-scoped staff running the generator produces invoices for their
+    // buildings only; unrestricted users (null) bill every active lease.
+    const scopeIds = await scopedPropertyIds(gate);
+    const scopedRoomIds =
+      scopeIds === null
+        ? null
+        : new Set(allRooms.filter((r) => scopeIds.includes(r.propertyId)).map((r) => r.id));
+    const leasesToBill =
+      scopedRoomIds === null
+        ? activeLeases
+        : activeLeases.filter((cnt) => scopedRoomIds.has(cnt.roomId));
+
     const newInvoices: (typeof invoices.$inferInsert)[] = [];
     const newReadings: (typeof meterReadings.$inferInsert)[] = [];
 
-    for (const cnt of activeLeases) {
+    for (const cnt of leasesToBill) {
       const isDuplicate = existingInvoices.some(
         (inv) => inv.roomId === cnt.roomId && inv.year === year && inv.month === month
       );

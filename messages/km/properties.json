@@ -31,6 +31,16 @@
     "type_condo": "កុងដូ",
     "no_properties_match_filter": "រកមិនឃើញទីតាំងដែលត្រូវនឹងប្រភេទបានជ្រើសរើសឡើយ។",
     "status_filter_label": "ស្ថានភាព៖",
-    "all_statuses": "គ្រប់ស្ថានភាពទាំងអស់"
+    "all_statuses": "គ្រប់ស្ថានភាពទាំងអស់",
+    "prop_name_en_label": "ឈ្មោះអចលនទ្រព្យ (ភាសាអង់គ្លេស)",
+    "prop_name_kh_label": "ឈ្មោះអចលនទ្រព្យ (ភាសាខ្មែរ)",
+    "prop_name_placeholder": "ឧ. Sensok Cozy Apartment",
+    "prop_name_kh_placeholder": "ឧ. សែនសុខ ខូហ្ស៊ី អាផាតមិន",
+    "prop_address_en_label": "អាសយដ្ឋាន (ភាសាអង់គ្លេស)",
+    "prop_address_kh_label": "អាសយដ្ឋាន (ភាសាខ្មែរ)",
+    "prop_address_placeholder": "ឧ. Street 1986, Sen Sok, Phnom Penh",
+    "prop_address_kh_placeholder": "ឧ. ផ្លូវ ១៩៨៦, ខណ្ឌសែនសុខ, ភ្នំពេញ",
+    "room_number_placeholder": "ឧ. A-101, E-04",
+    "room_rent_label": "ថ្លៃជួល (USD)"
   }
 }

@@ -39,6 +39,16 @@ export function Modal({
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<Element | null>(null);
 
+  // Hold the latest onClose in a ref so the focus-trap effect below can depend
+  // on [open] alone. Depending on [onClose] would re-run the effect on every
+  // render when a parent passes a fresh onClose each time (e.g. a modal whose
+  // form state lives in the parent) — which steals focus/caret back to the
+  // first field on every keystroke.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
     triggerRef.current = document.activeElement;
@@ -49,7 +59,7 @@ export function Modal({
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        onClose?.();
+        onCloseRef.current?.();
         return;
       }
       if (e.key !== 'Tab' || !panel) return;
@@ -73,7 +83,7 @@ export function Modal({
       document.removeEventListener('keydown', handleKeyDown);
       if (triggerRef.current instanceof HTMLElement) triggerRef.current.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 

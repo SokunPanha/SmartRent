@@ -52,6 +52,24 @@
     "status_label": "Status:",
     "all_statuses": "All Statuses",
     "property_label": "Property:",
-    "all_properties": "All Properties"
+    "all_properties": "All Properties",
+    "tenant_name_en_label": "Tenant Full Name (English)",
+    "tenant_name_kh_label": "Full Name (Khmer)",
+    "tenant_name_placeholder": "e.g. Sok Chamroeun",
+    "tenant_name_kh_placeholder": "ឧ. សុខ ចំរើន",
+    "tenant_email_label": "Email Address",
+    "phone_placeholder": "e.g. 012 345 678",
+    "nid_placeholder": "e.g. 120485934",
+    "email_placeholder": "e.g. sok.chamroeun99@gmail.com",
+    "emergency_placeholder": "e.g. Wife - 016 999 888",
+    "con_room_label": "Select Available Vacant Room",
+    "con_tenant_label": "Select Tenant Customer",
+    "con_start_label": "Start Date",
+    "con_expiry_label": "Expiry Date",
+    "con_rent_label": "Rent Fee (USD/month)",
+    "con_deposit_label": "Security Deposit (USD)",
+    "con_elec_label": "Electric Rate (៛/kWh)",
+    "con_water_label": "Water Rate (៛/m³)",
+    "riel_conversions_note": "Cambodian Riel Conversions Applied"
   }
 }

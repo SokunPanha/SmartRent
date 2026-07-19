@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { users, roles } from '@/lib/db/schema';
+import { users, roles, userProperties } from '@/lib/db/schema';
 import {
   ok,
   created,
@@ -33,7 +33,16 @@ export async function GET() {
       })
       .from(users)
       .leftJoin(roles, eq(users.roleId, roles.id));
-    return ok(rows);
+
+    // Attach each user's assigned building IDs ([] = unrestricted, sees all).
+    const assignments = await db.select().from(userProperties);
+    const byUser = new Map<string, string[]>();
+    for (const a of assignments) {
+      const list = byUser.get(a.userId);
+      if (list) list.push(a.propertyId);
+      else byUser.set(a.userId, [a.propertyId]);
+    }
+    return ok(rows.map((r) => ({ ...r, propertyIds: byUser.get(r.id) ?? [] })));
   } catch (err) {
     return serverError(err);
   }
@@ -74,7 +83,15 @@ export async function POST(req: Request) {
       })
       .returning({ id: users.id, name: users.name, email: users.email, roleId: users.roleId });
 
-    return created(user);
+    // Optional building assignments. Empty/omitted = unrestricted (sees all).
+    const propertyIds = Array.isArray(body.propertyIds) ? (body.propertyIds as string[]) : [];
+    if (propertyIds.length) {
+      await db
+        .insert(userProperties)
+        .values(propertyIds.map((propertyId) => ({ userId: user.id, propertyId })));
+    }
+
+    return created({ ...user, propertyIds });
   } catch (err) {
     return serverError(err);
   }

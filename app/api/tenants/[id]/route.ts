@@ -3,16 +3,20 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { tenants } from '@/lib/db/schema';
 import { ok, notFound, badRequest, serverError, readJson } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { isTenantInScope } from '@/lib/api/scope';
 
 type Params = { params: Promise<{ id: string }> };
 
-// GET /api/tenants/:id
+// GET /api/tenants/:id — visible only if the tenant leases in a scoped building.
 export async function GET(_req: Request, { params }: Params) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
     const [row] = await db.select().from(tenants).where(eq(tenants.id, id));
     if (!row) return notFound('Tenant not found');
+    if (!(await isTenantInScope(gate, id))) return notFound('Tenant not found');
     return ok(row);
   } catch (err) {
     return serverError(err);

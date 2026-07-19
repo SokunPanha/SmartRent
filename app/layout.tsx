@@ -6,6 +6,7 @@ import { getLocale, getMessages } from 'next-intl/server';
 import { SessionProvider } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
+import { AccentProvider } from '@/components/theme/accent-provider';
 import { RentProvider } from '@/store/rent-store';
 import { QueryProvider } from '@/lib/query/provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -38,6 +39,15 @@ export default async function RootLayout({
       className={cn('font-sans', geist.variable, jetbrainsMono.variable)}
       suppressHydrationWarning
     >
+      <head>
+        {/* Apply the saved accent before paint to avoid a color flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var a=localStorage.getItem('tt-accent');document.documentElement.setAttribute('data-accent',(a==='navy'||a==='amethyst')?a:'red');}catch(e){document.documentElement.setAttribute('data-accent','red');}})();",
+          }}
+        />
+      </head>
       <body suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
@@ -46,16 +56,18 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <SessionProvider>
-              <QueryProvider>
-                <RentProvider>
-                  <ConfirmDialogProvider>
-                    <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
-                  </ConfirmDialogProvider>
-                  <Toaster position="bottom-right" />
-                </RentProvider>
-              </QueryProvider>
-            </SessionProvider>
+            <AccentProvider>
+              <SessionProvider>
+                <QueryProvider>
+                  <RentProvider>
+                    <ConfirmDialogProvider>
+                      <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+                    </ConfirmDialogProvider>
+                    <Toaster position="bottom-right" />
+                  </RentProvider>
+                </QueryProvider>
+              </SessionProvider>
+            </AccentProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

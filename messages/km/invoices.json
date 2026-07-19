@@ -104,6 +104,17 @@
     "telegram_unscheduled": "មិនទាន់កំណត់ពេល",
     "telegram_scheduled": "បានកំណត់ពេល",
     "telegram_sent": "បានផ្ញើ",
-    "telegram_failed": "បរាជ័យ"
+    "telegram_failed": "បរាជ័យ",
+    "pay_amount_label": "ចំនួនទឹកប្រាក់ (USD)",
+    "pay_gateway_label": "មធ្យោបាយបង់ប្រាក់",
+    "pay_remarks_label": "កំណត់សម្គាល់ការបង់ប្រាក់",
+    "pay_remarks_placeholder": "ឧ. បង់ប្រាក់តាមអនឡាញ ABA KHQR",
+    "telegram_service_badge": "សេវាស្វ័យប្រវត្តិ PWA",
+    "telegram_console_title": "កុងសូលកំណត់ហេតុផ្សាយផ្ទាល់",
+    "telegram_clear_console": "សម្អាតកុងសូល",
+    "inv_unscheduled": "មិនទាន់កំណត់ពេល",
+    "inv_scheduled": "បានកំណត់ពេល",
+    "inv_sent": "បានផ្ញើ",
+    "inv_failed": "បរាជ័យ"
   }
 }

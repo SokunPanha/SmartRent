@@ -123,25 +123,26 @@ spacing:
 ---
 
 ## Brand & Style
-The design system is rooted in **High-End Minimalism**, prioritizing clarity, precision, and a sense of architectural calm. Designed for a tenant management platform, the aesthetic moves away from cluttered dashboards toward a "gallery-like" experience where information is curated rather than dumped. 
+The design system is **Refined & Premium** — a warm evolution of high-end minimalism. It prioritizes clarity, precision, and architectural calm, but replaces cold monochrome with **warm neutrals and a single restrained emerald signature accent**. Designed for a tenant management platform, the aesthetic curates information rather than dumping it, on a soft ivory canvas with clean white cards.
 
-The emotional response should be one of professional ease and premium reliability. By utilizing expansive whitespace and a restrained palette, the UI recedes to let the content—property data, tenant communications, and financial overviews—become the focal point. The style avoids "loud" UI patterns in favor of thin hairlines, subtle tonal shifts, and intentional typographic hierarchy.
+The emotional response should be one of professional ease and premium reliability. Expansive whitespace, warm paper tones, and a restrained palette let the content — property data, tenant communications, financial overviews — become the focal point. The style avoids "loud" UI patterns in favor of thin hairlines, subtle tonal shifts, soft ambient depth, and intentional typographic hierarchy.
 
 ## Colors
-The palette is monochromatic and sophisticated, utilizing a foundation of "Paper White" and "Soft Slate." 
+The palette is **warm neutral with one emerald signature accent** — a foundation of "Warm Ivory" and "Soft Stone," not cold slate.
 
-- **Primary:** Deep Navy (#0F172A) is reserved for primary actions, navigation headers, and critical focus states.
-- **Neutrals:** A range of grays from Slate-50 to Slate-400 provides the structural framework. Charcoal is used for body text to reduce eye strain while maintaining high contrast.
-- **Functional:** Success, warning, and error states should use desaturated versions of green and red to maintain the minimalist harmony.
-- **Accents:** High-end finishes are achieved through the use of very subtle borders (#E2E8F0) rather than heavy background fills.
+- **Signature / Primary:** Deep Emerald (`#12694E`, brighter `#34B189` in dark) is the single accent. Reserved for primary actions, active navigation, focus rings, links, and positive emphasis. Use it sparingly — one confident accent, never a rainbow.
+- **Canvas & surfaces:** Warm ivory canvas (`#FAF9F7`) with clean white cards (`#FFFFFF`) that lift off it. Warm charcoal ink (`#1F1D1B`) for body text — never pure black.
+- **Neutrals:** Warm grays (`#7A736B` muted, `#E8E3DC` borders) provide the structural framework. Warm, not cool slate.
+- **Functional:** Success (emerald family), warning (gold), and error (`#BE3B31` warm red) stay desaturated to preserve calm. Info blue (`#2C6E8F`) is reserved for utility data like water meters.
+- **Accents:** Finishes come from very subtle warm borders and faint emerald tints (`#ECF3EF`) rather than heavy fills.
 
 ## Typography
-This design system utilizes **Geist** for its technical precision and modernist roots. The typeface's geometric construction ensures legibility in data-heavy tables while appearing elegant in large display headers.
+This design system uses **Geist** for its geometric precision — legible in data-heavy tables, elegant in large headers.
 
-- **Scale:** A tight typographic scale is used to prevent visual noise. 
-- **Rhythm:** Line heights are generous (1.6x for body) to enhance the "airy" feel.
-- **Weight:** Use `Medium (500)` for subheaders and `SemiBold (600)` sparingly for primary headings to maintain a sophisticated, non-aggressive profile.
-- **Labels:** Small labels use increased letter spacing and uppercase styling to differentiate metadata from primary content.
+- **Scale:** A comfortable, modern scale. Body text is **16px minimum**; avoid sub-12px type in the chrome. Larger, more confident sizing reads modern — cramped micro-text reads dated.
+- **Rhythm:** Line heights are generous (1.6x for body) to enhance the airy feel.
+- **Weight:** Use `Medium (500)` for subheaders and `SemiBold (600)` sparingly for primary headings — sophisticated, non-aggressive.
+- **Labels:** Metadata labels are **normal-case Geist** in a muted warm gray. Do **not** use monospace or ALL-CAPS letter-spaced labels for UI chrome — that "technical terminal" styling reads dated. (Monospace is fine only for genuinely numeric/tabular figures where digit alignment matters. Never apply uppercase or letter-spacing to Khmer text.)
 
 ## Layout & Spacing
 The layout follows a **Fluid Grid with Fixed Maxima**. On desktop, content is centered within a 1440px container to ensure readability on ultrawide monitors.
@@ -152,24 +153,25 @@ The layout follows a **Fluid Grid with Fixed Maxima**. On desktop, content is ce
 - **Grid:** A 12-column system is used for desktop layouts, typically using a 6-6 split for management dashboards or a 4-8 split for detail views.
 
 ## Elevation & Depth
-In keeping with the minimalist high-end aesthetic, depth is communicated through **Low-Contrast Outlines** and **Ambient Shadows** rather than heavy fills.
+Depth is communicated through **warm hairline outlines** and **soft ambient shadows** — subtle, never heavy.
 
-- **Shadows:** Use a single, highly diffused shadow style for floating elements (modals, dropdowns): `0 20px 50px rgba(0,0,0, 0.04)`. It should feel like a soft glow of light rather than a dark shadow.
-- **Tonal Layers:** The background is pure white (#FFFFFF). Cards or secondary sections use a subtle Slate-50 (#F8FAFC) background with a 1px border (#F1F5F9).
-- **Interactive States:** On hover, elements should not move "up" (no Y-axis shift). Instead, the border color should subtly darken, or the background should shift by a single tonal step.
+- **Card shadow:** Cards carry a soft ambient shadow (`--shadow-card`: `0 1px 2px / 0 2px 8px` at very low opacity) that lifts white cards off the warm ivory canvas. It should read as a gentle sense of depth, not a drop shadow.
+- **Modal shadow:** Floating elements (modals, dropdowns) use a single diffused shadow (`--shadow-modal`): a soft glow of light, not a dark shadow.
+- **Tonal Layers:** The canvas is warm ivory (`#FAF9F7`). Cards are white (`#FFFFFF`) with a 1px warm border (`#E8E3DC`) plus the ambient card shadow.
+- **Interactive States:** On hover, elements should not move "up" (no Y-axis shift). Instead, the border darkens toward emerald or the background shifts by a single tonal step.
 
 ## Shapes
-The shape language is **Soft and Precise**. 
+The shape language is **Soft and Modern** — a graduated radius scale, not flat corners.
 
-A 4px (`rounded-sm`) radius is the standard for almost all UI elements including buttons, input fields, and cards. This small radius provides a hint of modern approachability while maintaining the structured, professional look of sharp corners. 
-
-- **Large Elements:** Use `rounded-lg` (8px) for major containers or modals.
-- **Circular Elements:** Reserved exclusively for user avatars or status indicators to provide a visual break from the rectilinear grid.
+- **Controls** (buttons, inputs, chips): `10px` (`--radius`).
+- **Cards:** `12px` (`--radius-card`).
+- **Modals / large containers:** `16px` (`--radius-modal`).
+- **Circular Elements:** Reserved for avatars and status dots, for a visual break from the rectilinear grid.
 
 ## Components
-- **Buttons:** Primary buttons use the Deep Navy background with white text. Secondary buttons are "Ghost" style: no background, 1px light gray border, slate-900 text.
-- **Inputs:** Fields are defined by a bottom-border only or a very light 4-sided border. Focus states should be a simple color change of the border to the primary navy—no heavy "glow" effects.
-- **Cards:** Cards should have no shadow by default. They are defined by a 1px border (#F1F5F9). Padding inside cards is generous (minimum 24px).
-- **Chips/Badges:** Small, rectangular badges with a subtle background (e.g., #F1F5F9) and Slate-700 text. Used for status indicators like "Lease Active" or "Payment Pending."
-- **Lists:** Tenant and property lists use horizontal rules (hairlines) with significant vertical padding (16px - 20px) between rows to ensure the UI feels light and airy.
-- **Data Tables:** Remove all vertical borders. Use only horizontal lines. Headers should be in the `label-md` typographic style.
+- **Buttons:** Primary buttons use the Emerald background with white text. Secondary buttons are "Ghost" style: no background, 1px warm border, charcoal text. 10px radius.
+- **Inputs:** A light 4-sided warm border. Focus states are a simple border color change to emerald plus the emerald ring — no heavy "glow."
+- **Cards:** White, 12px radius, 1px warm border, and the soft `--shadow-card` ambient shadow. Padding inside cards is generous (minimum 24px).
+- **Chips/Badges:** Small rounded badges with a subtle tinted background and normal-case label. Used for status like "Lease Active" or "Payment Pending." No ALL-CAPS letter-spacing.
+- **Lists:** Tenant and property lists use hairlines with generous vertical padding (16px–20px) between rows to keep the UI light and airy.
+- **Data Tables:** Remove all vertical borders. Use only horizontal hairlines. Headers use a muted normal-case label, not uppercase monospace.

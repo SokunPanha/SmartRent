@@ -18,13 +18,13 @@ export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
         <div className="space-y-4 text-xs">
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Tenant Full Name (English) *
+              {t('tenant_name_en_label')} *
             </label>
             <input
               type="text"
               value={c.tenantName}
               onChange={(e) => c.setTenantName(e.target.value)}
-              placeholder="e.g. Sok Chamroeun"
+              placeholder={t('tenant_name_placeholder')}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
@@ -32,13 +32,13 @@ export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
 
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              ឈ្មោះពេញភាសាខ្មែរ *
+              {t('tenant_name_kh_label')} *
             </label>
             <input
               type="text"
               value={c.tenantNameKh}
               onChange={(e) => c.setTenantNameKh(e.target.value)}
-              placeholder="ឧ. សុខ ចំរើន"
+              placeholder={t('tenant_name_kh_placeholder')}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               required
             />
@@ -53,7 +53,7 @@ export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
                 type="text"
                 value={c.tenantPhone}
                 onChange={(e) => c.setTenantPhone(e.target.value)}
-                placeholder="e.g. 012 345 678"
+                placeholder={t('phone_placeholder')}
                 className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono"
                 required
               />
@@ -67,7 +67,7 @@ export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
                 type="text"
                 value={c.tenantNID}
                 onChange={(e) => c.setTenantNID(e.target.value)}
-                placeholder="e.g. 120485934"
+                placeholder={t('nid_placeholder')}
                 className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono"
                 required
               />
@@ -76,13 +76,13 @@ export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
 
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Email Address
+              {t('tenant_email_label')}
             </label>
             <input
               type="email"
               value={c.tenantEmail}
               onChange={(e) => c.setTenantEmail(e.target.value)}
-              placeholder="e.g. sok.chamroeun99@gmail.com"
+              placeholder={t('email_placeholder')}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono"
             />
           </div>
@@ -126,7 +126,7 @@ export function TenantModal({ c, lang }: { c: Controller; lang: AppLanguage }) {
                 type="text"
                 value={c.tenantEmergency}
                 onChange={(e) => c.setTenantEmergency(e.target.value)}
-                placeholder="e.g. Wife - 016 999 888"
+                placeholder={t('emergency_placeholder')}
                 className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
               />
             </div>

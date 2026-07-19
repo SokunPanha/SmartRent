@@ -14,7 +14,7 @@ export async function PATCH(req: Request, { params }: Params) {
   if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
-    const body = await readJson<{ name?: string; permissions?: string[] }>(req);
+    const body = await readJson<{ name?: string; description?: string; permissions?: string[] }>(req);
     if (!body) return badRequest('Invalid JSON body');
 
     const [role] = await db.select().from(roles).where(eq(roles.id, id));
@@ -29,6 +29,10 @@ export async function PATCH(req: Request, { params }: Params) {
         return badRequest('A role with that name already exists');
       }
       await db.update(roles).set({ name }).where(eq(roles.id, id));
+    }
+
+    if (body.description !== undefined) {
+      await db.update(roles).set({ description: body.description.trim() || null }).where(eq(roles.id, id));
     }
 
     if (body.permissions !== undefined) {
@@ -47,6 +51,7 @@ export async function PATCH(req: Request, { params }: Params) {
     return ok({
       id: updated.id,
       name: updated.name,
+      description: updated.description,
       isSystem: updated.isSystem,
       permissions: perms.map((p) => p.permission),
     });

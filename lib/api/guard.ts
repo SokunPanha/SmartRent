@@ -5,7 +5,7 @@ import { rolePermissions } from '@/lib/db/schema';
 import { PermissionKey } from '@/lib/permissions';
 import { NextResponse } from 'next/server';
 
-type SessionUser = {
+export type SessionUser = {
   id: string;
   role: string;
   roleId: string | null;

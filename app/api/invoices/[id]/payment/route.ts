@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { invoices } from '@/lib/db/schema';
-import { ok, notFound, badRequest, serverError, readJson } from '@/lib/api/http';
+import { ok, notFound, badRequest, forbidden, serverError, readJson } from '@/lib/api/http';
 import { requirePermission } from '@/lib/api/guard';
+import { isRoomInScope } from '@/lib/api/scope';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -29,6 +30,7 @@ export async function POST(req: Request, { params }: Params) {
 
     const [inv] = await db.select().from(invoices).where(eq(invoices.id, id));
     if (!inv) return notFound('Invoice not found');
+    if (!(await isRoomInScope(gate, inv.roomId))) return forbidden('Outside your assigned buildings.');
 
     const nextPaid = Number((inv.amountPaidUSD + amount).toFixed(2));
     const fullyPaid = nextPaid >= Number((inv.totalAmountUSD - 0.01).toFixed(2));

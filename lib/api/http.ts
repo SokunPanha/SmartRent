@@ -22,6 +22,10 @@ export function notFound(error = 'Not found') {
   return NextResponse.json({ error }, { status: 404 });
 }
 
+export function forbidden(error = 'Forbidden') {
+  return NextResponse.json({ error }, { status: 403 });
+}
+
 export function serverError(err: unknown) {
   const message = err instanceof Error ? err.message : 'Internal Server Error';
   console.error('[api] error:', err);

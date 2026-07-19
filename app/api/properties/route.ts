@@ -1,23 +1,34 @@
 import { NextResponse } from 'next/server';
+import { inArray } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { properties } from '@/lib/db/schema';
-import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { ok, created, badRequest, forbidden, serverError, readJson, missingField, genId } from '@/lib/api/http';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { scopedPropertyIds } from '@/lib/api/scope';
 
-// GET /api/properties — list all properties
+// GET /api/properties — list buildings the signed-in user is scoped to
 export async function GET() {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
-    const rows = await db.select().from(properties);
+    const ids = await scopedPropertyIds(gate);
+    const rows = ids
+      ? await db.select().from(properties).where(inArray(properties.id, ids))
+      : await db.select().from(properties);
     return ok(rows);
   } catch (err) {
     return serverError(err);
   }
 }
 
-// POST /api/properties — create a property
+// POST /api/properties — create a property (only unrestricted users; a
+// building-scoped staff cannot create buildings outside their assignment).
 export async function POST(req: Request) {
   const gate = await requirePermission('properties.manage');
   if (gate instanceof NextResponse) return gate;
+  if ((await scopedPropertyIds(gate)) !== null) {
+    return forbidden('You can only manage your assigned buildings.');
+  }
   try {
     const body = await readJson(req);
     if (!body) return badRequest('Invalid JSON body');

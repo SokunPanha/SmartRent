@@ -31,7 +31,7 @@ export function RoomModal({
               type="text"
               value={c.roomNumber}
               onChange={(e) => c.setRoomNumber(e.target.value)}
-              placeholder="e.g. A-101, E-04"
+              placeholder={t('room_number_placeholder')}
               className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
               required
             />
@@ -55,7 +55,7 @@ export function RoomModal({
 
             <div>
               <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                Rent Amount (USD) *
+                {t('room_rent_label')} *
               </label>
               <input
                 type="number"

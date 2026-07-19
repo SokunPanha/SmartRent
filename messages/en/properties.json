@@ -31,6 +31,16 @@
     "type_condo": "Condo",
     "no_properties_match_filter": "No properties match the selected type.",
     "status_filter_label": "Status:",
-    "all_statuses": "All Statuses"
+    "all_statuses": "All Statuses",
+    "prop_name_en_label": "Property Name (English)",
+    "prop_name_kh_label": "Property Name (Khmer)",
+    "prop_name_placeholder": "e.g. Sensok Cozy Apartment",
+    "prop_name_kh_placeholder": "ឧ. សែនសុខ ខូហ្ស៊ី អាផាតមិន",
+    "prop_address_en_label": "Address (English)",
+    "prop_address_kh_label": "Address (Khmer)",
+    "prop_address_placeholder": "e.g. Street 1986, Sen Sok, Phnom Penh",
+    "prop_address_kh_placeholder": "ឧ. ផ្លូវ ១៩៨៦, ខណ្ឌសែនសុខ, ភ្នំពេញ",
+    "room_number_placeholder": "e.g. A-101, E-04",
+    "room_rent_label": "Rent Amount (USD)"
   }
 }

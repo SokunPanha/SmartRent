@@ -4,6 +4,10 @@
     "owner_suite": "គណនីម្ចាស់ផ្ទះ",
     "khemar_lang": "ភាសាខ្មែរ",
     "english_lang": "English",
+    "theme_color": "ពណ៌រូបរាង",
+    "theme_crimson": "ក្រហម (ABA)",
+    "theme_navy": "ខៀវទុំ",
+    "theme_amethyst": "ស្វាយ",
     "active_role": "តួនាទីបច្ចុប្បន្ន",
     "role_owner": "ម្ចាស់អចលនទ្រព្យ (ទាំងអស់)",
     "role_manager": "អ្នកចាត់ការ (គ្រប់គ្រងបន្ទប់/វិក្កយបត្រ)",
@@ -47,6 +51,7 @@
     "pagination_page": "ទំព័រ {page} នៃ {totalPages}",
     "pagination_prev": "ទំព័រមុន",
     "pagination_next": "ទំព័របន្ទាប់",
-    "system_settings": "ការកំណត់ប្រព័ន្ធ"
+    "system_settings": "ការកំណត់ប្រព័ន្ធ",
+    "theme_toggle": "ប្ដូររចនាបថ ភ្លឺ/ខ្មៅ"
   }
 }

@@ -45,7 +45,7 @@ export function LoginForm() {
                 type="email"
                 autoComplete="email"
                 required
-                placeholder="owner@khrent.local"
+                placeholder={t('email_placeholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

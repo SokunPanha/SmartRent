@@ -33,7 +33,7 @@ export function ContractModal({
         <div className="space-y-4 text-xs">
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Select Available Vacant Room *
+              {t('con_room_label')} *
             </label>
             <Select value={c.conRoomId} onValueChange={c.handleRoomSelectInContract}>
               <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
@@ -56,7 +56,7 @@ export function ContractModal({
 
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Select Tenant Customer *
+              {t('con_tenant_label')} *
             </label>
             <Select value={c.conTenantId} onValueChange={c.setConTenantId}>
               <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
@@ -75,7 +75,7 @@ export function ContractModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                Start Date *
+                {t('con_start_label')} *
               </label>
               <input
                 type="date"
@@ -88,7 +88,7 @@ export function ContractModal({
 
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                Expiry Date *
+                {t('con_expiry_label')} *
               </label>
               <input
                 type="date"
@@ -103,7 +103,7 @@ export function ContractModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                Rent Fee (USD/month) *
+                {t('con_rent_label')} *
               </label>
               <input
                 type="number"
@@ -117,7 +117,7 @@ export function ContractModal({
 
             <div>
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-                Security Deposit (USD) *
+                {t('con_deposit_label')} *
               </label>
               <input
                 type="number"
@@ -133,7 +133,7 @@ export function ContractModal({
           <div className="grid grid-cols-2 gap-3 bg-muted p-3 rounded-xl border border-border">
             <div>
               <label className="text-[10px] font-bold text-chart-1 uppercase tracking-wider block mb-1 font-sans flex items-center gap-0.5">
-                Electric Rate (៛/kWh) *
+                {t('con_elec_label')} *
               </label>
               <input
                 type="number"
@@ -149,7 +149,7 @@ export function ContractModal({
 
             <div>
               <label className="text-[10px] font-bold text-info uppercase tracking-wider block mb-1 font-sans">
-                Water Rate (៛/m³) *
+                {t('con_water_label')} *
               </label>
               <input
                 type="number"

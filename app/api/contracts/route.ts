@@ -1,17 +1,26 @@
 import { NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { and, eq, inArray, type SQL } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { contracts, rooms } from '@/lib/db/schema';
-import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { ok, created, badRequest, forbidden, serverError, readJson, missingField, genId } from '@/lib/api/http';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { scopedPropertyIds, roomIdsInProperties, isRoomInScope } from '@/lib/api/scope';
 
-// GET /api/contracts?status=active — list contracts, optional status filter
+// GET /api/contracts?status=active — list contracts in the user's scoped
+// buildings, with an optional status filter.
 export async function GET(req: Request) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const status = new URL(req.url).searchParams.get('status');
-    const rows = status
-      ? await db.select().from(contracts).where(eq(contracts.status, status))
-      : await db.select().from(contracts);
+    const ids = await scopedPropertyIds(gate);
+    const filters: SQL[] = [];
+    if (status) filters.push(eq(contracts.status, status));
+    if (ids) filters.push(inArray(contracts.roomId, roomIdsInProperties(ids)));
+    const rows = await db
+      .select()
+      .from(contracts)
+      .where(filters.length ? and(...filters) : undefined);
     return ok(rows);
   } catch (err) {
     return serverError(err);
@@ -31,6 +40,10 @@ export async function POST(req: Request) {
       'rentAmount', 'depositAmount', 'electricityRate', 'waterRate',
     ]);
     if (missing) return badRequest(`Missing required field: ${missing}`);
+
+    if (!(await isRoomInScope(gate, body.roomId as string))) {
+      return forbidden('Outside your assigned buildings.');
+    }
 
     const row = {
       id: (body.id as string) || genId('contract'),

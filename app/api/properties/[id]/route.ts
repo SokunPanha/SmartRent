@@ -2,15 +2,19 @@ import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { properties, rooms } from '@/lib/db/schema';
-import { ok, notFound, badRequest, serverError, readJson } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { ok, notFound, badRequest, forbidden, serverError, readJson } from '@/lib/api/http';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { isPropertyInScope } from '@/lib/api/scope';
 
 type Params = { params: Promise<{ id: string }> };
 
 // GET /api/properties/:id
 export async function GET(_req: Request, { params }: Params) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
+    if (!(await isPropertyInScope(gate, id))) return notFound('Property not found');
     const [row] = await db.select().from(properties).where(eq(properties.id, id));
     if (!row) return notFound('Property not found');
     return ok(row);
@@ -25,6 +29,7 @@ export async function PATCH(req: Request, { params }: Params) {
   if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
+    if (!(await isPropertyInScope(gate, id))) return forbidden('Outside your assigned buildings.');
     const body = await readJson(req);
     if (!body) return badRequest('Invalid JSON body');
 
@@ -60,6 +65,7 @@ export async function DELETE(_req: Request, { params }: Params) {
   if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
+    if (!(await isPropertyInScope(gate, id))) return forbidden('Outside your assigned buildings.');
     const [existing] = await db.select().from(properties).where(eq(properties.id, id));
     if (!existing) return notFound('Property not found');
 

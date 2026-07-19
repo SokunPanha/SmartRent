@@ -19,7 +19,7 @@ export function PaymentModal({ c, lang }: { c: Controller; lang: AppLanguage }) 
         <div className="space-y-4">
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Payment Amount Code (USD) *
+              {t('pay_amount_label')} *
             </label>
             <input
               type="number"
@@ -28,20 +28,20 @@ export function PaymentModal({ c, lang }: { c: Controller; lang: AppLanguage }) 
               min={0.01}
               max={10000}
               step={0.01}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm font-mono font-bold focus:border-chart-2 focus:outline-none"
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm font-mono font-bold focus:border-primary focus:outline-none"
               required
             />
           </div>
 
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              System Payment gateway *
+              {t('pay_gateway_label')} *
             </label>
             <Select
               value={c.payMethod}
               onValueChange={(v) => c.setPayMethod(v as typeof c.payMethod)}
             >
-              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans font-semibold focus-visible:border-chart-2 focus-visible:ring-chart-2/30">
+              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans font-semibold focus-visible:border-primary focus-visible:ring-primary/30">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -55,14 +55,14 @@ export function PaymentModal({ c, lang }: { c: Controller; lang: AppLanguage }) 
 
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              Payment Remarks / Notes
+              {t('pay_remarks_label')}
             </label>
             <input
               type="text"
               value={c.payNotes}
               onChange={(e) => c.setPayNotes(e.target.value)}
-              placeholder="e.g. Paid online through ABA KHQR barcode"
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-chart-2 focus:outline-none"
+              placeholder={t('pay_remarks_placeholder')}
+              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
             />
           </div>
         </div>

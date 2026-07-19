@@ -2,15 +2,19 @@ import { NextResponse } from 'next/server';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { rooms, properties } from '@/lib/db/schema';
-import { ok, notFound, badRequest, serverError, readJson } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { ok, notFound, badRequest, forbidden, serverError, readJson } from '@/lib/api/http';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { isRoomInScope, isPropertyInScope } from '@/lib/api/scope';
 
 type Params = { params: Promise<{ id: string }> };
 
 // GET /api/rooms/:id
 export async function GET(_req: Request, { params }: Params) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
+    if (!(await isRoomInScope(gate, id))) return notFound('Room not found');
     const [row] = await db.select().from(rooms).where(eq(rooms.id, id));
     if (!row) return notFound('Room not found');
     return ok(row);
@@ -25,8 +29,13 @@ export async function PATCH(req: Request, { params }: Params) {
   if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
+    if (!(await isRoomInScope(gate, id))) return forbidden('Outside your assigned buildings.');
     const body = await readJson(req);
     if (!body) return badRequest('Invalid JSON body');
+    // Moving a room to another building requires that building be in scope too.
+    if (body.propertyId !== undefined && !(await isPropertyInScope(gate, body.propertyId as string))) {
+      return forbidden('Outside your assigned buildings.');
+    }
 
     const allowed = ['roomNumber', 'floor', 'rentAmount', 'status', 'propertyId'] as const;
     const patch: Record<string, unknown> = {};
@@ -49,6 +58,7 @@ export async function DELETE(_req: Request, { params }: Params) {
   if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
+    if (!(await isRoomInScope(gate, id))) return forbidden('Outside your assigned buildings.');
     const [existing] = await db.select().from(rooms).where(eq(rooms.id, id));
     if (!existing) return notFound('Room not found');
 

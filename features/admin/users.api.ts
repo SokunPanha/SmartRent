@@ -9,6 +9,8 @@ export interface AdminUser {
   roleName: string | null;
   isSystemRole: boolean | null;
   createdAt?: string;
+  /** Assigned building IDs. Empty = unrestricted (sees every building). */
+  propertyIds: string[];
 }
 
 export interface NewUserInput {
@@ -17,6 +19,7 @@ export interface NewUserInput {
   email: string;
   password: string;
   roleId: string;
+  propertyIds?: string[];
 }
 
 export interface UpdateUserInput {
@@ -24,6 +27,7 @@ export interface UpdateUserInput {
   nameKh?: string;
   roleId?: string;
   password?: string;
+  propertyIds?: string[];
 }
 
 export const usersApi = {

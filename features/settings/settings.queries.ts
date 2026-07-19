@@ -3,7 +3,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useRent } from '@/store/rent-store';
-import { settingsApi } from './settings.api';
+import { propertyKeys } from '@/features/properties/properties.queries';
+import { settingsApi, ZoneRatesUpdate } from './settings.api';
 
 export const settingsKeys = { all: ['system-settings'] as const };
 
@@ -25,6 +26,19 @@ export function useUpdateSettings() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: settingsKeys.all });
       toast('System settings saved!');
+    },
+    onError: (e) => toast.error(e.message),
+  });
+}
+
+export function useUpdateZoneRates() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (vars: { id: string; patch: ZoneRatesUpdate }) =>
+      settingsApi.updateZoneRates(vars.id, vars.patch),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: propertyKeys.all });
+      toast('Zone rates saved!');
     },
     onError: (e) => toast.error(e.message),
   });

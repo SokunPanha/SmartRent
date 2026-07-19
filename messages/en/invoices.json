@@ -104,6 +104,17 @@
     "telegram_unscheduled": "Unscheduled",
     "telegram_scheduled": "Scheduled",
     "telegram_sent": "Sent",
-    "telegram_failed": "Failed"
+    "telegram_failed": "Failed",
+    "pay_amount_label": "Payment Amount (USD)",
+    "pay_gateway_label": "Payment Method",
+    "pay_remarks_label": "Payment Remarks / Notes",
+    "pay_remarks_placeholder": "e.g. Paid online through ABA KHQR barcode",
+    "telegram_service_badge": "PWA Automated Service",
+    "telegram_console_title": "Automation Hub Live Logger Console",
+    "telegram_clear_console": "Clear Console",
+    "inv_unscheduled": "Unscheduled",
+    "inv_scheduled": "Scheduled",
+    "inv_sent": "Sent",
+    "inv_failed": "Failed"
   }
 }

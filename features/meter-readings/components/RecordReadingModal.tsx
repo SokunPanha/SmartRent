@@ -40,7 +40,7 @@ export function RecordReadingModal({
               {t('room_number_required')}
             </label>
             <Select value={form.targetRoomId} onValueChange={form.handleRoomSelectionChange}>
-              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans font-semibold focus-visible:border-chart-2 focus-visible:ring-chart-2/30">
+              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans font-semibold focus-visible:border-primary focus-visible:ring-primary/30">
                 <SelectValue placeholder={t('select_room_placeholder')} />
               </SelectTrigger>
               <SelectContent>
@@ -62,7 +62,7 @@ export function RecordReadingModal({
                 value={String(form.readingMonth)}
                 onValueChange={(v) => form.setReadingMonth(Number(v))}
               >
-                <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-xs font-sans focus-visible:border-chart-2 focus-visible:ring-chart-2/30">
+                <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-xs font-sans focus-visible:border-primary focus-visible:ring-primary/30">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -85,7 +85,7 @@ export function RecordReadingModal({
                 onChange={(e) => form.setReadingYear(Number(e.target.value))}
                 min={2020}
                 max={2040}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:border-chart-2 focus:outline-none font-mono"
+                className="w-full px-3 py-2.5 rounded-lg border border-border text-xs focus:border-primary focus:outline-none font-mono"
                 required
               />
             </div>

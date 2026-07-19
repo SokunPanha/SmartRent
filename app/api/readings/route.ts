@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
-import { and, eq, desc, type SQL } from 'drizzle-orm';
+import { and, eq, desc, inArray, type SQL } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { meterReadings } from '@/lib/db/schema';
-import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { ok, created, badRequest, forbidden, serverError, readJson, missingField, genId } from '@/lib/api/http';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { scopedPropertyIds, roomIdsInProperties, isRoomInScope } from '@/lib/api/scope';
 
-// GET /api/readings?roomId=&year=&month= — list meter readings, newest first
+// GET /api/readings?roomId=&year=&month= — list meter readings (newest first)
+// within the user's scoped buildings.
 export async function GET(req: Request) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const sp = new URL(req.url).searchParams;
     const filters: SQL[] = [];
@@ -16,6 +20,9 @@ export async function GET(req: Request) {
     if (roomId) filters.push(eq(meterReadings.roomId, roomId));
     if (year) filters.push(eq(meterReadings.year, Number(year)));
     if (month) filters.push(eq(meterReadings.month, Number(month)));
+
+    const ids = await scopedPropertyIds(gate);
+    if (ids) filters.push(inArray(meterReadings.roomId, roomIdsInProperties(ids)));
 
     const rows = await db
       .select()
@@ -41,6 +48,10 @@ export async function POST(req: Request) {
       'prevElectricityValue', 'currElectricityValue', 'prevWaterValue', 'currWaterValue', 'recordedBy',
     ]);
     if (missing) return badRequest(`Missing required field: ${missing}`);
+
+    if (!(await isRoomInScope(gate, body.roomId as string))) {
+      return forbidden('Outside your assigned buildings.');
+    }
 
     const prevElec = Number(body.prevElectricityValue);
     const currElec = Number(body.currElectricityValue);

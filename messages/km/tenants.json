@@ -52,6 +52,24 @@
     "status_label": "ស្ថានភាព៖",
     "all_statuses": "គ្រប់ស្ថានភាពទាំងអស់",
     "property_label": "ទីតាំង៖",
-    "all_properties": "គ្រប់ទីតាំងទាំងអស់"
+    "all_properties": "គ្រប់ទីតាំងទាំងអស់",
+    "tenant_name_en_label": "ឈ្មោះពេញ (ភាសាអង់គ្លេស)",
+    "tenant_name_kh_label": "ឈ្មោះពេញ (ភាសាខ្មែរ)",
+    "tenant_name_placeholder": "ឧ. Sok Chamroeun",
+    "tenant_name_kh_placeholder": "ឧ. សុខ ចំរើន",
+    "tenant_email_label": "អាសយដ្ឋានអ៊ីមែល",
+    "phone_placeholder": "ឧ. 012 345 678",
+    "nid_placeholder": "ឧ. 120485934",
+    "email_placeholder": "ឧ. sok.chamroeun99@gmail.com",
+    "emergency_placeholder": "ឧ. ប្រពន្ធ - 016 999 888",
+    "con_room_label": "ជ្រើសបន្ទប់ទំនេរ",
+    "con_tenant_label": "ជ្រើសអ្នកជួល",
+    "con_start_label": "ថ្ងៃចាប់ផ្ដើម",
+    "con_expiry_label": "ថ្ងៃផុតកំណត់",
+    "con_rent_label": "ថ្លៃជួល (USD/ខែ)",
+    "con_deposit_label": "ប្រាក់កក់សុវត្ថិភាព (USD)",
+    "con_elec_label": "តម្លៃភ្លើង (៛/kWh)",
+    "con_water_label": "តម្លៃទឹក (៛/m³)",
+    "riel_conversions_note": "បានអនុវត្តការបំលែងជាប្រាក់រៀល"
   }
 }

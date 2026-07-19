@@ -7,12 +7,14 @@ import { ShieldCheck, UserPlus, Search } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
 import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useProperties } from '@/features/properties/properties.queries';
 import { useCan, useMyPermissions } from './permissions.queries';
 import { useUsers, useUserMutations } from './users.queries';
 import { useRoles } from './roles.queries';
 import { AdminUser } from './users.api';
 import { UserTable } from './components/UserTable';
 import { UserFormModal } from './components/UserFormModal';
+import { UserBuildingsModal } from './components/UserBuildingsModal';
 
 const NO_ROLE_VALUE = '__none__';
 
@@ -20,7 +22,7 @@ const NO_ROLE_VALUE = '__none__';
 export default function UsersAdmin() {
   const t = useTranslations('Admin');
   const tCommon = useTranslations('Common');
-  const { userEmail, mounted, sessionLoading, isSuperAdmin } = useRent();
+  const { userEmail, mounted, sessionLoading, isSuperAdmin, lang } = useRent();
   const can = useCan();
   const router = useRouter();
   const confirm = useConfirm();
@@ -36,8 +38,10 @@ export default function UsersAdmin() {
 
   const { data: users = [], isLoading } = useUsers();
   const { data: roles = [] } = useRoles();
+  const { data: properties = [] } = useProperties();
   const { create, update, remove } = useUserMutations();
   const [showCreate, setShowCreate] = useState(false);
+  const [editBuildingsUser, setEditBuildingsUser] = useState<AdminUser | null>(null);
   const [roleFilter, setRoleFilter] = useState('all');
   const [search, setSearch] = useState('');
 
@@ -142,6 +146,7 @@ export default function UsersAdmin() {
           currentEmail={userEmail}
           busy={busy}
           onChangeRole={handleChangeRole}
+          onEditBuildings={setEditBuildingsUser}
           onDelete={handleDelete}
         />
       )}
@@ -149,10 +154,28 @@ export default function UsersAdmin() {
       <UserFormModal
         open={showCreate}
         roles={roles}
+        properties={properties}
+        lang={lang}
         busy={create.isPending}
         onClose={() => setShowCreate(false)}
         onSubmit={(data) => create.mutate(data, { onSuccess: () => setShowCreate(false) })}
       />
+
+      {editBuildingsUser && (
+        <UserBuildingsModal
+          user={editBuildingsUser}
+          properties={properties}
+          lang={lang}
+          busy={update.isPending}
+          onClose={() => setEditBuildingsUser(null)}
+          onSave={(propertyIds) =>
+            update.mutate(
+              { id: editBuildingsUser.id, patch: { propertyIds } },
+              { onSuccess: () => setEditBuildingsUser(null) }
+            )
+          }
+        />
+      )}
     </div>
   );
 }

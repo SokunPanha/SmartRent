@@ -43,10 +43,10 @@ export function AppSidebar() {
             <span className="font-mono text-sm font-extrabold text-primary-foreground">P</span>
           </div>
           <div className="min-w-0">
-            <h1 className="truncate font-sans text-sm font-extrabold uppercase tracking-tight">
+            <h1 className="truncate font-sans text-sm font-semibold tracking-tight">
               {t('rental_invoice_title')}
             </h1>
-            <p className="mt-0.5 block text-[9px] font-bold text-primary">
+            <p className="mt-0.5 block text-[11px] font-medium text-primary">
               {t('real_estate_tagline')}
             </p>
           </div>
@@ -156,12 +156,12 @@ export function AppSidebar() {
           <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-2">
             <UserCircle className="h-7 w-7 shrink-0 text-primary" />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-bold text-foreground">
+              <p className="truncate text-sm font-semibold text-foreground">
                 {userName || '—'}
               </p>
-              <p className="truncate text-[10px] text-muted-foreground">{userEmail}</p>
+              <p className="truncate text-[11px] text-muted-foreground">{userEmail}</p>
             </div>
-            <span className="shrink-0 rounded-md bg-primary/15 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-primary">
+            <span className="shrink-0 rounded-md bg-primary/12 px-2 py-0.5 text-[10px] font-semibold text-primary">
               {roleLabel}
             </span>
           </div>
@@ -176,7 +176,7 @@ export function AppSidebar() {
             {t('sign_out')}
           </Button>
 
-          <div className="font-mono text-[8px] italic leading-tight text-muted-foreground">
+          <div className="text-[10px] italic leading-snug text-muted-foreground">
             {t('access_note')}
           </div>
         </div>

@@ -1,13 +1,22 @@
 import { NextResponse } from 'next/server';
+import { inArray } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { tenants } from '@/lib/db/schema';
 import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { scopedPropertyIds, tenantIdsInProperties } from '@/lib/api/scope';
 
-// GET /api/tenants — list all tenants
+// GET /api/tenants — tenants who hold a lease in the user's scoped buildings
+// (unrestricted users see every tenant). Tenants aren't building-bound
+// directly, so scope is derived through their contracts.
 export async function GET() {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
-    const rows = await db.select().from(tenants);
+    const ids = await scopedPropertyIds(gate);
+    const rows = ids
+      ? await db.select().from(tenants).where(inArray(tenants.id, tenantIdsInProperties(ids)))
+      : await db.select().from(tenants);
     return ok(rows);
   } catch (err) {
     return serverError(err);

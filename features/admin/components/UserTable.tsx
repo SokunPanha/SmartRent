@@ -17,6 +17,7 @@ export function UserTable({
   currentEmail,
   busy,
   onChangeRole,
+  onEditBuildings,
   onDelete,
 }: {
   users: AdminUser[];
@@ -24,6 +25,7 @@ export function UserTable({
   currentEmail: string;
   busy: boolean;
   onChangeRole: (id: string, roleId: string) => void;
+  onEditBuildings: (user: AdminUser) => void;
   onDelete: (user: AdminUser) => void;
 }) {
   const t = useTranslations('Admin');
@@ -37,13 +39,14 @@ export function UserTable({
               <th className="p-4 pl-6">{t('table_user')}</th>
               <th className="p-4">{t('table_email')}</th>
               <th className="p-4">{t('table_role')}</th>
+              <th className="p-4">{t('buildings')}</th>
               <th className="p-4 pr-6 text-right">{t('table_actions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border text-xs text-muted-foreground font-sans">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={4} className="p-12 text-center text-muted-foreground italic">
+                <td colSpan={5} className="p-12 text-center text-muted-foreground italic">
                   {t('no_users_found')}
                 </td>
               </tr>
@@ -92,6 +95,27 @@ export function UserTable({
                           ))}
                         </SelectContent>
                       </Select>
+                    </td>
+                    <td className="p-4">
+                      {u.isSystemRole ? (
+                        <span className="text-[11px] text-muted-foreground">{t('buildings_all')}</span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] text-muted-foreground">
+                            {u.propertyIds.length === 0
+                              ? t('buildings_all')
+                              : t('buildings_assigned', { count: u.propertyIds.length })}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => onEditBuildings(u)}
+                            disabled={busy}
+                            className="cursor-pointer rounded-md border border-border px-2 py-0.5 text-[11px] font-medium text-foreground transition hover:border-primary/40 hover:bg-accent disabled:opacity-50"
+                          >
+                            {t('manage_buildings')}
+                          </button>
+                        </div>
+                      )}
                     </td>
                     <td className="p-4 pr-6 text-right">
                       <DeleteButton

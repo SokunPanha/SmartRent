@@ -4,6 +4,10 @@
     "owner_suite": "Landlord Portal",
     "khemar_lang": "ភាសាខ្មែរ",
     "english_lang": "English",
+    "theme_color": "Theme",
+    "theme_crimson": "Crimson (ABA)",
+    "theme_navy": "Dark Navy",
+    "theme_amethyst": "Amethyst",
     "active_role": "Active Persona",
     "role_owner": "Owner (All)",
     "role_manager": "Manager (Properties & Bills)",
@@ -47,6 +51,7 @@
     "pagination_page": "Page {page} of {totalPages}",
     "pagination_prev": "Previous page",
     "pagination_next": "Next page",
-    "system_settings": "System Settings"
+    "system_settings": "System Settings",
+    "theme_toggle": "Toggle theme"
   }
 }

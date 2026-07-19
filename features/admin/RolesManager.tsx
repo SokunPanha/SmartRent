@@ -1,17 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ShieldCheck, Plus, Save, Loader2, Lock } from 'lucide-react';
+import { ShieldCheck, Plus, Search } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
-import { PERMISSION_META, PermissionKey } from '@/lib/permissions';
-import { Input } from '@/components/ui/input';
 import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
-import { DeleteButton } from '@/components/shared/DeleteButton';
 import { useCan, useMyPermissions } from './permissions.queries';
 import { useRoles, useRoleMutations } from './roles.queries';
 import { Role } from './roles.api';
+import { RolesTable } from './components/RolesTable';
+import { RoleFormModal } from './components/RoleFormModal';
+import { RoleEditInfoModal } from './components/RoleEditInfoModal';
+import { RoleEditPermissionsModal } from './components/RoleEditPermissionsModal';
 
 export default function RolesManager() {
   const t = useTranslations('Admin');
@@ -31,7 +32,26 @@ export default function RolesManager() {
 
   const { data: roles = [], isLoading } = useRoles();
   const { create, update, remove } = useRoleMutations();
-  const [newRole, setNewRole] = useState('');
+
+  const [search, setSearch] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+  const [editInfoRole, setEditInfoRole] = useState<Role | null>(null);
+  const [editPermsRole, setEditPermsRole] = useState<Role | null>(null);
+
+  const filteredRoles = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return roles;
+    return roles.filter((r) => r.name.toLowerCase().includes(query));
+  }, [roles, search]);
+
+  async function handleDelete(role: Role) {
+    const ok = await confirm({
+      title: t('delete_role_confirm_title', { name: role.name }),
+      confirmLabel: t('delete'),
+      variant: 'destructive',
+    });
+    if (ok) remove.mutate(role.id);
+  }
 
   if (!authReady || !allowed) {
     const label = !authReady ? t('loading') : t('redirecting');
@@ -44,164 +64,83 @@ export default function RolesManager() {
 
   return (
     <div className="space-y-6" id="roles-manager-page">
-      <div className="bg-card p-4 rounded-xl border border-border shadow-3xs">
-        <h2 className="text-base font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
-          <ShieldCheck className="w-5 h-5 text-primary" />
-          {t('roles_permissions')}
-        </h2>
-        <p className="text-xs text-muted-foreground mt-0.5 font-sans">
-          {t('roles_permissions_desc')}
-        </p>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const name = newRole.trim();
-            if (name) create.mutate({ name }, { onSuccess: () => setNewRole('') });
-          }}
-          className="mt-4 flex gap-2 max-w-md"
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-card p-4 rounded-xl border border-border shadow-card">
+        <div>
+          <h2 className="text-base font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
+            <ShieldCheck className="w-5 h-5 text-primary" />
+            {t('roles_permissions')}
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5 font-sans">{t('roles_permissions_desc')}</p>
+        </div>
+        <button
+          onClick={() => setShowCreate(true)}
+          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer self-stretch sm:self-auto justify-center"
         >
-          <Input
-            value={newRole}
-            onChange={(e) => setNewRole(e.target.value)}
-            placeholder={t('new_role_placeholder')}
+          <Plus className="w-4 h-4" />
+          {t('add_role')}
+        </button>
+      </div>
+
+      <div className="bg-card p-4 rounded-xl border border-border shadow-card">
+        <div className="relative max-w-md">
+          <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t('search_role_placeholder')}
+            className="w-full pl-8 pr-3 py-2 rounded-lg border border-border text-xs bg-card text-foreground font-sans focus:outline-none focus:border-primary"
+            id="role-search-input"
           />
-          <button
-            type="submit"
-            disabled={create.isPending || !newRole.trim()}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-50 shrink-0"
-          >
-            <Plus className="w-4 h-4" />
-            {t('add_role')}
-          </button>
-        </form>
+        </div>
       </div>
 
       {isLoading ? (
         <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
           {t('loading_roles')}
         </div>
+      ) : filteredRoles.length === 0 ? (
+        <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
+          {t('no_roles_found')}
+        </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {roles.map((role) => (
-            <RoleCard
-              key={role.id}
-              role={role}
-              saving={update.isPending}
-              onSave={(patch) => update.mutate({ id: role.id, patch })}
-              onDelete={async () => {
-                const ok = await confirm({
-                  title: t('delete_role_confirm_title', { name: role.name }),
-                  confirmLabel: t('delete'),
-                  variant: 'destructive',
-                });
-                if (ok) remove.mutate(role.id);
-              }}
-            />
-          ))}
-        </div>
+        <RolesTable
+          roles={filteredRoles}
+          busy={update.isPending || remove.isPending}
+          onEditInfo={setEditInfoRole}
+          onEditPermissions={setEditPermsRole}
+          onDelete={handleDelete}
+        />
       )}
-    </div>
-  );
-}
 
-function RoleCard({
-  role,
-  saving,
-  onSave,
-  onDelete,
-}: {
-  role: Role;
-  saving: boolean;
-  onSave: (patch: { name?: string; permissions?: PermissionKey[] }) => void;
-  onDelete: () => void;
-}) {
-  const t = useTranslations('Admin');
-  const [name, setName] = useState(role.name);
-  const [perms, setPerms] = useState<Set<PermissionKey>>(new Set(role.permissions));
+      {showCreate && (
+        <RoleFormModal
+          busy={create.isPending}
+          onClose={() => setShowCreate(false)}
+          onSubmit={(data) => create.mutate(data, { onSuccess: () => setShowCreate(false) })}
+        />
+      )}
 
-  // Re-sync when the underlying role changes (e.g. after a save refetch).
-  useEffect(() => {
-    setName(role.name);
-    setPerms(new Set(role.permissions));
-  }, [role]);
+      {editInfoRole && (
+        <RoleEditInfoModal
+          role={editInfoRole}
+          busy={update.isPending}
+          onClose={() => setEditInfoRole(null)}
+          onSave={(patch) =>
+            update.mutate({ id: editInfoRole.id, patch }, { onSuccess: () => setEditInfoRole(null) })
+          }
+        />
+      )}
 
-  const locked = role.isSystem;
-  const dirty =
-    !locked &&
-    (name.trim() !== role.name ||
-      perms.size !== role.permissions.length ||
-      role.permissions.some((p) => !perms.has(p)));
-
-  function toggle(key: PermissionKey) {
-    if (locked) return;
-    setPerms((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }
-
-  return (
-    <div className="bg-card rounded-xl border border-border shadow-3xs flex flex-col">
-      <div className="flex items-center justify-between gap-2 p-4 border-b border-border">
-        {locked ? (
-          <div className="flex items-center gap-2 font-bold text-foreground text-sm">
-            <Lock className="w-4 h-4 text-primary" />
-            {role.name}
-            <span className="text-[9px] uppercase font-bold text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded">
-              System
-            </span>
-          </div>
-        ) : (
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="h-8 max-w-[60%] font-bold"
-          />
-        )}
-
-        <div className="flex items-center gap-1.5">
-          {!locked && (
-            <>
-              <button
-                onClick={() => onSave({ name: name.trim(), permissions: [...perms] })}
-                disabled={saving || !dirty}
-                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-40"
-              >
-                {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                {t('save')}
-              </button>
-              <DeleteButton onClick={onDelete} size="md" title={t('delete_role')} />
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="p-4 space-y-2.5">
-        {PERMISSION_META.map((perm) => {
-          const checked = locked || perms.has(perm.key);
-          return (
-            <label
-              key={perm.key}
-              className={`flex items-start gap-2.5 ${locked ? 'opacity-70' : 'cursor-pointer'}`}
-            >
-              <input
-                type="checkbox"
-                checked={checked}
-                disabled={locked}
-                onChange={() => toggle(perm.key)}
-                className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer disabled:cursor-not-allowed"
-              />
-              <span>
-                <span className="block text-xs font-semibold text-foreground">{perm.label}</span>
-                <span className="block text-[11px] text-muted-foreground">{perm.description}</span>
-              </span>
-            </label>
-          );
-        })}
-      </div>
+      {editPermsRole && (
+        <RoleEditPermissionsModal
+          role={editPermsRole}
+          busy={update.isPending}
+          onClose={() => setEditPermsRole(null)}
+          onSave={(patch) =>
+            update.mutate({ id: editPermsRole.id, patch }, { onSuccess: () => setEditPermsRole(null) })
+          }
+        />
+      )}
     </div>
   );
 }

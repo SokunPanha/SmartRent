@@ -22,7 +22,7 @@ export function RoomRevenueTable({
           {t('room_income_title')}
         </h4>
         <span className="text-[10px] uppercase font-bold text-muted-foreground font-mono">
-          Ordered by Paid Value
+          {t('room_income_ordered_note')}
         </span>
       </div>
       <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scroll-x-hint">

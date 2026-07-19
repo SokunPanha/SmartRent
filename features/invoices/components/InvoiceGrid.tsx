@@ -136,21 +136,21 @@ export function InvoiceGrid({
                 {inv.telegramStatus === 'sent' ? (
                   <span className="text-chart-2 font-mono font-bold flex items-center gap-1 bg-chart-2/10 border border-chart-2/20 px-1.5 py-0.5 rounded">
                     <span className="w-1.5 h-1.5 rounded-full bg-chart-2"></span>
-                    Sent ({inv.telegramSentDate})
+                    {t('inv_sent')} ({inv.telegramSentDate})
                   </span>
                 ) : inv.telegramStatus === 'failed' ? (
                   <span
                     className="text-destructive font-mono font-bold bg-destructive/10 border border-destructive/20 px-1.5 py-0.5 rounded flex items-center gap-1"
                     title={inv.telegramError}
                   >
-                    ⚠️ Failed ({inv.telegramError?.slice(0, 12)}...)
+                    ⚠️ {t('inv_failed')} ({inv.telegramError?.slice(0, 12)}...)
                   </span>
                 ) : inv.telegramStatus === 'scheduled' ? (
                   <span className="text-info font-bold bg-info/10 border border-info/20 px-1.5 py-0.5 rounded">
-                    Scheduled ({inv.telegramScheduledDate})
+                    {t('inv_scheduled')} ({inv.telegramScheduledDate})
                   </span>
                 ) : (
-                  <span className="text-muted-foreground italic bg-muted border border-border px-1.5 py-0.5 rounded">Unscheduled</span>
+                  <span className="text-muted-foreground italic bg-muted border border-border px-1.5 py-0.5 rounded">{t('inv_unscheduled')}</span>
                 )}
               </div>
 
@@ -175,7 +175,7 @@ export function InvoiceGrid({
                 {inv.status !== 'paid' && canPay ? (
                   <button
                     onClick={() => onPay(inv)}
-                    className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-chart-2 hover:bg-chart-2/90 text-secondary-foreground transition flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <Coins className="w-3.5 h-3.5" />
                     {t('pay')}

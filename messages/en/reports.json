@@ -22,6 +22,7 @@
     "outstanding_ar": "Outstanding AR Receivable",
     "month_april": "April",
     "month_may": "May",
-    "month_june": "June"
+    "month_june": "June",
+    "room_income_ordered_note": "Ordered by Paid Value"
   }
 }

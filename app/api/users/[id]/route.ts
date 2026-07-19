@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { NextResponse } from 'next/server';
 import { eq, inArray } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { users, roles } from '@/lib/db/schema';
+import { users, roles, userProperties } from '@/lib/db/schema';
 import { ok, notFound, badRequest, serverError, readJson, MIN_PASSWORD_LENGTH } from '@/lib/api/http';
 import { requireAdmin } from '@/lib/api/guard';
 
@@ -54,13 +54,32 @@ export async function PATCH(req: Request, { params }: Params) {
       patch.passwordHash = await bcrypt.hash(String(body.password), 10);
     }
 
-    if (Object.keys(patch).length === 0) return badRequest('No updatable fields provided');
+    const hasPropertyIds = Array.isArray(body.propertyIds);
+    if (Object.keys(patch).length === 0 && !hasPropertyIds) {
+      return badRequest('No updatable fields provided');
+    }
 
-    const [updated] = await db
-      .update(users)
-      .set(patch)
-      .where(eq(users.id, id))
-      .returning({ id: users.id, name: users.name, email: users.email, roleId: users.roleId });
+    let updated =
+      Object.keys(patch).length > 0
+        ? (
+            await db
+              .update(users)
+              .set(patch)
+              .where(eq(users.id, id))
+              .returning({ id: users.id, name: users.name, email: users.email, roleId: users.roleId })
+          )[0]
+        : { id: existing.id, name: existing.name, email: existing.email, roleId: existing.roleId };
+
+    // Replace building assignments wholesale when provided ([] = unrestricted).
+    if (hasPropertyIds) {
+      const propertyIds = body.propertyIds as string[];
+      await db.delete(userProperties).where(eq(userProperties.userId, id));
+      if (propertyIds.length) {
+        await db.insert(userProperties).values(propertyIds.map((propertyId) => ({ userId: id, propertyId })));
+      }
+      updated = { ...updated, ...(propertyIds ? { propertyIds } : {}) };
+    }
+
     return ok(updated);
   } catch (err) {
     return serverError(err);

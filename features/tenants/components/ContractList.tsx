@@ -188,7 +188,7 @@ export function ContractList({
                     </span>
                   </div>
                   <span className="text-[10px] text-muted-foreground font-mono italic">
-                    Cambodian Riel Conversions Applied
+                    {t('riel_conversions_note')}
                   </span>
                 </div>
               </div>

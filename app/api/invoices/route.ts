@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
-import { and, eq, desc, type SQL } from 'drizzle-orm';
+import { and, eq, desc, inArray, type SQL } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { invoices } from '@/lib/db/schema';
-import { ok, created, badRequest, serverError, readJson, missingField, genId } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { ok, created, badRequest, forbidden, serverError, readJson, missingField, genId } from '@/lib/api/http';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { scopedPropertyIds, roomIdsInProperties, isRoomInScope } from '@/lib/api/scope';
 
-// GET /api/invoices?status=&month=&year= — list invoices, newest first
+// GET /api/invoices?status=&month=&year= — list invoices (newest first) within
+// the user's scoped buildings.
 export async function GET(req: Request) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const sp = new URL(req.url).searchParams;
     const filters: SQL[] = [];
@@ -16,6 +20,9 @@ export async function GET(req: Request) {
     if (status && status !== 'all') filters.push(eq(invoices.status, status));
     if (month && month !== 'all') filters.push(eq(invoices.month, Number(month)));
     if (year && year !== 'all') filters.push(eq(invoices.year, Number(year)));
+
+    const ids = await scopedPropertyIds(gate);
+    if (ids) filters.push(inArray(invoices.roomId, roomIdsInProperties(ids)));
 
     const rows = await db
       .select()
@@ -42,6 +49,10 @@ export async function POST(req: Request) {
       'issueDate', 'dueDate', 'rentAmountUSD', 'totalAmountUSD', 'totalAmountKHR', 'khmerExchangeRate',
     ]);
     if (missing) return badRequest(`Missing required field: ${missing}`);
+
+    if (!(await isRoomInScope(gate, body.roomId as string))) {
+      return forbidden('Outside your assigned buildings.');
+    }
 
     const row = {
       id: (body.id as string) || genId('inv'),

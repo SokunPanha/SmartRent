@@ -28,7 +28,7 @@ export function TelegramHub({
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="p-1.5 px-2.5 rounded-full bg-primary/20 text-primary font-mono text-[10px] uppercase font-bold tracking-widest border border-primary/30">
-              PWA Automated Service
+              {t('telegram_service_badge')}
             </span>
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-chart-2 opacity-75"></span>
@@ -176,12 +176,12 @@ export function TelegramHub({
       {c.telegramLogs.length > 0 && (
         <div className="bg-black/80 rounded-xl border border-border p-3 font-mono text-[10px] space-y-2">
           <div className="flex justify-between items-center text-muted-foreground border-b border-border pb-1.5">
-            <span>✈️ AUTOMATION HUB LIVE LOGGER CONSOLE</span>
+            <span>✈️ {t('telegram_console_title')}</span>
             <button
               onClick={() => c.setTelegramLogs([])}
               className="text-muted-foreground hover:text-foreground transition uppercase text-[9px] cursor-pointer"
             >
-              Clear Console
+              {t('telegram_clear_console')}
             </button>
           </div>
           {c.telegramIsDispatching && (

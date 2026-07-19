@@ -44,101 +44,164 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
-    --radius-sm: 6px;
-    --radius-md: 6px;
-    --radius-lg: 6px;
-    --radius-xl: 6px;
-    --radius-2xl: 6px;
-    --radius-3xl: 6px;
-    --radius-4xl: 6px;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 14px;
+    --radius-2xl: 16px;
+    --radius-3xl: 20px;
+    --radius-4xl: 24px;
 }
 
-/* Aura Management System (light) — see DESIGN.md */
+/* Aura Management System — Refined & Premium (light) — see DESIGN.md.
+   Warm ivory canvas + white cards, warm charcoal ink, and a single ABA-red
+   signature accent (#EC2028). Depth is a soft ambient shadow, not heavy fills. */
 :root {
     --font-heading: var(--font-sans);
-    --background: #FFFFFF;
-    --foreground: #0F172A;
-    --card: #F8FAFC;
-    --card-foreground: #0F172A;
+    --background: #FAF9F7;
+    --foreground: #1F1D1B;
+    --card: #FFFFFF;
+    --card-foreground: #1F1D1B;
     --popover: #FFFFFF;
-    --popover-foreground: #0F172A;
-    --primary: #0F172A;
+    --popover-foreground: #1F1D1B;
+    --primary: #EC2028;
     --primary-foreground: #FFFFFF;
-    --secondary: #F1F5F9;
-    --secondary-foreground: #0F172A;
-    --muted: #F8FAFC;
-    --muted-foreground: #64748B;
-    --accent: #F1F5F9;
-    --accent-foreground: #0F172A;
-    --destructive: #C0392B;
+    --secondary: #F2F0EB;
+    --secondary-foreground: #1F1D1B;
+    --muted: #F4F2EE;
+    --muted-foreground: #7A736B;
+    --accent: #FCECEC;
+    --accent-foreground: #EC2028;
+    --destructive: #BE3B31;
     --destructive-foreground: #FFFFFF;
-    --info: #2F6690;
+    --info: #2C6E8F;
     --info-foreground: #FFFFFF;
-    --success: #3F7D58;
+    --success: #2E7D5B;
     --success-foreground: #FFFFFF;
-    --border: #E2E8F0;
-    --input: #E2E8F0;
-    --ring: #0F172A;
+    --border: #E8E3DC;
+    --input: #E2DCD4;
+    --ring: #EC2028;
     --chart-1: #C08A3E;
-    --chart-2: #3F7D58;
-    --chart-3: #C0392B;
-    --chart-4: #38BDF8;
-    --chart-5: #7C6A93;
-    --radius: 6px;
-    --radius-card: 6px;
-    --radius-modal: 6px;
-    --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.04);
-    --sidebar: #FFFFFF;
-    --sidebar-foreground: #0F172A;
-    --sidebar-primary: #0F172A;
+    --chart-2: #2E7D5B;
+    --chart-3: #BE3B31;
+    --chart-4: #2C6E8F;
+    --chart-5: #8A6FA8;
+    --radius: 10px;
+    --radius-card: 12px;
+    --radius-modal: 16px;
+    --shadow-card: 0 1px 2px rgba(31, 29, 27, 0.04), 0 2px 8px rgba(31, 29, 27, 0.03);
+    --shadow-modal: 0 16px 48px rgba(31, 29, 27, 0.10);
+    --sidebar: #FCFBF9;
+    --sidebar-foreground: #1F1D1B;
+    --sidebar-primary: #EC2028;
     --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #F1F5F9;
-    --sidebar-accent-foreground: #0F172A;
-    --sidebar-border: #E2E8F0;
-    --sidebar-ring: #0F172A;
+    --sidebar-accent: #FCECEC;
+    --sidebar-accent-foreground: #EC2028;
+    --sidebar-border: #E8E3DC;
+    --sidebar-ring: #EC2028;
 }
 
-/* Aura Dark — see DESIGN (1).md */
+/* Aura Dark — Refined & Premium (warm charcoal + ABA red). */
 .dark {
-    --background: #0b1326;
-    --foreground: #dae2fd;
-    --card: #171f33;
-    --card-foreground: #dae2fd;
-    --popover: #222a3d;
-    --popover-foreground: #dae2fd;
-    --primary: #38bdf8;
-    --primary-foreground: #00354a;
-    --secondary: #2d3449;
-    --secondary-foreground: #b9c8de;
-    --muted: #171f33;
-    --muted-foreground: #87929a;
-    --accent: #222a3d;
-    --accent-foreground: #dae2fd;
-    --destructive: #ffb4ab;
-    --destructive-foreground: #690005;
-    --info: #8ed5ff;
-    --info-foreground: #004965;
-    --success: #4fbe83;
-    --success-foreground: #00391f;
-    --border: #3e484f;
-    --input: #3e484f;
-    --ring: #38bdf8;
-    --chart-1: #ffc176;
-    --chart-2: #4fbe83;
-    --chart-3: #ffb4ab;
-    --chart-4: #38bdf8;
-    --chart-5: #c7a8f0;
-    --radius-card: 6px;
-    --radius-modal: 6px;
-    --shadow-modal: 0 25px 40px rgba(0, 0, 0, 0.35), 0 0 40px rgba(56, 189, 248, 0.12);
-    --sidebar: #131b2e;
-    --sidebar-foreground: #dae2fd;
-    --sidebar-primary: #38bdf8;
-    --sidebar-primary-foreground: #00354a;
-    --sidebar-accent: #171f33;
-    --sidebar-accent-foreground: #dae2fd;
-    --sidebar-border: #3e484f;
-    --sidebar-ring: #38bdf8;
+    --background: #171613;
+    --foreground: #E9E5DE;
+    --card: #201E1A;
+    --card-foreground: #E9E5DE;
+    --popover: #201E1A;
+    --popover-foreground: #E9E5DE;
+    --primary: #F04148;
+    --primary-foreground: #FFFFFF;
+    --secondary: #2A2723;
+    --secondary-foreground: #D8D2C9;
+    --muted: #201E1A;
+    --muted-foreground: #A29B90;
+    --accent: #351A1B;
+    --accent-foreground: #FF9B9F;
+    --destructive: #E88C82;
+    --destructive-foreground: #2A0906;
+    --info: #7FC2E6;
+    --info-foreground: #06344A;
+    --success: #4FBE83;
+    --success-foreground: #00311C;
+    --border: #34302A;
+    --input: #34302A;
+    --ring: #F04148;
+    --chart-1: #E0B270;
+    --chart-2: #4FBE83;
+    --chart-3: #E88C82;
+    --chart-4: #7FC2E6;
+    --chart-5: #C0A6DE;
+    --radius-card: 12px;
+    --radius-modal: 16px;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.22);
+    --shadow-modal: 0 20px 48px rgba(0, 0, 0, 0.45);
+    --sidebar: #1B1A16;
+    --sidebar-foreground: #E9E5DE;
+    --sidebar-primary: #F04148;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #351A1B;
+    --sidebar-accent-foreground: #FF9B9F;
+    --sidebar-border: #34302A;
+    --sidebar-ring: #F04148;
+}
+
+/* ── Accent themes ─────────────────────────────────────────────────────────
+   Orthogonal to light/dark: `[data-accent]` on <html> swaps only the signature
+   accent tokens (primary / ring / accent tint / sidebar), leaving the warm
+   neutral canvas intact. Default (no attribute) = Crimson/ABA red in :root/.dark.
+   Each accent must set BOTH the light block ([data-accent="x"]) and the dark
+   block (.dark[data-accent="x"]) so the dark override wins its specificity. */
+
+/* Dark Navy */
+[data-accent='navy'] {
+    --primary: #1E3A8A;
+    --primary-foreground: #FFFFFF;
+    --accent: #E8EDF9;
+    --accent-foreground: #1E3A8A;
+    --ring: #1E3A8A;
+    --sidebar-primary: #1E3A8A;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #E8EDF9;
+    --sidebar-accent-foreground: #1E3A8A;
+    --sidebar-ring: #1E3A8A;
+}
+.dark[data-accent='navy'] {
+    --primary: #5C86E6;
+    --primary-foreground: #0A1226;
+    --accent: #1B2440;
+    --accent-foreground: #AAC1F2;
+    --ring: #5C86E6;
+    --sidebar-primary: #5C86E6;
+    --sidebar-primary-foreground: #0A1226;
+    --sidebar-accent: #1B2440;
+    --sidebar-accent-foreground: #AAC1F2;
+    --sidebar-ring: #5C86E6;
+}
+
+/* Amethyst */
+[data-accent='amethyst'] {
+    --primary: #6D28D9;
+    --primary-foreground: #FFFFFF;
+    --accent: #F1EAFB;
+    --accent-foreground: #6D28D9;
+    --ring: #6D28D9;
+    --sidebar-primary: #6D28D9;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #F1EAFB;
+    --sidebar-accent-foreground: #6D28D9;
+    --sidebar-ring: #6D28D9;
+}
+.dark[data-accent='amethyst'] {
+    --primary: #A98AF0;
+    --primary-foreground: #1C0B3B;
+    --accent: #271A40;
+    --accent-foreground: #C9B2F5;
+    --ring: #A98AF0;
+    --sidebar-primary: #A98AF0;
+    --sidebar-primary-foreground: #1C0B3B;
+    --sidebar-accent: #271A40;
+    --sidebar-accent-foreground: #C9B2F5;
+    --sidebar-ring: #A98AF0;
 }
 
 @layer base {
@@ -168,29 +231,48 @@
   border-radius: 9999px;
 }
 
+/* Soft ambient depth for cards (Refined & Premium). Subtle, not heavy. */
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
 /* Force the light palette when printing (invoices/receipts print on paper). */
 @media print {
   .dark {
     --background: #FFFFFF;
-    --foreground: #0F172A;
-    --card: #F8FAFC;
-    --card-foreground: #0F172A;
+    --foreground: #1F1D1B;
+    --card: #FFFFFF;
+    --card-foreground: #1F1D1B;
     --popover: #FFFFFF;
-    --popover-foreground: #0F172A;
-    --muted: #F8FAFC;
-    --muted-foreground: #64748B;
-    --border: #E2E8F0;
-    --input: #E2E8F0;
+    --popover-foreground: #1F1D1B;
+    --muted: #F4F2EE;
+    --muted-foreground: #7A736B;
+    --border: #E8E3DC;
+    --input: #E2DCD4;
   }
 }
 
-/* Hero/banner treatment inspired by the ABA Mobile reference: teal-to-navy
-   gradient with a magenta glow. Reserved for a couple of hero bands (see
-   DESIGN.md) — never the page canvas or a scrollable data surface. */
+/* Hero/banner treatment: deep ABA-red premium gradient with a warm glow.
+   Reserved for a couple of hero bands (see DESIGN.md) — never the page canvas
+   or a scrollable data surface. */
 .gradient-hero {
-  background-color: #0b1326;
+  background-color: #7A0E12;
   background-image:
-    radial-gradient(120% 65% at 20% 10%, rgba(199, 168, 240, 0.4) 0%, rgba(199, 168, 240, 0) 60%),
-    linear-gradient(155deg, #38bdf8 0%, #12283f 55%, #0b1326 100%);
-  color: #dae2fd;
+    radial-gradient(120% 65% at 20% 10%, rgba(255, 155, 159, 0.28) 0%, rgba(255, 155, 159, 0) 60%),
+    linear-gradient(155deg, #EC2028 0%, #B4141B 45%, #7A0E12 100%);
+  color: #FDECEC;
+}
+[data-accent='navy'] .gradient-hero {
+  background-color: #0F1E4A;
+  background-image:
+    radial-gradient(120% 65% at 20% 10%, rgba(140, 170, 240, 0.28) 0%, rgba(140, 170, 240, 0) 60%),
+    linear-gradient(155deg, #2E4FA8 0%, #1E3A8A 45%, #0F1E4A 100%);
+  color: #EAF0FD;
+}
+[data-accent='amethyst'] .gradient-hero {
+  background-color: #2A1258;
+  background-image:
+    radial-gradient(120% 65% at 20% 10%, rgba(190, 150, 245, 0.28) 0%, rgba(190, 150, 245, 0) 60%),
+    linear-gradient(155deg, #8B4EE0 0%, #6D28D9 45%, #2A1258 100%);
+  color: #F3ECFC;
 }

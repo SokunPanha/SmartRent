@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import { useTranslations } from 'next-intl';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 /** Light/dark switch. Renders a stable placeholder until mounted to avoid hydration mismatch. */
 export function ThemeToggle() {
+  const t = useTranslations('Common');
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -19,7 +21,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       className="h-8 w-8"
-      aria-label="Toggle theme"
+      aria-label={t('theme_toggle')}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >
       {mounted ? (

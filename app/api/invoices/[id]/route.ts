@@ -2,17 +2,21 @@ import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { invoices } from '@/lib/db/schema';
-import { ok, notFound, badRequest, serverError, readJson } from '@/lib/api/http';
-import { requirePermission } from '@/lib/api/guard';
+import { ok, notFound, badRequest, forbidden, serverError, readJson } from '@/lib/api/http';
+import { requirePermission, requireUser } from '@/lib/api/guard';
+import { isRoomInScope } from '@/lib/api/scope';
 
 type Params = { params: Promise<{ id: string }> };
 
 // GET /api/invoices/:id
 export async function GET(_req: Request, { params }: Params) {
+  const gate = await requireUser();
+  if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
     const [row] = await db.select().from(invoices).where(eq(invoices.id, id));
     if (!row) return notFound('Invoice not found');
+    if (!(await isRoomInScope(gate, row.roomId))) return notFound('Invoice not found');
     return ok(row);
   } catch (err) {
     return serverError(err);
@@ -25,6 +29,9 @@ export async function PATCH(req: Request, { params }: Params) {
   if (gate instanceof NextResponse) return gate;
   try {
     const { id } = await params;
+    const [current] = await db.select().from(invoices).where(eq(invoices.id, id));
+    if (!current) return notFound('Invoice not found');
+    if (!(await isRoomInScope(gate, current.roomId))) return forbidden('Outside your assigned buildings.');
     const body = await readJson(req);
     if (!body) return badRequest('Invalid JSON body');
 
@@ -54,6 +61,7 @@ export async function DELETE(_req: Request, { params }: Params) {
     const { id } = await params;
     const [existing] = await db.select().from(invoices).where(eq(invoices.id, id));
     if (!existing) return notFound('Invoice not found');
+    if (!(await isRoomInScope(gate, existing.roomId))) return forbidden('Outside your assigned buildings.');
     await db.delete(invoices).where(eq(invoices.id, id));
     return ok({ id, deleted: true });
   } catch (err) {

@@ -10,6 +10,7 @@ import { useRent } from '@/store/rent-store';
 import { formatKHR } from '@/lib/format';
 import { useSettings } from '@/features/settings/settings.queries';
 import { ThemeToggle } from './ThemeToggle';
+import { ThemePicker } from './ThemePicker';
 import { UserMenu } from './UserMenu';
 
 const HOME_PATH = '/dashboard';
@@ -47,15 +48,15 @@ export function AppHeader() {
           </>
         )}
 
-        <h2 className="truncate font-sans text-sm font-extrabold uppercase tracking-tight">
+        <h2 className="truncate font-sans text-sm font-semibold tracking-tight">
           {t('property_management')}
         </h2>
       </div>
 
       <div className="flex shrink-0 items-center gap-3">
         {/* Cambodia exchange-rate indicator */}
-        <div className="hidden items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1 font-mono text-[10px] tracking-wide text-muted-foreground lg:flex">
-          <span className="mr-1 font-sans text-[9px] font-bold uppercase tracking-wider text-primary">
+        <div className="hidden items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] text-muted-foreground lg:flex">
+          <span className="mr-1 text-[11px] font-semibold text-primary">
             {t('fix_rate_label')}
           </span>
           {fixRateValue}
@@ -71,6 +72,7 @@ export function AppHeader() {
           <span>{lang === 'en' ? t('khemar_lang') : t('english_lang')}</span>
         </Button>
 
+        <ThemePicker />
         <ThemeToggle />
         <UserMenu />
       </div>

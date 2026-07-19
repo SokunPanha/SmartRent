@@ -1,9 +1,9 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
-import { PermissionKey } from '@/lib/permissions';
-import { rolesApi } from './roles.api';
+import { rolesApi, NewRoleInput, UpdateRoleInput } from './roles.api';
 import { myPermissionKeys } from './permissions.queries';
 
 export const roleKeys = { all: ['roles'] as const };
@@ -13,6 +13,7 @@ export function useRoles() {
 }
 
 export function useRoleMutations() {
+  const t = useTranslations('Admin');
   const qc = useQueryClient();
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: roleKeys.all });
@@ -21,20 +22,19 @@ export function useRoleMutations() {
   };
 
   const create = useMutation({
-    mutationFn: (data: { name: string; permissions?: PermissionKey[] }) => rolesApi.create(data),
+    mutationFn: (data: NewRoleInput) => rolesApi.create(data),
     onSuccess: (r) => {
       invalidate();
-      toast(`Created role "${r.name}"`);
+      toast(t('toast_role_created', { name: r.name }));
     },
     onError: (e) => toast.error(e.message),
   });
 
   const update = useMutation({
-    mutationFn: (vars: { id: string; patch: { name?: string; permissions?: PermissionKey[] } }) =>
-      rolesApi.update(vars.id, vars.patch),
+    mutationFn: (vars: { id: string; patch: UpdateRoleInput }) => rolesApi.update(vars.id, vars.patch),
     onSuccess: () => {
       invalidate();
-      toast('Role updated');
+      toast(t('toast_role_updated'));
     },
     onError: (e) => toast.error(e.message),
   });
@@ -43,7 +43,7 @@ export function useRoleMutations() {
     mutationFn: (id: string) => rolesApi.remove(id),
     onSuccess: () => {
       invalidate();
-      toast('Role deleted');
+      toast(t('toast_role_deleted'));
     },
     onError: (e) => toast.error(e.message),
   });

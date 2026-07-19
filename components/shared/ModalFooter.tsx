@@ -6,13 +6,13 @@ export function ModalFooter({
   onCancel,
   submitLabel,
   submitDisabled,
-  tone = 'primary',
 }: {
   cancelLabel: string;
   onCancel: () => void;
   submitLabel: string;
   submitDisabled?: boolean;
-  /** 'success' is used for money/data-recording actions (record payment, record reading). */
+  /** Retained for call-site compatibility; all submit buttons now follow the
+   *  active theme accent rather than a fixed green. */
   tone?: 'primary' | 'success';
 }) {
   return (
@@ -29,9 +29,7 @@ export function ModalFooter({
         disabled={submitDisabled}
         className={cn(
           'flex-1 py-2 rounded-sm text-sm transition font-semibold cursor-pointer font-sans disabled:opacity-40 disabled:cursor-not-allowed',
-          tone === 'success'
-            ? 'bg-chart-2 hover:bg-chart-2/90 text-secondary-foreground'
-            : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+          'bg-primary hover:bg-primary/90 text-primary-foreground'
         )}
       >
         {submitLabel}
