@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { Activity, ShieldCheck, SlidersHorizontal, type LucideIcon } from 'lucide-react';
+import { ShieldCheck, SlidersHorizontal, type LucideIcon } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
 import { useCan } from '@/features/admin/permissions.queries';
 import { NAV_ITEMS } from '@/components/layout/nav-config';
@@ -29,8 +29,6 @@ export function QuickActionsGrid({ onNavigate }: { onNavigate: (tab: string) => 
       icon: item.icon,
     })
   );
-
-  items.push({ tab: 'statistics', label: t('statistics'), icon: Activity });
 
   if (canAdmin) {
     items.push(
