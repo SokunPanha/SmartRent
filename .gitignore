@@ -8,3 +8,5 @@ coverage/
 .gstack/
 CREDENTIALS.md
 backups/
+
+tsconfig.tsbuildinfo
