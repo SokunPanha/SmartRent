@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { SlidersHorizontal, Save, Loader2 } from 'lucide-react';
+import { SlidersHorizontal, Save, Loader2, Coins } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
 import { pickLocale } from '@/lib/i18n';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,8 @@ import { useCan, useMyPermissions } from '@/features/admin/permissions.queries';
 import { useProperties } from '@/features/properties/properties.queries';
 import { PasswordConfirmModal } from '@/components/shared/PasswordConfirmModal';
 import { useSettings, useUpdateSettings, useUpdateZoneRates } from './settings.queries';
+import { FeeCatalogCard } from './components/FeeCatalogCard';
+import { PropertyFeesModal } from './components/PropertyFeesModal';
 
 /** A save the user has requested but must confirm with their password first. */
 type PendingSave =
@@ -41,6 +43,7 @@ export default function SystemSettings() {
 
   const [pending, setPending] = useState<PendingSave | null>(null);
   const [pwError, setPwError] = useState<string | null>(null);
+  const [feesProperty, setFeesProperty] = useState<Property | null>(null);
 
   function closePassword() {
     setPending(null);
@@ -123,6 +126,7 @@ export default function SystemSettings() {
                     name={pickLocale(lang, property.name, property.nameKh)}
                     saving={updateZone.isPending}
                     onSave={(patch) => setPending({ type: 'zone', id: property.id, patch })}
+                    onManageFees={() => setFeesProperty(property)}
                   />
                 ))}
               </tbody>
@@ -130,6 +134,17 @@ export default function SystemSettings() {
           </div>
         )}
       </div>
+
+      <FeeCatalogCard lang={lang} />
+
+      {feesProperty && (
+        <PropertyFeesModal
+          propertyId={feesProperty.id}
+          propertyName={pickLocale(lang, feesProperty.name, feesProperty.nameKh)}
+          lang={lang}
+          onClose={() => setFeesProperty(null)}
+        />
+      )}
 
       <PasswordConfirmModal
         open={!!pending}
@@ -238,11 +253,13 @@ function ZoneRateRow({
   name,
   saving,
   onSave,
+  onManageFees,
 }: {
   property: Property;
   name: string;
   saving: boolean;
   onSave: (patch: { electricityRate: number | null; waterRate: number | null }) => void;
+  onManageFees: () => void;
 }) {
   const t = useTranslations('Settings');
   const [elec, setElec] = useState(property.electricityRate ?? '');
@@ -280,20 +297,30 @@ function ZoneRateRow({
           className="font-mono h-8 max-w-[140px]"
         />
       </td>
-      <td className="p-4 pr-6 text-right">
-        <button
-          onClick={() =>
-            onSave({
-              electricityRate: elec === '' ? null : Number(elec),
-              waterRate: water === '' ? null : Number(water),
-            })
-          }
-          disabled={saving || !dirty}
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-40"
-        >
-          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-          {t('save')}
-        </button>
+      <td className="p-4 pr-6">
+        <div className="flex items-center justify-end gap-1.5">
+          <button
+            type="button"
+            onClick={onManageFees}
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold border border-border text-foreground rounded-lg hover:border-primary/40 hover:bg-accent transition cursor-pointer"
+          >
+            <Coins className="w-3.5 h-3.5" />
+            {t('manage_fees')}
+          </button>
+          <button
+            onClick={() =>
+              onSave({
+                electricityRate: elec === '' ? null : Number(elec),
+                waterRate: water === '' ? null : Number(water),
+              })
+            }
+            disabled={saving || !dirty}
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-40"
+          >
+            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+            {t('save')}
+          </button>
+        </div>
       </td>
     </tr>
   );

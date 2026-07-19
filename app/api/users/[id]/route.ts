@@ -47,11 +47,38 @@ export async function PATCH(req: Request, { params }: Params) {
 
     if (body.name !== undefined) patch.name = body.name;
     if (body.nameKh !== undefined) patch.nameKh = body.nameKh;
+    if (body.email !== undefined) {
+      const email = String(body.email).trim().toLowerCase();
+      if (!email) return badRequest('Email cannot be empty');
+      const [dupe] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
+      if (dupe && dupe.id !== id) return badRequest('A user with that email already exists');
+      patch.email = email;
+    }
     if (body.password) {
       if (String(body.password).length < MIN_PASSWORD_LENGTH) {
         return badRequest(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
       }
       patch.passwordHash = await bcrypt.hash(String(body.password), 10);
+    }
+
+    if (body.phone !== undefined) patch.phone = String(body.phone).trim() || null;
+    if (body.position !== undefined) patch.position = String(body.position).trim() || null;
+    if (body.preferredLang !== undefined) {
+      patch.preferredLang =
+        body.preferredLang === 'en' || body.preferredLang === 'km' ? body.preferredLang : null;
+    }
+    if (body.active !== undefined) {
+      const active = Boolean(body.active);
+      if (!active) {
+        // Can't lock yourself out, or suspend the last Super Admin.
+        if (id === gate.id) return badRequest('You cannot suspend your own account.');
+        const sysIds = await systemRoleIds();
+        const isSuper = existing.roleId ? sysIds.includes(existing.roleId) : false;
+        if (isSuper && (await countSuperAdmins(sysIds)) <= 1) {
+          return badRequest('At least one Super Admin must remain active.');
+        }
+      }
+      patch.active = active;
     }
 
     const hasPropertyIds = Array.isArray(body.propertyIds);

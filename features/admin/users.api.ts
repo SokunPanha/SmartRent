@@ -5,6 +5,10 @@ export interface AdminUser {
   name: string;
   nameKh?: string | null;
   email: string;
+  phone?: string | null;
+  position?: string | null;
+  active: boolean;
+  preferredLang?: string | null;
   roleId: string | null;
   roleName: string | null;
   isSystemRole: boolean | null;
@@ -19,12 +23,20 @@ export interface NewUserInput {
   email: string;
   password: string;
   roleId: string;
+  phone?: string;
+  position?: string;
+  preferredLang?: string;
   propertyIds?: string[];
 }
 
 export interface UpdateUserInput {
   name?: string;
   nameKh?: string;
+  email?: string;
+  phone?: string;
+  position?: string;
+  active?: boolean;
+  preferredLang?: string;
   roleId?: string;
   password?: string;
   propertyIds?: string[];

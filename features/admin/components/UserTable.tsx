@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, SquarePen } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DeleteButton } from '@/components/shared/DeleteButton';
 import { Pagination, usePagination } from '@/components/shared/Pagination';
@@ -17,6 +17,7 @@ export function UserTable({
   currentEmail,
   busy,
   onChangeRole,
+  onEdit,
   onEditBuildings,
   onDelete,
 }: {
@@ -25,6 +26,7 @@ export function UserTable({
   currentEmail: string;
   busy: boolean;
   onChangeRole: (id: string, roleId: string) => void;
+  onEdit: (user: AdminUser) => void;
   onEditBuildings: (user: AdminUser) => void;
   onDelete: (user: AdminUser) => void;
 }) {
@@ -40,13 +42,14 @@ export function UserTable({
               <th className="p-4">{t('table_email')}</th>
               <th className="p-4">{t('table_role')}</th>
               <th className="p-4">{t('buildings')}</th>
+              <th className="p-4">{t('table_status')}</th>
               <th className="p-4 pr-6 text-right">{t('table_actions')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border text-xs text-muted-foreground font-sans">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-12 text-center text-muted-foreground italic">
+                <td colSpan={6} className="p-12 text-center text-muted-foreground italic">
                   {t('no_users_found')}
                 </td>
               </tr>
@@ -70,10 +73,18 @@ export function UserTable({
                             )}
                           </span>
                           {u.nameKh && <span className="text-[10px] text-muted-foreground">{u.nameKh}</span>}
+                          {u.position && (
+                            <span className="text-[10px] font-medium text-muted-foreground">{u.position}</span>
+                          )}
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 font-mono text-muted-foreground">{u.email}</td>
+                    <td className="p-4">
+                      <div className="flex flex-col">
+                        <span className="font-mono text-muted-foreground">{u.email}</span>
+                        {u.phone && <span className="text-[10px] font-mono text-muted-foreground">{u.phone}</span>}
+                      </div>
+                    </td>
                     <td className="p-4">
                       <Select
                         value={u.roleId ?? NO_ROLE_VALUE}
@@ -117,13 +128,35 @@ export function UserTable({
                         </div>
                       )}
                     </td>
-                    <td className="p-4 pr-6 text-right">
-                      <DeleteButton
-                        onClick={() => onDelete(u)}
-                        disabled={busy || isSelf}
-                        size="md"
-                        title={isSelf ? 'You cannot delete your own account' : 'Delete user'}
-                      />
+                    <td className="p-4">
+                      {u.active ? (
+                        <span className="inline-block text-[11px] font-semibold text-chart-2 bg-chart-2/10 border border-chart-2/20 px-2 py-0.5 rounded-md">
+                          {t('status_active')}
+                        </span>
+                      ) : (
+                        <span className="inline-block text-[11px] font-semibold text-destructive bg-destructive/10 border border-destructive/20 px-2 py-0.5 rounded-md">
+                          {t('status_suspended')}
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4 pr-6">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          title={t('edit_user')}
+                          disabled={busy}
+                          onClick={() => onEdit(u)}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition hover:border-primary/40 hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                          <SquarePen className="w-4 h-4" />
+                        </button>
+                        <DeleteButton
+                          onClick={() => onDelete(u)}
+                          disabled={busy || isSelf}
+                          size="md"
+                          title={isSelf ? 'You cannot delete your own account' : 'Delete user'}
+                        />
+                      </div>
                     </td>
                   </tr>
                 );

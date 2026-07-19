@@ -172,6 +172,10 @@ export const users = pgTable('users', {
   passwordHash: text('password_hash').notNull(),
   roleId: text('role_id'), // FK -> roles.id
   nameKh: text('name_kh'),
+  phone: text('phone'),
+  position: text('position'), // free-text job title, distinct from role
+  active: boolean('active').notNull().default(true), // false = login blocked
+  preferredLang: text('preferred_lang'), // 'en' | 'km' (seeds the UI locale)
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
     .notNull()
     .defaultNow(),
@@ -203,6 +207,50 @@ export const userProperties = pgTable(
     pk: primaryKey({ columns: [t.userId, t.propertyId] }),
   })
 );
+
+// Catalog of custom FLAT fees an owner can charge on top of rent + metered
+// utilities (e.g. Trash, Parking, Wi-Fi, Management). Metered fees
+// (electricity/water) are NOT here — they stay on the invoice's dedicated
+// columns. Each row is a fee TYPE; buildings opt in via `propertyFees`.
+export const fees = pgTable('fees', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  nameKh: text('name_kh').notNull(),
+  amount: doublePrecision('amount').notNull(), // default amount
+  currency: text('currency').notNull().default('USD'), // 'USD' | 'KHR'
+  active: boolean('active').notNull().default(true), // globally available
+  sortOrder: integer('sort_order').notNull().default(0),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+    .notNull()
+    .defaultNow(),
+});
+
+// Which flat fees a building charges, with an optional per-building amount
+// override. A building only charges the fees it has a row for here (opt-in),
+// so different owners can charge different things. `amount` null = use the
+// catalog default from `fees.amount`.
+export const propertyFees = pgTable(
+  'property_fees',
+  {
+    propertyId: text('property_id').notNull(),
+    feeId: text('fee_id').notNull(),
+    amount: doublePrecision('amount'),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.propertyId, t.feeId] }),
+  })
+);
+
+// Per-invoice snapshot of the flat fees applied. Snapshotting name + amounts
+// keeps historical invoices stable when the catalog is later edited.
+export const invoiceFees = pgTable('invoice_fees', {
+  id: text('id').primaryKey(),
+  invoiceId: text('invoice_id').notNull(),
+  name: text('name').notNull(),
+  nameKh: text('name_kh').notNull(),
+  amountUSD: doublePrecision('amount_usd').notNull(),
+  amountKHR: doublePrecision('amount_khr').notNull(),
+});
 
 // Single-row, system-wide configuration (id is always 'global'). Holds the
 // USD/KHR exchange rate and default utility prices used as fallbacks when a

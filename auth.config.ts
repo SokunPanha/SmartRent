@@ -48,11 +48,18 @@ export const authConfig = {
     // Persist id + role identity onto the JWT at sign-in.
     jwt({ token, user }) {
       if (user) {
-        const u = user as { id?: string; role?: string; roleId?: string | null; isSuperAdmin?: boolean };
+        const u = user as {
+          id?: string;
+          role?: string;
+          roleId?: string | null;
+          isSuperAdmin?: boolean;
+          preferredLang?: string | null;
+        };
         token.id = u.id;
         token.role = u.role;
         token.roleId = u.roleId ?? null;
         token.isSuperAdmin = !!u.isSuperAdmin;
+        token.preferredLang = u.preferredLang ?? null;
       }
       return token;
     },
@@ -63,6 +70,7 @@ export const authConfig = {
         session.user.role = (token.role as string) ?? '';
         session.user.roleId = (token.roleId as string | null) ?? null;
         session.user.isSuperAdmin = !!token.isSuperAdmin;
+        session.user.preferredLang = (token.preferredLang as string | null) ?? null;
       }
       return session;
     },

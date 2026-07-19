@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Printer, X, QrCode } from 'lucide-react';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
 import { formatUSD, formatKHR } from '@/lib/format';
+import { pickLocale } from '@/lib/i18n';
 import { Modal } from '@/components/shared/Modal';
 import {
   MonthOption,
@@ -190,6 +191,19 @@ export function PrintInvoiceModal({
                   <td className="py-3.5 text-right font-mono text-muted-foreground">{formatKHR(invoice.waterCostKHR)}</td>
                   <td className="py-3.5 text-right font-mono font-bold text-foreground">${invoice.waterCostUSD.toFixed(2)}</td>
                 </tr>
+
+                {(invoice.feeLines ?? []).map((fee, i) => (
+                  <tr key={`fee-${i}`}>
+                    <td className="py-3.5 font-mono">{4 + i}</td>
+                    <td className="py-3.5">
+                      <p className="font-bold text-foreground">{pickLocale(lang, fee.name, fee.nameKh)}</p>
+                    </td>
+                    <td className="py-3.5 text-right font-mono text-muted-foreground">—</td>
+                    <td className="py-3.5 text-right font-mono text-muted-foreground">—</td>
+                    <td className="py-3.5 text-right font-mono text-muted-foreground">{formatKHR(fee.amountKHR)}</td>
+                    <td className="py-3.5 text-right font-mono font-bold text-foreground">${fee.amountUSD.toFixed(2)}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

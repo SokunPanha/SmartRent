@@ -26,6 +26,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const [user] = await db.select().from(users).where(eq(users.email, email));
         if (!user) return null;
 
+        // Suspended accounts can't sign in (kept, not deleted, for history).
+        if (user.active === false) return null;
+
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
 
@@ -40,6 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           roleId: user.roleId ?? null,
           role: role?.name ?? '',
           isSuperAdmin: role?.isSystem ?? false,
+          preferredLang: user.preferredLang ?? null,
         };
       },
     }),

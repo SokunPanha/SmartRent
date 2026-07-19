@@ -1,16 +1,18 @@
 import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { contracts, rooms, invoices, meterReadings, activityLogs } from '@/lib/db/schema';
+import { contracts, rooms, invoices, meterReadings, activityLogs, invoiceFees } from '@/lib/db/schema';
 import { ok, serverError, readJson, genId } from '@/lib/api/http';
 import { requirePermission } from '@/lib/api/guard';
 import { scopedPropertyIds } from '@/lib/api/scope';
+import { resolvePropertyFees, type ResolvedFee } from '@/lib/api/fees';
 import { getOrCreateSettings } from '@/lib/api/settings';
 import type { Invoice, MeterReading } from '@/lib/types';
 
 /**
  * POST /api/invoices/generate
- * Body (optional): { year?: number, month?: number }  — defaults to 2026-06.
+ * Body (optional): { year?: number, month?: number }  — defaults to the
+ * current calendar month when omitted.
  *
  * Generates one invoice per active lease that does not already have an invoice
  * for the target period. When a meter reading for the period is missing, a
@@ -22,8 +24,13 @@ export async function POST(req: Request) {
   if (gate instanceof NextResponse) return gate;
   try {
     const body = (await readJson<{ year?: number; month?: number }>(req)) ?? {};
-    const year = Number(body.year) || 2026;
-    const month = Number(body.month) || 6;
+    // The client always sends an explicit period (chosen in the generate
+    // dialog); these fallbacks default to the current calendar month so a
+    // direct/API call without a body still targets a sensible period rather
+    // than a hardcoded past one.
+    const now = new Date();
+    const year = Number(body.year) || now.getFullYear();
+    const month = Number(body.month) || now.getMonth() + 1;
     const prevMonth = month === 1 ? 12 : month - 1;
     const prevYear = month === 1 ? year - 1 : year;
     const mm = String(month).padStart(2, '0');
@@ -54,6 +61,17 @@ export async function POST(req: Request) {
 
     const newInvoices: (typeof invoices.$inferInsert)[] = [];
     const newReadings: (typeof meterReadings.$inferInsert)[] = [];
+    const newFeeLines: (typeof invoiceFees.$inferInsert)[] = [];
+
+    // Resolve each building's opted-in flat fees once and reuse across its rooms.
+    const feeCache = new Map<string, ResolvedFee[]>();
+    async function feesForProperty(propertyId: string): Promise<ResolvedFee[]> {
+      const cached = feeCache.get(propertyId);
+      if (cached) return cached;
+      const resolved = await resolvePropertyFees(propertyId, EXCHANGE_RATE);
+      feeCache.set(propertyId, resolved);
+      return resolved;
+    }
 
     for (const cnt of leasesToBill) {
       const isDuplicate = existingInvoices.some(
@@ -111,14 +129,31 @@ export async function POST(req: Request) {
       const waterCostKHR = (currWater - prevWater) * cnt.waterRate;
       const elecCostUSD = Number((elecCostKHR / EXCHANGE_RATE).toFixed(2));
       const waterCostUSD = Number((waterCostKHR / EXCHANGE_RATE).toFixed(2));
-      const totalUSD = cnt.rentAmount + elecCostUSD + waterCostUSD;
-      const totalKHR = Math.round(totalUSD * EXCHANGE_RATE);
 
       const roomObj = allRooms.find((r) => r.id === cnt.roomId);
       const roomNum = roomObj ? roomObj.roomNumber : 'RM';
 
+      // Building's custom flat fees (trash, parking, …) as extra line items.
+      const flatFees = roomObj ? await feesForProperty(roomObj.propertyId) : [];
+      const flatFeesUSD = flatFees.reduce((sum, f) => sum + f.amountUSD, 0);
+
+      const totalUSD = cnt.rentAmount + elecCostUSD + waterCostUSD + flatFeesUSD;
+      const totalKHR = Math.round(totalUSD * EXCHANGE_RATE);
+
+      const invoiceId = genId('inv');
+      for (const f of flatFees) {
+        newFeeLines.push({
+          id: genId('ifee'),
+          invoiceId,
+          name: f.name,
+          nameKh: f.nameKh,
+          amountUSD: f.amountUSD,
+          amountKHR: f.amountKHR,
+        });
+      }
+
       const newInvoice: Invoice = {
-        id: genId('inv'),
+        id: invoiceId,
         invoiceNumber: `INV-${year}-${mm}${roomNum}`,
         contractId: cnt.id,
         roomId: cnt.roomId,
@@ -149,6 +184,7 @@ export async function POST(req: Request) {
 
     if (newReadings.length) await db.insert(meterReadings).values(newReadings);
     if (newInvoices.length) await db.insert(invoices).values(newInvoices);
+    if (newFeeLines.length) await db.insert(invoiceFees).values(newFeeLines);
 
     if (newInvoices.length) {
       await db.insert(activityLogs).values({

@@ -68,6 +68,14 @@ export interface MeterReading {
   recordedBy: string; // e.g. "Staff Name"
 }
 
+/** A custom flat fee applied to an invoice (snapshot at generation time). */
+export interface InvoiceFeeLine {
+  name: string;
+  nameKh: string;
+  amountUSD: number;
+  amountKHR: number;
+}
+
 export interface Invoice {
   id: string;
   invoiceNumber: string;
@@ -104,6 +112,9 @@ export interface Invoice {
   paidDate?: string;
   paymentMethod?: 'cash' | 'aba' | 'wing' | 'other';
   notes?: string;
+
+  // Custom flat fees (trash, parking, …) applied on top of rent + utilities.
+  feeLines?: InvoiceFeeLine[];
 
   // Telegram delivery properties
   telegramScheduledDate?: string;

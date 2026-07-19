@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { and, eq, desc, inArray, type SQL } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { invoices } from '@/lib/db/schema';
+import { invoices, invoiceFees } from '@/lib/db/schema';
 import { ok, created, badRequest, forbidden, serverError, readJson, missingField, genId } from '@/lib/api/http';
 import { requirePermission, requireUser } from '@/lib/api/guard';
 import { scopedPropertyIds, roomIdsInProperties, isRoomInScope } from '@/lib/api/scope';
@@ -29,7 +29,28 @@ export async function GET(req: Request) {
       .from(invoices)
       .where(filters.length ? and(...filters) : undefined)
       .orderBy(desc(invoices.issueDate));
-    return ok(rows);
+
+    // Attach each invoice's custom flat-fee line items.
+    const invoiceIds = rows.map((r) => r.id);
+    const lines = invoiceIds.length
+      ? await db.select().from(invoiceFees).where(inArray(invoiceFees.invoiceId, invoiceIds))
+      : [];
+    const byInvoice = new Map<string, typeof lines>();
+    for (const l of lines) {
+      const list = byInvoice.get(l.invoiceId);
+      if (list) list.push(l);
+      else byInvoice.set(l.invoiceId, [l]);
+    }
+    const withFees = rows.map((r) => ({
+      ...r,
+      feeLines: (byInvoice.get(r.id) ?? []).map((l) => ({
+        name: l.name,
+        nameKh: l.nameKh,
+        amountUSD: l.amountUSD,
+        amountKHR: l.amountKHR,
+      })),
+    }));
+    return ok(withFees);
   } catch (err) {
     return serverError(err);
   }

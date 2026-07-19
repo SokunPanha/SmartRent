@@ -1,4 +1,5 @@
 import { AppShell } from '@/components/layout/AppShell';
+import { LangSync } from '@/components/layout/LangSync';
 
 /**
  * Layout for the authenticated area. Middleware guarantees a session before any
@@ -9,5 +10,10 @@ export default function AppGroupLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AppShell>{children}</AppShell>;
+  return (
+    <>
+      <LangSync />
+      <AppShell>{children}</AppShell>
+    </>
+  );
 }

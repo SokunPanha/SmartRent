@@ -35,6 +35,9 @@ export function UserFormModal({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [roleId, setRoleId] = useState('');
+  const [phone, setPhone] = useState('');
+  const [position, setPosition] = useState('');
+  const [preferredLang, setPreferredLang] = useState('');
   const [propertyIds, setPropertyIds] = useState<string[]>([]);
 
   const toggleProperty = (id: string) =>
@@ -43,7 +46,17 @@ export function UserFormModal({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!roleId) return;
-    onSubmit({ name, nameKh: nameKh || undefined, email: email.toLowerCase(), password, roleId, propertyIds });
+    onSubmit({
+      name,
+      nameKh: nameKh || undefined,
+      email: email.toLowerCase(),
+      password,
+      roleId,
+      phone: phone.trim() || undefined,
+      position: position.trim() || undefined,
+      preferredLang: preferredLang || undefined,
+      propertyIds,
+    });
   }
 
   return (
@@ -76,6 +89,36 @@ export function UserFormModal({
             placeholder={t('user_email_placeholder')}
             required
           />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground block font-sans">
+              {t('phone_label')}
+            </label>
+            <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('phone_placeholder')} className="font-mono" />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground block font-sans">
+              {t('position_label')}
+            </label>
+            <Input value={position} onChange={(e) => setPosition(e.target.value)} placeholder={t('position_placeholder')} />
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-muted-foreground block font-sans">
+            {t('preferred_lang_label')}
+          </label>
+          <select
+            value={preferredLang}
+            onChange={(e) => setPreferredLang(e.target.value)}
+            className="h-10 w-full rounded-lg border border-input bg-card px-3 font-sans text-sm focus:border-primary focus:outline-none"
+          >
+            <option value="">{t('lang_default')}</option>
+            <option value="en">{t('lang_en')}</option>
+            <option value="km">{t('lang_kh')}</option>
+          </select>
         </div>
 
         <div className="space-y-1.5">

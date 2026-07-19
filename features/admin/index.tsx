@@ -14,6 +14,7 @@ import { useRoles } from './roles.queries';
 import { AdminUser } from './users.api';
 import { UserTable } from './components/UserTable';
 import { UserFormModal } from './components/UserFormModal';
+import { UserEditModal } from './components/UserEditModal';
 import { UserBuildingsModal } from './components/UserBuildingsModal';
 
 const NO_ROLE_VALUE = '__none__';
@@ -41,6 +42,7 @@ export default function UsersAdmin() {
   const { data: properties = [] } = useProperties();
   const { create, update, remove } = useUserMutations();
   const [showCreate, setShowCreate] = useState(false);
+  const [editUser, setEditUser] = useState<AdminUser | null>(null);
   const [editBuildingsUser, setEditBuildingsUser] = useState<AdminUser | null>(null);
   const [roleFilter, setRoleFilter] = useState('all');
   const [search, setSearch] = useState('');
@@ -146,6 +148,7 @@ export default function UsersAdmin() {
           currentEmail={userEmail}
           busy={busy}
           onChangeRole={handleChangeRole}
+          onEdit={setEditUser}
           onEditBuildings={setEditBuildingsUser}
           onDelete={handleDelete}
         />
@@ -160,6 +163,17 @@ export default function UsersAdmin() {
         onClose={() => setShowCreate(false)}
         onSubmit={(data) => create.mutate(data, { onSuccess: () => setShowCreate(false) })}
       />
+
+      {editUser && (
+        <UserEditModal
+          user={editUser}
+          busy={update.isPending}
+          onClose={() => setEditUser(null)}
+          onSave={(patch) =>
+            update.mutate({ id: editUser.id, patch }, { onSuccess: () => setEditUser(null) })
+          }
+        />
+      )}
 
       {editBuildingsUser && (
         <UserBuildingsModal

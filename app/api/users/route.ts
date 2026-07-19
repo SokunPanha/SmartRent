@@ -26,6 +26,10 @@ export async function GET() {
         name: users.name,
         nameKh: users.nameKh,
         email: users.email,
+        phone: users.phone,
+        position: users.position,
+        active: users.active,
+        preferredLang: users.preferredLang,
         roleId: users.roleId,
         roleName: roles.name,
         isSystemRole: roles.isSystem,
@@ -80,6 +84,9 @@ export async function POST(req: Request) {
         email,
         passwordHash,
         roleId: role.id,
+        phone: (body.phone as string)?.trim() || null,
+        position: (body.position as string)?.trim() || null,
+        preferredLang: body.preferredLang === 'en' || body.preferredLang === 'km' ? (body.preferredLang as string) : null,
       })
       .returning({ id: users.id, name: users.name, email: users.email, roleId: users.roleId });
 

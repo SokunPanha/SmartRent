@@ -5,6 +5,7 @@ declare module 'next-auth' {
     role: string;
     roleId: string | null;
     isSuperAdmin: boolean;
+    preferredLang?: string | null;
   }
 
   interface Session {
@@ -13,6 +14,7 @@ declare module 'next-auth' {
       role: string;
       roleId: string | null;
       isSuperAdmin: boolean;
+      preferredLang?: string | null;
     } & DefaultSession['user'];
   }
 }
@@ -23,5 +25,6 @@ declare module 'next-auth/jwt' {
     role?: string;
     roleId?: string | null;
     isSuperAdmin?: boolean;
+    preferredLang?: string | null;
   }
 }
