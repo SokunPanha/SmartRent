@@ -66,7 +66,7 @@ export function KpiCards({
         </div>
       </div>
 
-      {/* KPI: Rent Revenue June */}
+      {/* KPI: Rent Revenue (current month) */}
       <div
         onClick={() => onNavigate('invoices')}
         className="bg-card p-5 rounded-2xl border border-border shadow-card hover:border-primary/30 transition duration-200 cursor-pointer group"
@@ -77,7 +77,7 @@ export function KpiCards({
             <Coins className="w-5 h-5" />
           </div>
           <span className="text-[11px] font-semibold bg-chart-2/10 text-chart-2 px-2 py-0.5 rounded-full border border-chart-2/20">
-            {Math.round((stats.juneRevenueCollected / (stats.juneRevenueInvoiced || 1)) * 100)}%{' '}
+            {Math.round((stats.currentMonthRevenueCollected / (stats.currentMonthRevenueInvoiced || 1)) * 100)}%{' '}
             {t('paid_short')}
           </span>
         </div>
@@ -86,10 +86,10 @@ export function KpiCards({
             {t('monthly_revenue')}
           </span>
           <span className="text-2xl font-bold text-foreground tracking-tight block">
-            {usd0(stats.juneRevenueInvoiced)}
+            {usd0(stats.currentMonthRevenueInvoiced)}
           </span>
           <span className="text-[11px] text-muted-foreground block mt-0.5">
-            ≈ {formatKHRFromUSD(stats.juneRevenueInvoiced)}
+            ≈ {formatKHRFromUSD(stats.currentMonthRevenueInvoiced)}
           </span>
         </div>
       </div>

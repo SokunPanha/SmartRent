@@ -3,6 +3,7 @@
 import { Suspense } from 'react';
 import PropertiesRooms from '@/features/properties';
 import { PageTransition } from '@/components/layout/PageTransition';
+import { PageSkeleton } from '@/components/layout/PageSkeleton';
 import { useRent } from '@/store/rent-store';
 import {
   useProperties,
@@ -14,11 +15,21 @@ import { useLogAction } from '@/features/activity/activity.queries';
 
 export default function PropertiesPage() {
   const { activeRole, lang } = useRent();
-  const { data: properties = [] } = useProperties();
-  const { data: rooms = [] } = useRooms();
+  const { data: properties = [], isLoading: lProperties } = useProperties();
+  const { data: rooms = [], isLoading: lRooms } = useRooms();
   const propertyMut = usePropertyMutations();
   const roomMut = useRoomMutations();
   const logAction = useLogAction();
+
+  const isLoading = lProperties || lRooms;
+
+  if (isLoading) {
+    return (
+      <PageTransition>
+        <PageSkeleton />
+      </PageTransition>
+    );
+  }
 
   return (
     <PageTransition>

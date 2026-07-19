@@ -30,8 +30,8 @@ export function useReadingForm({
   const tCommon = useTranslations('Common');
   const [showModal, setShowModal] = useState(false);
   const [targetRoomId, setTargetRoomId] = useState('');
-  const [readingYear, setReadingYear] = useState<number>(2026);
-  const [readingMonth, setReadingMonth] = useState<number>(6);
+  const [readingYear, setReadingYear] = useState<number>(() => new Date().getFullYear());
+  const [readingMonth, setReadingMonth] = useState<number>(() => new Date().getMonth() + 1);
   const [prevElec, setPrevElec] = useState<number>(0);
   const [currElec, setCurrElec] = useState<number>(0);
   const [prevWater, setPrevWater] = useState<number>(0);
@@ -61,8 +61,9 @@ export function useReadingForm({
     const occupied = rooms.filter((r) => r.status === 'occupied');
     if (occupied.length > 0) handleRoomSelectionChange(occupied[0].id);
     else if (rooms.length > 0) handleRoomSelectionChange(rooms[0].id);
-    setReadingYear(2026);
-    setReadingMonth(6);
+    const now = new Date();
+    setReadingYear(now.getFullYear());
+    setReadingMonth(now.getMonth() + 1);
     setShowModal(true);
   }
 

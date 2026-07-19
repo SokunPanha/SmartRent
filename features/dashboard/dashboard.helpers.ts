@@ -1,16 +1,13 @@
 import { Property, Room, Contract, Invoice } from '@/lib/types';
 
-/** Fixed "today" the seeded dataset is built around. */
-export const SIMULATION_DATE = new Date('2026-06-15');
-
 export interface DashboardStats {
   totalProperties: number;
   totalRooms: number;
   occupiedRooms: number;
   vacantRooms: number;
   maintenanceRooms: number;
-  juneRevenueInvoiced: number;
-  juneRevenueCollected: number;
+  currentMonthRevenueInvoiced: number;
+  currentMonthRevenueCollected: number;
   totalOutstanding: number;
   overdueCount: number;
   contractsExpiringSoon: number;
@@ -26,9 +23,21 @@ export function getDashboardStats(
   const vacantRooms = rooms.filter((r) => r.status === 'vacant').length;
   const maintenanceRooms = rooms.filter((r) => r.status === 'maintenance').length;
 
-  const juneInvoices = invoices.filter((inv) => inv.year === 2026 && inv.month === 6);
-  const juneRevenueInvoiced = juneInvoices.reduce((sum, inv) => sum + inv.totalAmountUSD, 0);
-  const juneRevenueCollected = juneInvoices.reduce((sum, inv) => sum + inv.amountPaidUSD, 0);
+  const now = new Date();
+  const curYear = now.getFullYear();
+  const curMonth = now.getMonth() + 1;
+
+  const currentMonthInvoices = invoices.filter(
+    (inv) => inv.year === curYear && inv.month === curMonth
+  );
+  const currentMonthRevenueInvoiced = currentMonthInvoices.reduce(
+    (sum, inv) => sum + inv.totalAmountUSD,
+    0
+  );
+  const currentMonthRevenueCollected = currentMonthInvoices.reduce(
+    (sum, inv) => sum + inv.amountPaidUSD,
+    0
+  );
 
   const totalOutstanding = invoices.reduce((sum, inv) => {
     const unpaid = inv.totalAmountUSD - inv.amountPaidUSD;
@@ -37,12 +46,13 @@ export function getDashboardStats(
 
   const overdueCount = invoices.filter((inv) => inv.status === 'overdue').length;
 
-  // Active contracts ending within ~35 days of the simulation date.
-  const soonExpiryDate = new Date('2026-07-20');
+  // Active contracts ending within ~35 days from today.
+  const soonExpiryDate = new Date(now);
+  soonExpiryDate.setDate(soonExpiryDate.getDate() + 35);
   const contractsExpiringSoon = contracts.filter((c) => {
     if (c.status !== 'active') return false;
     const end = new Date(c.endDate);
-    return end >= SIMULATION_DATE && end <= soonExpiryDate;
+    return end >= now && end <= soonExpiryDate;
   }).length;
 
   return {
@@ -51,8 +61,8 @@ export function getDashboardStats(
     occupiedRooms,
     vacantRooms,
     maintenanceRooms,
-    juneRevenueInvoiced,
-    juneRevenueCollected,
+    currentMonthRevenueInvoiced,
+    currentMonthRevenueCollected,
     totalOutstanding,
     overdueCount,
     contractsExpiringSoon,
@@ -65,21 +75,21 @@ export interface MonthlyRevenuePoint {
   collected: number;
 }
 
-const MONTH_LABEL_KEYS: Record<number, string> = {
-  4: 'month_4',
-  5: 'month_5',
-  6: 'month_6',
-};
-
-/** Invoiced vs collected totals for April–June 2026. */
+/** Invoiced vs collected totals for the trailing three months ending with the
+ *  current calendar month (oldest first). Month arithmetic via Date handles
+ *  year boundaries (e.g. January → the prior November/December). */
 export function getMonthlyRevenue(
   invoices: Invoice[],
   t: (key: string) => string
 ): MonthlyRevenuePoint[] {
-  return [4, 5, 6].map((m) => {
-    const monthInvoices = invoices.filter((inv) => inv.year === 2026 && inv.month === m);
+  const now = new Date();
+  return [2, 1, 0].map((offset) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+    const year = d.getFullYear();
+    const month = d.getMonth() + 1;
+    const monthInvoices = invoices.filter((inv) => inv.year === year && inv.month === month);
     return {
-      label: t(MONTH_LABEL_KEYS[m]),
+      label: t(`month_${month}`),
       invoiced: Math.round(monthInvoices.reduce((sum, inv) => sum + inv.totalAmountUSD, 0)),
       collected: Math.round(monthInvoices.reduce((sum, inv) => sum + inv.amountPaidUSD, 0)),
     };

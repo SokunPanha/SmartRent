@@ -10,6 +10,7 @@ import { InvoiceFilters } from './components/InvoiceFilters';
 import { TelegramHub } from './components/TelegramHub';
 import { InvoiceGrid } from './components/InvoiceGrid';
 import { PaymentModal } from './components/PaymentModal';
+import { GenerateInvoiceModal } from './components/GenerateInvoiceModal';
 import { PrintInvoiceModal } from './components/PrintInvoiceModal';
 
 interface InvoicesPaymentsProps {
@@ -21,7 +22,7 @@ interface InvoicesPaymentsProps {
   readings: MeterReading[];
   activeRole: UserRole;
   lang: AppLanguage;
-  onAutoGenerateInvoices: () => void;
+  onAutoGenerateInvoices: (year: number, month: number) => void;
   onRecordPayment: (
     invoiceId: string,
     amount: number,
@@ -112,6 +113,8 @@ export default function InvoicesPayments({
       />
 
       <PaymentModal c={c} lang={lang} />
+
+      <GenerateInvoiceModal c={c} />
 
       <PrintInvoiceModal
         invoice={c.printInvoice}

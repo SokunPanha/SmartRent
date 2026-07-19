@@ -10,6 +10,18 @@ import { getRoomName, getTenantName } from './tenants.helpers';
 
 type ContractStatus = 'active' | 'suspended' | 'expired';
 
+/** Today as an ISO date (YYYY-MM-DD), used as the default for date inputs. */
+function todayISO(): string {
+  return new Date().toISOString().split('T')[0];
+}
+
+/** One year from today (ISO) — the default contract term end date. */
+function oneYearFromTodayISO(): string {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() + 1);
+  return d.toISOString().split('T')[0];
+}
+
 interface Args {
   tenants: Tenant[];
   contracts: Contract[];
@@ -92,14 +104,14 @@ export function useTenantsController({
   const [tenantPhone, setTenantPhone] = useState('');
   const [tenantNID, setTenantNID] = useState('');
   const [tenantEmail, setTenantEmail] = useState('');
-  const [tenantCheckIn, setTenantCheckIn] = useState('2026-06-15');
+  const [tenantCheckIn, setTenantCheckIn] = useState(todayISO);
   const [tenantEmergency, setTenantEmergency] = useState('');
   const [tenantTelegramAutoSend, setTenantTelegramAutoSend] = useState(true);
 
   const [conRoomId, setConRoomId] = useState('');
   const [conTenantId, setConTenantId] = useState('');
-  const [conStartDate, setConStartDate] = useState('2026-06-15');
-  const [conEndDate, setConEndDate] = useState('2027-06-15');
+  const [conStartDate, setConStartDate] = useState(todayISO);
+  const [conEndDate, setConEndDate] = useState(oneYearFromTodayISO);
   const [conRent, setConRent] = useState<number>(200);
   const [conDeposit, setConDeposit] = useState<number>(400);
   const [conElecRate, setConElecRate] = useState<number>(1000);
@@ -150,7 +162,7 @@ export function useTenantsController({
     setTenantPhone('');
     setTenantNID('');
     setTenantEmail('');
-    setTenantCheckIn('2026-06-15');
+    setTenantCheckIn(todayISO());
     setTenantEmergency('');
     setTenantTelegramAutoSend(true);
     setShowTenantModal(false);
@@ -208,8 +220,8 @@ export function useTenantsController({
 
     setConRoomId('');
     setConTenantId('');
-    setConStartDate('2026-06-15');
-    setConEndDate('2027-06-15');
+    setConStartDate(todayISO());
+    setConEndDate(oneYearFromTodayISO());
     setShowContractModal(false);
   }
 

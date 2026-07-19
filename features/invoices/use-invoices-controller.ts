@@ -26,7 +26,7 @@ interface Args {
   canGenerate: boolean;
   canPay: boolean;
   lang: AppLanguage;
-  onAutoGenerateInvoices: () => void;
+  onAutoGenerateInvoices: (year: number, month: number) => void;
   onRecordPayment: (
     invoiceId: string,
     amount: number,
@@ -64,6 +64,24 @@ export function useInvoicesController({
     [invoices]
   );
 
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
+  // Period picker for the generate action. Defaults to the current real month
+  // so the common case ("bill this month") is a single click.
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [genYear, setGenYear] = useState<number>(currentYear);
+  const [genMonth, setGenMonth] = useState<number>(currentMonth);
+
+  // Year options for the picker: every year that already has invoices, plus a
+  // small window around the current year so future/past periods stay reachable.
+  const generateYears = useMemo(() => {
+    const years = new Set<number>(invoices.map((inv) => inv.year));
+    for (let y = currentYear - 1; y <= currentYear + 1; y++) years.add(y);
+    return Array.from(years).sort((a, b) => b - a);
+  }, [invoices, currentYear]);
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [targetInvoiceId, setTargetInvoiceId] = useState('');
   const [payAmount, setPayAmount] = useState<number>(0);
@@ -71,10 +89,11 @@ export function useInvoicesController({
   const [payNotes, setPayNotes] = useState('');
 
   const [telegramScheduledDate, setTelegramScheduledDate] = useState<string>(() => {
+    const today = new Date().toISOString().split('T')[0];
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('khrent_telegram_scheduled_date') || '2026-06-18';
+      return localStorage.getItem('khrent_telegram_scheduled_date') || today;
     }
-    return '2026-06-18';
+    return today;
   });
   const [telegramIsSettingsOpen, setTelegramIsSettingsOpen] = useState(false);
   const [telegramIsDispatching, setTelegramIsDispatching] = useState(false);
@@ -316,7 +335,17 @@ export function useInvoicesController({
       toast.error(tCommon('insufficient_permissions'));
       return;
     }
-    onAutoGenerateInvoices();
+    // Reset the picker to the current period each time it's opened.
+    setGenYear(currentYear);
+    setGenMonth(currentMonth);
+    setShowGenerateModal(true);
+  }
+
+  function handleSubmitGenerate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canGenerate) return;
+    onAutoGenerateInvoices(genYear, genMonth);
+    setShowGenerateModal(false);
   }
 
   return {
@@ -336,6 +365,15 @@ export function useInvoicesController({
     setSelectedTelegramStatus,
     filteredInvoices,
     handleGenerateClick,
+    // generate period picker
+    showGenerateModal,
+    closeGenerateModal: () => setShowGenerateModal(false),
+    genYear,
+    setGenYear,
+    genMonth,
+    setGenMonth,
+    generateYears,
+    handleSubmitGenerate,
     // payment
     showPaymentModal,
     closePaymentModal: () => setShowPaymentModal(false),

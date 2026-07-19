@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Statistics from '@/features/dashboard/Statistics';
 import { PageTransition } from '@/components/layout/PageTransition';
+import { PageSkeleton } from '@/components/layout/PageSkeleton';
 import { useRent } from '@/store/rent-store';
 import { useProperties, useRooms } from '@/features/properties/properties.queries';
 import { useContracts } from '@/features/tenants/tenants.queries';
@@ -13,11 +14,21 @@ export default function StatisticsPage() {
   const router = useRouter();
   const { lang } = useRent();
 
-  const { data: properties = [] } = useProperties();
-  const { data: rooms = [] } = useRooms();
-  const { data: contracts = [] } = useContracts();
-  const { data: invoices = [] } = useInvoices();
-  const { data: logs = [] } = useLogs();
+  const { data: properties = [], isLoading: lProperties } = useProperties();
+  const { data: rooms = [], isLoading: lRooms } = useRooms();
+  const { data: contracts = [], isLoading: lContracts } = useContracts();
+  const { data: invoices = [], isLoading: lInvoices } = useInvoices();
+  const { data: logs = [], isLoading: lLogs } = useLogs();
+
+  const isLoading = lProperties || lRooms || lContracts || lInvoices || lLogs;
+
+  if (isLoading) {
+    return (
+      <PageTransition>
+        <PageSkeleton />
+      </PageTransition>
+    );
+  }
 
   return (
     <PageTransition>

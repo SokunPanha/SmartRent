@@ -2,6 +2,7 @@
 
 import InvoicesPayments from '@/features/invoices';
 import { PageTransition } from '@/components/layout/PageTransition';
+import { PageSkeleton } from '@/components/layout/PageSkeleton';
 import { useRent } from '@/store/rent-store';
 import { useProperties, useRooms } from '@/features/properties/properties.queries';
 import { useTenants, useContracts } from '@/features/tenants/tenants.queries';
@@ -15,15 +16,25 @@ import { useLogAction } from '@/features/activity/activity.queries';
 
 export default function InvoicesPage() {
   const { activeRole, lang } = useRent();
-  const { data: invoices = [] } = useInvoices();
-  const { data: contracts = [] } = useContracts();
-  const { data: rooms = [] } = useRooms();
-  const { data: tenants = [] } = useTenants();
-  const { data: properties = [] } = useProperties();
-  const { data: readings = [] } = useReadings();
+  const { data: invoices = [], isLoading: lInvoices } = useInvoices();
+  const { data: contracts = [], isLoading: lContracts } = useContracts();
+  const { data: rooms = [], isLoading: lRooms } = useRooms();
+  const { data: tenants = [], isLoading: lTenants } = useTenants();
+  const { data: properties = [], isLoading: lProperties } = useProperties();
+  const { data: readings = [], isLoading: lReadings } = useReadings();
   const { recordPayment, generate } = useInvoiceMutations();
   const updateInvoices = useUpdateInvoices();
   const logAction = useLogAction();
+
+  const isLoading = lInvoices || lContracts || lRooms || lTenants || lProperties || lReadings;
+
+  if (isLoading) {
+    return (
+      <PageTransition>
+        <PageSkeleton />
+      </PageTransition>
+    );
+  }
 
   return (
     <PageTransition>
@@ -36,7 +47,7 @@ export default function InvoicesPage() {
         readings={readings}
         activeRole={activeRole}
         lang={lang}
-        onAutoGenerateInvoices={() => generate.mutate({ year: 2026, month: 6 })}
+        onAutoGenerateInvoices={(year, month) => generate.mutate({ year, month })}
         onRecordPayment={(invoiceId, amount, method, notes) =>
           recordPayment.mutate({ invoiceId, amount, method, notes })
         }
