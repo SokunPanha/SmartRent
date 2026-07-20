@@ -75,10 +75,14 @@ export function useInvoicesController({
   const [genMonth, setGenMonth] = useState<number>(currentMonth);
 
   // Year options for the picker: every year that already has invoices, plus a
-  // small window around the current year so future/past periods stay reachable.
+  // window around the current year so past periods (back-billing) and future
+  // periods stay reachable.
   const generateYears = useMemo(() => {
+    const YEAR_WINDOW = 5; // years selectable on either side of the current year
     const years = new Set<number>(invoices.map((inv) => inv.year));
-    for (let y = currentYear - 1; y <= currentYear + 1; y++) years.add(y);
+    for (let y = currentYear - YEAR_WINDOW; y <= currentYear + YEAR_WINDOW; y++) {
+      years.add(y);
+    }
     return Array.from(years).sort((a, b) => b - a);
   }, [invoices, currentYear]);
 
