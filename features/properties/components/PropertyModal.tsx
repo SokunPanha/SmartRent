@@ -4,9 +4,9 @@ import { Modal } from '@/components/shared/Modal';
 import { ModalHeader } from '@/components/shared/ModalHeader';
 import { ModalFooter } from '@/components/shared/ModalFooter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { usePropertiesController } from '../use-properties-controller';
+import { useBuildingsController } from '../use-buildings-controller';
 
-type Controller = ReturnType<typeof usePropertiesController>;
+type Controller = ReturnType<typeof useBuildingsController>;
 
 export function PropertyModal({
   c,

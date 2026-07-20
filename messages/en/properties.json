@@ -41,6 +41,15 @@
     "prop_address_placeholder": "e.g. Street 1986, Sen Sok, Phnom Penh",
     "prop_address_kh_placeholder": "ឧ. ផ្លូវ ១៩៨៦, ខណ្ឌសែនសុខ, ភ្នំពេញ",
     "room_number_placeholder": "e.g. A-101, E-04",
-    "room_rent_label": "Rent Amount (USD)"
+    "room_rent_label": "Rent Amount (USD)",
+    "buildings_heading": "Buildings",
+    "back_to_buildings": "All buildings",
+    "total_rooms_label": "Total rooms",
+    "rooms_heading": "Rooms",
+    "actions_label": "Actions",
+    "rent_per_month": "Rent / mo",
+    "no_buildings_yet": "No buildings yet. Add your first location to get started.",
+    "building_not_found": "Building not found.",
+    "delete_building": "Delete building"
   }
 }

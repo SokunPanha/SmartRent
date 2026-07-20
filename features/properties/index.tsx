@@ -1,93 +1,94 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { Plus } from 'lucide-react';
 import { Property, Room, UserRole, AppLanguage } from '@/lib/types';
 import { PermissionBanner } from '@/components/shared/PermissionBanner';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCan } from '@/features/admin/permissions.queries';
-import { usePropertiesController } from './use-properties-controller';
-import { PropertyList } from './components/PropertyList';
-import { RoomGrid } from './components/RoomGrid';
+import { useBuildingsController } from './use-buildings-controller';
+import { BuildingGrid } from './components/BuildingGrid';
 import { PropertyModal } from './components/PropertyModal';
-import { RoomModal } from './components/RoomModal';
 
-interface PropertiesRoomsProps {
+type PropType = 'apartment' | 'borey' | 'condo' | 'guesthouse';
+
+interface BuildingsViewProps {
   properties: Property[];
   rooms: Room[];
   activeRole: UserRole;
   lang: AppLanguage;
   onAddProperty: (prop: Omit<Property, 'totalRooms'>) => void;
-  onAddRoom: (room: Room) => void;
-  onUpdateRoom: (room: Room) => void;
-  onDeleteRoom: (roomId: string) => void;
-  onDeleteProperty: (propId: string) => void;
   logAction: (action: string, actionKh: string, details: string, detailsKh: string) => void;
 }
 
-export default function PropertiesRooms({
+/** Landing view for /properties: the buildings card grid + "add building". */
+export default function BuildingsView({
   properties,
   rooms,
   activeRole,
   lang,
   onAddProperty,
-  onAddRoom,
-  onUpdateRoom,
-  onDeleteRoom,
-  onDeleteProperty,
   logAction,
-}: PropertiesRoomsProps) {
+}: BuildingsViewProps) {
   const t = useTranslations('Properties');
+  const router = useRouter();
   const can = useCan();
   const canModify = can('properties.manage');
 
-  const c = usePropertiesController({
-    properties,
-    rooms,
-    canModify,
-    lang,
-    onAddProperty,
-    onAddRoom,
-    onUpdateRoom,
-    onDeleteRoom,
-    onDeleteProperty,
-    logAction,
-  });
+  const c = useBuildingsController({ properties, canModify, onAddProperty, logAction });
 
   return (
-    <div className="space-y-6" id="properties-rooms-container">
+    <div className="space-y-6" id="buildings-container">
       {!canModify && (
-        <PermissionBanner
-          message={t('cannot_modify_persona', { role: activeRole.toUpperCase() })}
-        />
+        <PermissionBanner message={t('cannot_modify_persona', { role: activeRole.toUpperCase() })} />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <PropertyList
-          properties={c.filteredProperties}
-          rooms={rooms}
-          selectedPropId={c.selectedPropId}
-          onSelect={c.setSelectedPropId}
-          typeFilter={c.propertyTypeFilter}
-          onTypeFilterChange={c.setPropertyTypeFilter}
-          canModify={canModify}
-          onAddClick={c.openPropModal}
-          onDeleteProp={c.handleDeletePropClick}
-          lang={lang}
-        />
-        <RoomGrid
-          activeProperty={c.activeProperty}
-          activeRooms={c.filteredActiveRooms}
-          statusFilter={c.roomStatusFilter}
-          onStatusFilterChange={c.setRoomStatusFilter}
-          canModify={canModify}
-          onAddRoom={c.openRoomModalForCreate}
-          onEditRoom={c.handleEditRoomClick}
-          onDeleteRoom={c.handleDeleteRoomClick}
-          lang={lang}
-        />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <h2 className="text-lg font-bold text-foreground tracking-tight font-sans">
+            {t('buildings_heading')}
+          </h2>
+          <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+            <span className="text-muted-foreground font-sans">{t('type_filter_label')}</span>
+            <Select
+              value={c.propertyTypeFilter}
+              onValueChange={(v) => c.setPropertyTypeFilter(v as 'all' | PropType)}
+            >
+              <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('all_types')}</SelectItem>
+                <SelectItem value="apartment">{t('type_apartment')}</SelectItem>
+                <SelectItem value="borey">{t('type_borey')}</SelectItem>
+                <SelectItem value="condo">{t('type_condo')}</SelectItem>
+                <SelectItem value="guesthouse">{t('type_guesthouse')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {canModify && (
+          <button
+            onClick={c.openPropModal}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer justify-center"
+            id="open-add-property-modal"
+          >
+            <Plus className="w-4 h-4" />
+            {t('add_property')}
+          </button>
+        )}
       </div>
 
+      <BuildingGrid
+        properties={c.filteredProperties}
+        rooms={rooms}
+        onOpen={(id) => router.push(`/properties/${id}`)}
+        lang={lang}
+      />
+
       <PropertyModal c={c} lang={lang} />
-      <RoomModal c={c} lang={lang} />
     </div>
   );
 }
