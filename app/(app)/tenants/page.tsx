@@ -43,7 +43,6 @@ export default function TenantsPage() {
         activeRole={activeRole}
         lang={lang}
         onAddTenant={(tenant) => tenantMut.create.mutate(tenant)}
-        onAddContract={(contract) => contractMut.create.mutate(contract)}
         onUpdateContractStatus={(id, status) => contractMut.updateStatus.mutate({ id, status })}
         onDeleteTenant={(id) => tenantMut.remove.mutate(id)}
         onDeleteContract={(id) => contractMut.remove.mutate(id)}

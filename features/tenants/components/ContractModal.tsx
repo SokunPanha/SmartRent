@@ -6,19 +6,21 @@ import { ModalFooter } from '@/components/shared/ModalFooter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { pickLocale } from '@/lib/i18n';
 import { getRoomName } from '../tenants.helpers';
-import { useTenantsController } from '../use-tenants-controller';
+import { useTenantDetailController } from '../use-tenant-detail-controller';
 
-type Controller = ReturnType<typeof useTenantsController>;
+type Controller = ReturnType<typeof useTenantDetailController>;
 
+/** Create-contract modal, always scoped to one tenant (the tenant whose
+ *  detail page it's opened from) — the tenant field is locked, not a picker. */
 export function ContractModal({
   c,
-  tenants,
+  tenant,
   rooms,
   properties,
   lang,
 }: {
   c: Controller;
-  tenants: Tenant[];
+  tenant: Tenant;
   rooms: Room[];
   properties: Property[];
   lang: AppLanguage;
@@ -31,6 +33,15 @@ export function ContractModal({
 
       <form onSubmit={c.handleCreateContract} className="p-4 space-y-4">
         <div className="space-y-4 text-xs">
+          <div>
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
+              {t('con_tenant_label')}
+            </label>
+            <div className="w-full px-3 py-2.5 rounded-lg border border-border bg-muted text-sm font-sans font-semibold text-foreground">
+              {pickLocale(lang, tenant.name, tenant.nameKh)} ({tenant.phone})
+            </div>
+          </div>
+
           <div>
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
               {t('con_room_label')} *
@@ -52,24 +63,6 @@ export function ContractModal({
                 {t('no_vacant_rooms')}
               </span>
             )}
-          </div>
-
-          <div>
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
-              {t('con_tenant_label')} *
-            </label>
-            <Select value={c.conTenantId} onValueChange={c.setConTenantId}>
-              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
-                <SelectValue placeholder={t('select_tenant_placeholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                {tenants.map((tn) => (
-                  <SelectItem key={tn.id} value={tn.id}>
-                    {pickLocale(lang, tn.name, tn.nameKh)} ({tn.phone})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

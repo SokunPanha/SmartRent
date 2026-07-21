@@ -70,6 +70,9 @@
     "con_deposit_label": "Security Deposit (USD)",
     "con_elec_label": "Electric Rate (៛/kWh)",
     "con_water_label": "Water Rate (៛/m³)",
-    "riel_conversions_note": "Cambodian Riel Conversions Applied"
+    "riel_conversions_note": "Cambodian Riel Conversions Applied",
+    "back_to_tenants": "All tenants",
+    "tenant_not_found": "Tenant not found.",
+    "tenant_contracts_heading": "Contract History"
   }
 }

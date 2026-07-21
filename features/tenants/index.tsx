@@ -1,15 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Tenant, Contract, Room, Property, UserRole, AppLanguage } from '@/lib/types';
 import { PermissionBanner } from '@/components/shared/PermissionBanner';
 import { useCan } from '@/features/admin/permissions.queries';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useTenantsController } from './use-tenants-controller';
-import { useTenantMutations } from './tenants.queries';
-import { TenantList } from './components/TenantList';
-import { ContractList } from './components/ContractList';
+import { useContractsController } from './use-contracts-controller';
+import { TenantTable } from './components/TenantTable';
+import { ContractTable } from './components/ContractTable';
 import { TenantModal } from './components/TenantModal';
-import { ContractModal } from './components/ContractModal';
 
 interface TenantsContractsProps {
   tenants: Tenant[];
@@ -19,7 +20,6 @@ interface TenantsContractsProps {
   activeRole: UserRole;
   lang: AppLanguage;
   onAddTenant: (tenant: Tenant) => void;
-  onAddContract: (contract: Contract) => void;
   onUpdateContractStatus: (contractId: string, status: 'active' | 'suspended' | 'expired') => void;
   onDeleteTenant: (tenantId: string) => void;
   onDeleteContract: (contractId: string) => void;
@@ -34,7 +34,6 @@ export default function TenantsContracts({
   activeRole,
   lang,
   onAddTenant,
-  onAddContract,
   onUpdateContractStatus,
   onDeleteTenant,
   onDeleteContract,
@@ -43,19 +42,25 @@ export default function TenantsContracts({
   const t = useTranslations('Tenants');
   const can = useCan();
   const canModify = can('tenants.manage');
-  const { generateTelegramCode } = useTenantMutations();
+  const [tab, setTab] = useState<'tenants' | 'contracts'>('tenants');
 
   const c = useTenantsController({
     tenants,
     contracts,
+    canModify,
+    onAddTenant,
+    onDeleteTenant,
+    logAction,
+  });
+
+  const cc = useContractsController({
+    contracts,
     rooms,
     properties,
+    tenants,
     canModify,
     lang,
-    onAddTenant,
-    onAddContract,
     onUpdateContractStatus,
-    onDeleteTenant,
     onDeleteContract,
     logAction,
   });
@@ -66,37 +71,43 @@ export default function TenantsContracts({
         <PermissionBanner message={t('permission_banner_message', { role: activeRole.toUpperCase() })} />
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <TenantList
-          tenants={c.filteredTenants}
-          search={c.tenantSearch}
-          onSearchChange={c.setTenantSearch}
-          canModify={canModify}
-          onAdd={c.openTenantModal}
-          onDelete={c.handleDeleteTenantClick}
-          onGenerateTelegramCode={(tenantId) => generateTelegramCode.mutateAsync(tenantId)}
-          lang={lang}
-        />
-        <ContractList
-          contracts={c.filteredContracts}
-          rooms={rooms}
-          properties={properties}
-          tenants={tenants}
-          vacantRooms={c.vacantRooms}
-          statusFilter={c.contractStatusFilter}
-          onStatusFilterChange={c.setContractStatusFilter}
-          propertyFilter={c.contractPropertyFilter}
-          onPropertyFilterChange={c.setContractPropertyFilter}
-          canModify={canModify}
-          onAdd={c.openContractModal}
-          onUpdateStatus={c.handleUpdateStatus}
-          onDelete={c.handleDeleteContractClick}
-          lang={lang}
-        />
-      </div>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as 'tenants' | 'contracts')}>
+        <TabsList>
+          <TabsTrigger value="tenants">{t('tenant_list')}</TabsTrigger>
+          <TabsTrigger value="contracts">{t('contracts_list')}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="tenants">
+          <TenantTable
+            tenants={c.filteredTenants}
+            search={c.tenantSearch}
+            onSearchChange={c.setTenantSearch}
+            canModify={canModify}
+            onAdd={c.openTenantModal}
+            onDelete={c.handleDeleteTenantClick}
+            lang={lang}
+          />
+        </TabsContent>
+
+        <TabsContent value="contracts">
+          <ContractTable
+            contracts={cc.filteredContracts}
+            rooms={rooms}
+            properties={properties}
+            tenants={tenants}
+            statusFilter={cc.contractStatusFilter}
+            onStatusFilterChange={cc.setContractStatusFilter}
+            propertyFilter={cc.contractPropertyFilter}
+            onPropertyFilterChange={cc.setContractPropertyFilter}
+            canModify={canModify}
+            onUpdateStatus={cc.handleUpdateStatus}
+            onDelete={cc.handleDeleteContractClick}
+            lang={lang}
+          />
+        </TabsContent>
+      </Tabs>
 
       <TenantModal c={c} lang={lang} />
-      <ContractModal c={c} tenants={tenants} rooms={rooms} properties={properties} lang={lang} />
     </div>
   );
 }

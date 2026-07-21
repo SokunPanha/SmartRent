@@ -70,6 +70,9 @@
     "con_deposit_label": "ប្រាក់កក់សុវត្ថិភាព (USD)",
     "con_elec_label": "តម្លៃភ្លើង (៛/kWh)",
     "con_water_label": "តម្លៃទឹក (៛/m³)",
-    "riel_conversions_note": "បានអនុវត្តការបំលែងជាប្រាក់រៀល"
+    "riel_conversions_note": "បានអនុវត្តការបំលែងជាប្រាក់រៀល",
+    "back_to_tenants": "អ្នកជួលទាំងអស់",
+    "tenant_not_found": "រកមិនឃើញអ្នកជួល។",
+    "tenant_contracts_heading": "ប្រវត្តិកិច្ចសន្យា"
   }
 }
