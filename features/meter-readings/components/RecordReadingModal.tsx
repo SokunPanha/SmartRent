@@ -5,12 +5,9 @@ import { Modal } from '@/components/shared/Modal';
 import { ModalHeader } from '@/components/shared/ModalHeader';
 import { ModalFooter } from '@/components/shared/ModalFooter';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  MonthOption,
-  getRoomNumber,
-  getPropertyName,
-} from '../meter-readings.helpers';
+import { MonthOption } from '../meter-readings.helpers';
 import { useReadingForm } from '../use-reading-form';
+import { RoomSearchSelect } from './RoomSearchSelect';
 
 type ReadingForm = ReturnType<typeof useReadingForm>;
 
@@ -39,18 +36,13 @@ export function RecordReadingModal({
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
               {t('room_number_required')}
             </label>
-            <Select value={form.targetRoomId} onValueChange={form.handleRoomSelectionChange}>
-              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans font-semibold focus-visible:border-primary focus-visible:ring-primary/30">
-                <SelectValue placeholder={t('select_room_placeholder')} />
-              </SelectTrigger>
-              <SelectContent>
-                {rooms.map((r) => (
-                  <SelectItem key={r.id} value={r.id}>
-                    {getRoomNumber(rooms, r.id)} ({getPropertyName(rooms, properties, r.id, lang)})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <RoomSearchSelect
+              rooms={rooms}
+              properties={properties}
+              value={form.targetRoomId}
+              onChange={form.handleRoomSelectionChange}
+              lang={lang}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-3">

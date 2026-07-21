@@ -8,6 +8,7 @@ import {
   sortReadings,
   filterReadings,
   getAvailableYears,
+  getRoomNumber,
 } from './meter-readings.helpers';
 import { useCan } from '@/features/admin/permissions.queries';
 import { useReadingForm } from './use-reading-form';
@@ -41,14 +42,17 @@ export default function MeterReadings({
   const [selectedPropId, setSelectedPropId] = useState<string>('all');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [selectedYear, setSelectedYear] = useState<string>('all');
+  const [roomSearch, setRoomSearch] = useState('');
 
   const monthNames = useMemo(() => getMonthNames(t), [t]);
   const availableYears = useMemo(() => getAvailableYears(readings), [readings]);
 
-  const filteredReadings = useMemo(
-    () => filterReadings(sortReadings(readings), rooms, selectedPropId, selectedMonth, selectedYear),
-    [readings, rooms, selectedPropId, selectedMonth, selectedYear]
-  );
+  const filteredReadings = useMemo(() => {
+    const base = filterReadings(sortReadings(readings), rooms, selectedPropId, selectedMonth, selectedYear);
+    const query = roomSearch.trim().toLowerCase();
+    if (!query) return base;
+    return base.filter((r) => getRoomNumber(rooms, r.roomId).toLowerCase().includes(query));
+  }, [readings, rooms, selectedPropId, selectedMonth, selectedYear, roomSearch]);
 
   const form = useReadingForm({
     readings,
@@ -74,6 +78,8 @@ export default function MeterReadings({
         availableYears={availableYears}
         selectedYear={selectedYear}
         onSelectYear={setSelectedYear}
+        roomSearch={roomSearch}
+        onRoomSearchChange={setRoomSearch}
         canModify={canModify}
         onRecord={form.openModal}
         lang={lang}

@@ -22,6 +22,8 @@
     "water_meter_m3": "Water Meter (m³)",
     "no_readings_found": "No utility meter readings logged matching parameters.",
     "select_room_placeholder": "-- Select a Room --",
+    "room_search_placeholder": "Search room number...",
+    "no_rooms_match_search": "No rooms match your search.",
     "room_number_required": "Room Number *",
     "billing_month_required": "Billing Month *",
     "billing_year_required": "Billing Year *",

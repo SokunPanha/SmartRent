@@ -22,6 +22,8 @@
     "water_meter_m3": "កុងទ័រទឹក (m³)",
     "no_readings_found": "មិនមានប្រវត្តិទិន្នន័យកុងទ័រឡើយ។",
     "select_room_placeholder": "-- ជ្រើសរើសបន្ទប់ --",
+    "room_search_placeholder": "ស្វែងរកបន្ទប់លេខ...",
+    "no_rooms_match_search": "រកមិនឃើញបន្ទប់ដែលត្រូវនឹងការស្វែងរករបស់អ្នកឡើយ។",
     "room_number_required": "បន្ទប់លេខ *",
     "billing_month_required": "ខែគិតប្រាក់ *",
     "billing_year_required": "ឆ្នាំគិតប្រាក់ *",

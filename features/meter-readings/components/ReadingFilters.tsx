@@ -1,4 +1,4 @@
-import { Plus, Briefcase } from 'lucide-react';
+import { Plus, Briefcase, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Property, UserRole, AppLanguage } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -37,6 +37,8 @@ export function ReadingFilters({
   availableYears,
   selectedYear,
   onSelectYear,
+  roomSearch,
+  onRoomSearchChange,
   canModify,
   onRecord,
   lang,
@@ -50,6 +52,8 @@ export function ReadingFilters({
   availableYears: number[];
   selectedYear: string;
   onSelectYear: (y: string) => void;
+  roomSearch: string;
+  onRoomSearchChange: (v: string) => void;
   canModify: boolean;
   onRecord: () => void;
   lang: AppLanguage;
@@ -107,6 +111,17 @@ export function ReadingFilters({
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="relative">
+          <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            value={roomSearch}
+            onChange={(e) => onRoomSearchChange(e.target.value)}
+            placeholder={t('room_search_placeholder')}
+            className="w-full sm:w-48 pl-8 pr-3 py-1.5 rounded-lg border border-border text-xs bg-card text-foreground font-sans focus:outline-none focus:border-primary"
+            id="reading-room-search-input"
+          />
         </div>
       </div>
 
