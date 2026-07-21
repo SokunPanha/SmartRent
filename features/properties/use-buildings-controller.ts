@@ -25,13 +25,19 @@ export function useBuildingsController({
   const tCommon = useTranslations('Common');
 
   const [propertyTypeFilter, setPropertyTypeFilter] = useState<'all' | PropType>('all');
-  const filteredProperties = useMemo(
-    () =>
-      propertyTypeFilter === 'all'
-        ? properties
-        : properties.filter((p) => p.type === propertyTypeFilter),
-    [properties, propertyTypeFilter]
-  );
+  const [buildingSearch, setBuildingSearch] = useState('');
+  const filteredProperties = useMemo(() => {
+    const query = buildingSearch.trim().toLowerCase();
+    return properties.filter((p) => {
+      const matchesType = propertyTypeFilter === 'all' || p.type === propertyTypeFilter;
+      const matchesSearch =
+        !query ||
+        p.name.toLowerCase().includes(query) ||
+        p.nameKh.toLowerCase().includes(query) ||
+        p.address.toLowerCase().includes(query);
+      return matchesType && matchesSearch;
+    });
+  }, [properties, propertyTypeFilter, buildingSearch]);
 
   const [showPropModal, setShowPropModal] = useState(false);
   const [propName, setPropName] = useState('');
@@ -76,6 +82,8 @@ export function useBuildingsController({
   return {
     propertyTypeFilter,
     setPropertyTypeFilter,
+    buildingSearch,
+    setBuildingSearch,
     filteredProperties,
     // property modal (consumed by PropertyModal)
     showPropModal,

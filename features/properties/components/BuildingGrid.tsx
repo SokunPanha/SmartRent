@@ -26,17 +26,23 @@ export function BuildingGrid({
   rooms,
   onOpen,
   lang,
+  searchActive = false,
 }: {
   properties: Property[];
   rooms: Room[];
   onOpen: (propId: string) => void;
   lang: AppLanguage;
+  searchActive?: boolean;
 }) {
   const t = useTranslations('Properties');
 
   if (properties.length === 0) {
     return (
-      <EmptyState icon={Building2} title={t('no_properties_match_filter')} className="p-12 shadow-xs" />
+      <EmptyState
+        icon={Building2}
+        title={t(searchActive ? 'no_buildings_match_search' : 'no_properties_match_filter')}
+        className="p-12 shadow-xs"
+      />
     );
   }
 

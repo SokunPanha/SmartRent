@@ -50,6 +50,8 @@
     "rent_per_month": "Rent / mo",
     "no_buildings_yet": "No buildings yet. Add your first location to get started.",
     "building_not_found": "Building not found.",
-    "delete_building": "Delete building"
+    "delete_building": "Delete building",
+    "search_placeholder": "Search buildings...",
+    "no_buildings_match_search": "No buildings match your search."
   }
 }

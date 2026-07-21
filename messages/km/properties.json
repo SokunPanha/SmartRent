@@ -50,6 +50,8 @@
     "rent_per_month": "ថ្លៃជួល / ខែ",
     "no_buildings_yet": "មិនទាន់មានអគារនៅឡើយទេ។ សូមបន្ថែមទីតាំងដំបូងរបស់អ្នក។",
     "building_not_found": "រកមិនឃើញអគារ។",
-    "delete_building": "លុបអគារ"
+    "delete_building": "លុបអគារ",
+    "search_placeholder": "ស្វែងរកអគារ...",
+    "no_buildings_match_search": "រកមិនឃើញអគារដែលត្រូវនឹងការស្វែងរករបស់អ្នកឡើយ។"
   }
 }
