@@ -4,18 +4,32 @@ import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
+import { apiGet, apiPost } from '@/lib/api/client';
 import { getRoomNameByInvoice, generateTelegramInvoiceHTML } from './invoices.helpers';
 
 type PayMethod = 'cash' | 'aba' | 'wing' | 'other';
 type TestStatus = 'success' | 'failed' | 'loading' | '';
 
-async function dispatchToTelegram(tenantId: string, text: string) {
-  const res = await fetch('/api/telegram/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tenantId, text }),
-  });
-  return { ok: res.ok, data: await res.json() };
+// The backend's /api/telegram/send unwraps as `{ message, messageId }` on
+// success and throws (via lib/api/client.ts) on failure — synthesize the
+// old `{ok, data: {success, error, messageId}}` shape so the rest of this
+// file (dispatch logging, status checks) doesn't need to change.
+async function dispatchToTelegram(
+  tenantId: string,
+  text: string
+): Promise<{ ok: boolean; data: { success: boolean; messageId?: number; error?: string } }> {
+  try {
+    const result = await apiPost<{ message: string; messageId?: number }>('/api/telegram/send', {
+      tenantId,
+      text,
+    });
+    return { ok: true, data: { success: true, messageId: result.messageId } };
+  } catch (err) {
+    return {
+      ok: false,
+      data: { success: false, error: err instanceof Error ? err.message : 'Server proxy failed' },
+    };
+  }
 }
 
 interface Args {
@@ -153,9 +167,8 @@ export function useInvoicesController({
   async function handleTestBotConnection() {
     setTelegramTestStatus('loading');
     try {
-      const res = await fetch('/api/telegram/status');
-      const body = await res.json();
-      setTelegramTestStatus(res.ok && body.connected ? 'success' : 'failed');
+      const body = await apiGet<{ connected: boolean; username?: string }>('/api/telegram/status');
+      setTelegramTestStatus(body.connected ? 'success' : 'failed');
     } catch {
       setTelegramTestStatus('failed');
     }

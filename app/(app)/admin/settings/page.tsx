@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { userCan } from '@/lib/api/guard';
+import { userCan } from '@/lib/auth/server';
 import SystemSettings from '@/features/settings';
 
 /** System settings (exchange rate, utility prices) — requires `admin.settings`. */

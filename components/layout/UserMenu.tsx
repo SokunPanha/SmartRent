@@ -1,7 +1,6 @@
 'use client';
 
 import { LogOut, UserCircle } from 'lucide-react';
-import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import {
   DropdownMenu,
@@ -12,6 +11,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useRent } from '@/store/rent-store';
+import { logout } from '@/features/auth/session.queries';
+
+async function handleSignOut() {
+  await logout();
+  window.location.href = '/login';
+}
 
 /**
  * Profile avatar + sign-out menu in the header. This is the only sign-out
@@ -50,7 +55,7 @@ export function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
-          onClick={() => signOut({ callbackUrl: '/login' })}
+          onClick={() => handleSignOut()}
         >
           <LogOut className="h-3.5 w-3.5" />
           {t('sign_out')}

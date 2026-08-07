@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/features/auth/session.queries';
 import { useRouter } from 'next/navigation';
 
 function hasLocaleCookie(): boolean {

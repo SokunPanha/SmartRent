@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { userCan } from '@/lib/api/guard';
+import { userCan } from '@/lib/auth/server';
 import UsersAdmin from '@/features/admin';
 
 /** User management — requires the `admin.access` permission. */

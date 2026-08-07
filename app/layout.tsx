@@ -3,7 +3,6 @@ import './globals.css';
 import { Geist, JetBrains_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-import { SessionProvider } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AccentProvider } from '@/components/theme/accent-provider';
@@ -57,16 +56,14 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <AccentProvider>
-              <SessionProvider>
-                <QueryProvider>
-                  <RentProvider>
-                    <ConfirmDialogProvider>
-                      <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
-                    </ConfirmDialogProvider>
-                    <Toaster position="bottom-right" />
-                  </RentProvider>
-                </QueryProvider>
-              </SessionProvider>
+              <QueryProvider>
+                <RentProvider>
+                  <ConfirmDialogProvider>
+                    <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+                  </ConfirmDialogProvider>
+                  <Toaster position="bottom-right" />
+                </RentProvider>
+              </QueryProvider>
             </AccentProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

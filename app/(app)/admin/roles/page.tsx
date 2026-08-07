@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { userCan } from '@/lib/api/guard';
+import { userCan } from '@/lib/auth/server';
 import RolesManager from '@/features/admin/RolesManager';
 
 /** Roles & permissions — requires the `admin.access` permission. */

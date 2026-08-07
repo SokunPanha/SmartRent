@@ -1,17 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { login } from './session.queries';
 
 /**
  * Login logic, decoupled from presentation. Owns the form fields, the
  * credentials sign-in call and the post-login redirect. UI components consume
  * this and stay purely presentational.
+ *
+ * The session cookie is set by the NestJS backend (via the Next.js /api/*
+ * proxy), and client-side session state lives in TanStack Query
+ * (features/auth/session.queries.ts) — a full navigation on success ensures
+ * that cache starts fresh under the new cookie rather than trying to
+ * invalidate it from here.
  */
 export function useLogin() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const t = useTranslations('Auth');
@@ -26,16 +31,15 @@ export function useLogin() {
     setError(null);
     setLoading(true);
 
-    const res = await signIn('credentials', { email, password, redirect: false });
-
-    setLoading(false);
-
-    if (res?.error) {
+    try {
+      await login(email, password);
+    } catch {
+      setLoading(false);
       setError(t('invalid_credentials'));
       return;
     }
-    router.push(callbackUrl);
-    router.refresh();
+
+    window.location.href = callbackUrl;
   }
 
   return { email, setEmail, password, setPassword, error, loading, submit };

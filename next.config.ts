@@ -30,6 +30,20 @@ const nextConfig: NextConfig = {
   },
   output: 'standalone',
   transpilePackages: ['motion'],
+  // The frontend never talks to Postgres directly anymore — every /api/*
+  // call is forwarded to the standalone NestJS backend. beforeFiles ensures
+  // this wins even though app/api/** no longer exists locally.
+  async rewrites() {
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:4001';
+    return {
+      beforeFiles: [
+        {
+          source: '/api/:path*',
+          destination: `${backendUrl}/api/:path*`,
+        },
+      ],
+    };
+  },
   webpack: (config, {dev}) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.
     // Do not modifyâfile watching is disabled to prevent flickering during agent edits.

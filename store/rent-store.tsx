@@ -10,7 +10,7 @@ import React, {
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { useSession } from 'next-auth/react';
+import { useSession } from '@/features/auth/session.queries';
 import { UserRole, AppLanguage } from '@/lib/types';
 import type { Locale } from '@/i18n/request';
 

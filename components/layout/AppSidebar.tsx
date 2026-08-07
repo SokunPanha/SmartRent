@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { LogOut, UserCircle, ShieldCheck, SlidersHorizontal, Settings } from 'lucide-react';
 import {
@@ -22,7 +21,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useRent } from '@/store/rent-store';
 import { useCan } from '@/features/admin/permissions.queries';
+import { logout } from '@/features/auth/session.queries';
 import { NAV_ITEMS } from './nav-config';
+
+async function handleSignOut() {
+  await logout();
+  window.location.href = '/login';
+}
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -170,7 +175,7 @@ export function AppSidebar() {
             variant="outline"
             size="sm"
             className="w-full justify-start gap-2 font-bold"
-            onClick={() => signOut({ callbackUrl: '/login' })}
+            onClick={() => handleSignOut()}
           >
             <LogOut className="h-3.5 w-3.5" />
             {t('sign_out')}
