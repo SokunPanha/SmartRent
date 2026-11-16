@@ -7,11 +7,7 @@ import { useRent } from '@/store/rent-store';
 import { useProperties, useRooms } from '@/features/properties/properties.queries';
 import { useTenants, useContracts } from '@/features/tenants/tenants.queries';
 import { useReadings } from '@/features/meter-readings/readings.queries';
-import {
-  useInvoices,
-  useInvoiceMutations,
-  useUpdateInvoices,
-} from '@/features/invoices/invoices.queries';
+import { useInvoices, useInvoiceMutations } from '@/features/invoices/invoices.queries';
 import { useLogAction } from '@/features/activity/activity.queries';
 
 export default function InvoicesPage() {
@@ -23,7 +19,6 @@ export default function InvoicesPage() {
   const { data: properties = [], isLoading: lProperties } = useProperties();
   const { data: readings = [], isLoading: lReadings } = useReadings();
   const { recordPayment, generate } = useInvoiceMutations();
-  const updateInvoices = useUpdateInvoices();
   const logAction = useLogAction();
 
   const isLoading = lInvoices || lContracts || lRooms || lTenants || lProperties || lReadings;
@@ -48,11 +43,10 @@ export default function InvoicesPage() {
         activeRole={activeRole}
         lang={lang}
         onAutoGenerateInvoices={(year, month) => generate.mutate({ year, month })}
-        onRecordPayment={(invoiceId, amount, method, notes) =>
-          recordPayment.mutate({ invoiceId, amount, method, notes })
+        onRecordPayment={(invoiceId, amount, method, notes, paidDate) =>
+          recordPayment.mutateAsync({ invoiceId, amount, method, notes, paidDate })
         }
         logAction={logAction}
-        onUpdateInvoices={updateInvoices}
       />
     </PageTransition>
   );

@@ -27,9 +27,12 @@ import { Modal } from '@/components/shared/Modal';
 import { useCan } from '@/features/admin/permissions.queries';
 import { pickLocale } from '@/lib/i18n';
 import { getRoomName } from './tenants.helpers';
-import { TelegramConnectCode } from './tenants.api';
+import { TelegramConnectCode, NewContract } from './tenants.api';
 import { useTenantDetailController } from './use-tenant-detail-controller';
 import { ContractModal } from './components/ContractModal';
+import { LeaseActions, DepositBadge } from './components/LeaseActions';
+import { NationalIdPhotos } from './components/NationalIdPhotos';
+import { TenantPaymentHistory } from './components/TenantPaymentHistory';
 
 function contractStatusMeta(
   status: Contract['status'],
@@ -47,8 +50,9 @@ interface TenantDetailProps {
   properties: Property[];
   activeRole: UserRole;
   lang: AppLanguage;
-  onAddContract: (contract: Contract) => void;
+  onAddContract: (contract: NewContract) => void;
   onDeleteTenant: (tenantId: string) => void;
+  onUpdateTenant: (patch: Partial<Tenant> & { id: string }) => Promise<unknown>;
   generateTelegramCode: (tenantId: string) => Promise<TelegramConnectCode>;
   logAction: (action: string, actionKh: string, details: string, detailsKh: string) => void;
 }
@@ -63,6 +67,7 @@ export default function TenantDetail({
   lang,
   onAddContract,
   onDeleteTenant,
+  onUpdateTenant,
   generateTelegramCode,
   logAction,
 }: TenantDetailProps) {
@@ -105,7 +110,7 @@ export default function TenantDetail({
         <PermissionBanner message={t('permission_banner_message', { role: activeRole.toUpperCase() })} />
       )}
 
-      <div className="bg-card border border-border rounded-xl shadow-3xs p-6 flex flex-col md:flex-row md:items-start md:justify-between gap-5">
+      <div className="bg-card border border-(--card-border) rounded-xl shadow-3xs p-6 flex flex-col md:flex-row md:items-start md:justify-between gap-5">
         <div>
           <h2 className="text-xl font-bold text-foreground tracking-tight font-sans flex items-center gap-2">
             {pickLocale(lang, tenant.name, tenant.nameKh)}
@@ -143,7 +148,7 @@ export default function TenantDetail({
         {canModify && (
           <button
             onClick={c.handleDeleteTenant}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-destructive border border-destructive/30 hover:bg-destructive/10 rounded-lg transition cursor-pointer shrink-0"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-destructive border border-destructive/30 hover:bg-destructive/10 rounded-full transition cursor-pointer shrink-0"
           >
             <Trash2 className="w-3.5 h-3.5" />
             {t('delete_tenant')}
@@ -151,7 +156,9 @@ export default function TenantDetail({
         )}
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-3xs p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <NationalIdPhotos tenant={tenant} canModify={canModify} onSave={onUpdateTenant} />
+
+      <div className="bg-card border border-(--card-border) rounded-xl shadow-3xs p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {tenant.telegramChatId ? (
           <div className="flex items-center gap-2">
             <StatusBadge tone="success">✈️ {t('connected')}</StatusBadge>
@@ -171,7 +178,7 @@ export default function TenantDetail({
             {canModify && (
               <button
                 onClick={c.handleGenerateCode}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold text-info bg-info/10 border border-info/20 hover:bg-info/20 transition cursor-pointer"
+                className="inline-flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-bold text-info bg-info/10 border border-info/20 hover:bg-info/20 transition cursor-pointer"
               >
                 <Send className="w-3 h-3" />
                 {t('generate_code')}
@@ -183,7 +190,7 @@ export default function TenantDetail({
         {tenant.telegramChatId && (
           <button
             onClick={c.openMessages}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-info bg-info/10 border border-info/20 hover:bg-info/20 transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-semibold text-info bg-info/10 border border-info/20 hover:bg-info/20 transition cursor-pointer"
           >
             <MessageCircle className="w-3.5 h-3.5" />
             {t('messages')}
@@ -191,7 +198,7 @@ export default function TenantDetail({
         )}
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-3xs overflow-hidden">
+      <div className="bg-card border border-(--card-border) rounded-xl shadow-3xs overflow-hidden">
         <div className="flex items-center justify-between gap-3 p-4 border-b border-border">
           <h3 className="font-bold text-foreground text-base font-sans flex items-center gap-1.5">
             <FileText className="w-4 h-4 text-primary" />
@@ -200,7 +207,7 @@ export default function TenantDetail({
           {canModify && (
             <button
               onClick={c.openContractModal}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer shrink-0"
+              className="flex items-center gap-1.5 px-4.5 py-2.5 text-xs font-semibold bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition cursor-pointer shrink-0"
               id="open-add-contract-modal"
             >
               <Plus className="w-4 h-4" />
@@ -216,7 +223,7 @@ export default function TenantDetail({
             {c.tenantContracts.map((contract) => {
               const s = contractStatusMeta(contract.status, t);
               return (
-                <div key={contract.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div key={contract.id} className="p-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <div className="flex items-center gap-2">
                       <StatusBadge tone={s.tone}>{s.label}</StatusBadge>
@@ -236,15 +243,25 @@ export default function TenantDetail({
                     </div>
                     <div>
                       <span className="text-muted-foreground block">{t('deposit')}</span>
-                      <span className="font-bold text-chart-2 font-mono">${contract.depositAmount}</span>
+                      <span className="font-bold text-foreground font-mono">${contract.depositAmount}</span>
+                      <span className="mt-0.5 block">
+                        <DepositBadge contract={contract} />
+                      </span>
                     </div>
                   </div>
+                  <LeaseActions
+                    contract={contract}
+                    room={rooms.find((r) => r.id === contract.roomId)}
+                    canModify={canModify}
+                  />
                 </div>
               );
             })}
           </div>
         )}
       </div>
+
+      <TenantPaymentHistory tenantId={tenant.id} />
 
       <ContractModal c={c} tenant={tenant} rooms={rooms} properties={properties} lang={lang} />
 
@@ -255,7 +272,7 @@ export default function TenantDetail({
           {c.connectResult && (
             <div className="space-y-3">
               <div className="text-center py-3 bg-info/10 rounded-lg border border-info/20">
-                <p className="text-[10px] text-info uppercase tracking-wider font-bold">{t('connect_code')}</p>
+                <p className="text-xs text-info font-bold">{t('connect_code')}</p>
                 <p className="text-2xl font-mono font-bold text-info tracking-widest mt-1">
                   {c.connectResult.code}
                 </p>
@@ -270,11 +287,11 @@ export default function TenantDetail({
                     <input
                       readOnly
                       value={c.connectResult.deepLink}
-                      className="w-full px-2 py-1.5 rounded-lg border border-border text-[11px] font-mono bg-muted text-foreground"
+                      className="w-full px-3 py-2.5 rounded-xl border border-border text-xs font-mono bg-muted text-foreground"
                     />
                     <button
                       onClick={c.handleCopyLink}
-                      className="px-2.5 py-1.5 rounded-lg border border-border text-primary hover:bg-muted transition cursor-pointer shrink-0"
+                      className="px-3.5 py-2.5 rounded-full border border-border text-primary hover:bg-muted transition cursor-pointer shrink-0"
                     >
                       {c.copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
@@ -314,12 +331,12 @@ export default function TenantDetail({
               value={c.draft}
               onChange={(e) => c.setDraft(e.target.value)}
               placeholder={t('message_placeholder')}
-              className="flex-1 px-3 py-2 rounded-lg border border-border text-xs bg-card text-foreground focus:outline-none focus:border-primary"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-(--card-border) text-xs bg-card text-foreground focus:outline-none focus:border-primary"
             />
             <button
               type="submit"
               disabled={c.sendMessage.isPending || !c.draft.trim()}
-              className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold disabled:opacity-50 cursor-pointer"
+              className="px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-xs font-bold disabled:opacity-50 cursor-pointer"
             >
               {t('send')}
             </button>

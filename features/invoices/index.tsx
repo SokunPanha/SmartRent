@@ -7,7 +7,6 @@ import { useCan } from '@/features/admin/permissions.queries';
 import { getActiveMonths } from './invoices.helpers';
 import { useInvoicesController } from './use-invoices-controller';
 import { InvoiceFilters } from './components/InvoiceFilters';
-import { TelegramHub } from './components/TelegramHub';
 import { InvoiceGrid } from './components/InvoiceGrid';
 import { PaymentModal } from './components/PaymentModal';
 import { GenerateInvoiceModal } from './components/GenerateInvoiceModal';
@@ -27,10 +26,10 @@ interface InvoicesPaymentsProps {
     invoiceId: string,
     amount: number,
     method: 'cash' | 'aba' | 'wing' | 'other',
-    notes?: string
-  ) => void;
+    notes: string | undefined,
+    paidDate: string
+  ) => Promise<unknown>;
   logAction: (action: string, actionKh: string, details: string, detailsKh: string) => void;
-  onUpdateInvoices?: (updatedInvoices: Invoice[]) => void;
 }
 
 export default function InvoicesPayments({
@@ -43,7 +42,6 @@ export default function InvoicesPayments({
   onAutoGenerateInvoices,
   onRecordPayment,
   logAction,
-  onUpdateInvoices,
 }: InvoicesPaymentsProps) {
   const t = useTranslations('Invoices');
   const can = useCan();
@@ -63,8 +61,7 @@ export default function InvoicesPayments({
     onAutoGenerateInvoices,
     onRecordPayment,
     logAction,
-    onUpdateInvoices,
-  });
+    });
 
   return (
     <div className="space-y-6" id="invoices-payments-container">
@@ -97,8 +94,6 @@ export default function InvoicesPayments({
         lang={lang}
       />
 
-      <TelegramHub c={c} tenants={tenants} lang={lang} />
-
       <InvoiceGrid
         invoices={c.filteredInvoices}
         rooms={rooms}
@@ -112,7 +107,21 @@ export default function InvoicesPayments({
         lang={lang}
       />
 
-      <PaymentModal c={c} lang={lang} />
+      {(() => {
+        const inv = invoices.find((i) => i.id === c.targetInvoiceId);
+        const room = rooms.find((r) => r.id === inv?.roomId);
+        return (
+          <PaymentModal
+            c={c}
+            invoice={inv}
+            tenant={tenants.find((tn) => tn.id === inv?.tenantId)}
+            room={room}
+            property={properties.find((p) => p.id === room?.propertyId)}
+            canPay={canPay}
+            lang={lang}
+          />
+        );
+      })()}
 
       <GenerateInvoiceModal c={c} />
 
@@ -124,6 +133,7 @@ export default function InvoicesPayments({
         activeMonths={activeMonths}
         onClose={() => c.setPrintInvoice(null)}
         lang={lang}
+        canDelete={canGenerate}
       />
     </div>
   );

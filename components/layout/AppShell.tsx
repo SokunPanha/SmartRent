@@ -29,7 +29,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background font-sans text-foreground">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        <p className="mt-4 animate-pulse font-mono text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        <p className="mt-4 animate-pulse text-xs font-bold text-muted-foreground">
           {t('loading_system')}
         </p>
       </div>
@@ -41,7 +41,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <AppSidebar />
       <SidebarInset className="min-w-0 print:!m-0 print:!shadow-none">
         <AppHeader />
-        <main className="mx-auto w-full max-w-7xl flex-1 overflow-hidden p-6 md:p-8 print:p-0">
+        <main className="mx-auto w-full max-w-7xl flex-1 overflow-x-clip px-4 pt-2 pb-8 md:px-8 md:pb-10 print:p-0">
           {children}
         </main>
       </SidebarInset>

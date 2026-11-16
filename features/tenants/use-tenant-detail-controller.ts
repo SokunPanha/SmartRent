@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Tenant, Contract, Room, Property, AppLanguage } from '@/lib/types';
 import { useConfirm } from '@/components/shared/ConfirmDialogProvider';
 import { useSettings } from '@/features/settings/settings.queries';
-import { TelegramConnectCode } from './tenants.api';
+import { TelegramConnectCode, NewContract } from './tenants.api';
 import { useTenantMessages, useSendTenantMessage } from './tenants.queries';
 import { getTenantName } from './tenants.helpers';
 
@@ -31,7 +31,7 @@ interface Args {
   properties: Property[];
   canModify: boolean;
   lang: AppLanguage;
-  onAddContract: (contract: Contract) => void;
+  onAddContract: (contract: NewContract) => void;
   onDeleteTenant: (tenantId: string) => void;
   generateTelegramCode: (tenantId: string) => Promise<TelegramConnectCode>;
   logAction: (action: string, actionKh: string, details: string, detailsKh: string) => void;
@@ -82,18 +82,22 @@ export function useTenantDetailController({
   const [conEndDate, setConEndDate] = useState(oneYearFromTodayISO);
   const [conRent, setConRent] = useState<number>(200);
   const [conDeposit, setConDeposit] = useState<number>(400);
-  const [conElecRate, setConElecRate] = useState<number>(1000);
-  const [conWaterRate, setConWaterRate] = useState<number>(2000);
+  // '' = follow the building/system rate (resolved at billing time).
+  const [conElecRate, setConElecRate] = useState<number | ''>('');
+  const [conWaterRate, setConWaterRate] = useState<number | ''>('');
+  const [conMoveInInvoice, setConMoveInInvoice] = useState(true);
+  const [conDepositReceived, setConDepositReceived] = useState(false);
 
   function openContractModal() {
     setConRoomId(vacantRooms[0]?.id || '');
     if (vacantRooms[0]) {
       setConRent(vacantRooms[0].rentAmount);
       setConDeposit(vacantRooms[0].rentAmount * 2);
-      const rates = resolveRatesForRoom(vacantRooms[0].id);
-      setConElecRate(rates.elec);
-      setConWaterRate(rates.water);
     }
+    setConElecRate('');
+    setConWaterRate('');
+    setConMoveInInvoice(true);
+    setConDepositReceived(false);
     setShowContractModal(true);
   }
   const closeContractModal = () => setShowContractModal(false);
@@ -104,18 +108,16 @@ export function useTenantDetailController({
     if (room) {
       setConRent(room.rentAmount);
       setConDeposit(room.rentAmount * 2);
-      const rates = resolveRatesForRoom(roomId);
-      setConElecRate(rates.elec);
-      setConWaterRate(rates.water);
     }
   }
 
   function handleCreateContract(e: React.FormEvent) {
     e.preventDefault();
     if (!canModify) return toast.error(tCommon('insufficient_permissions'));
-    if (!conRoomId || !conStartDate || !conEndDate || !conRent || !conDeposit || !conElecRate || !conWaterRate) {
+    if (!conRoomId || !conStartDate || !conEndDate || !conRent || conDeposit === null || conDeposit < 0) {
       return toast.error(tCommon('please_fill'));
     }
+    if (conEndDate <= conStartDate) return toast.error(t('end_before_start'));
 
     onAddContract({
       id: 'cn-' + Date.now(),
@@ -125,9 +127,11 @@ export function useTenantDetailController({
       endDate: conEndDate,
       rentAmount: Number(conRent),
       depositAmount: Number(conDeposit),
-      electricityRate: Number(conElecRate),
-      waterRate: Number(conWaterRate),
+      electricityRate: conElecRate === '' ? null : Number(conElecRate),
+      waterRate: conWaterRate === '' ? null : Number(conWaterRate),
       status: 'active',
+      createMoveInInvoice: conMoveInInvoice,
+      depositReceived: conDepositReceived,
     });
 
     const room = rooms.find((r) => r.id === conRoomId);
@@ -229,6 +233,11 @@ export function useTenantDetailController({
     setConElecRate,
     conWaterRate,
     setConWaterRate,
+    conMoveInInvoice,
+    setConMoveInInvoice,
+    conDepositReceived,
+    setConDepositReceived,
+    buildingRates: conRoomId ? resolveRatesForRoom(conRoomId) : null,
     handleRoomSelectInContract,
     handleCreateContract,
     showConnectModal,

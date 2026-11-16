@@ -16,46 +16,46 @@ export function AlertPills({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Overdue Invoices */}
-      <div className="bg-destructive/5 border border-destructive/15 rounded-xl p-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-destructive/10 text-destructive rounded-lg">
+      <div className="bg-card border border-(--card-border) shadow-card rounded-(--radius-card) p-4 flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center bg-destructive/12 text-destructive rounded-full">
             <XCircle className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-[10px] text-destructive font-bold uppercase tracking-wider font-mono">
+            <p className="text-xs text-muted-foreground font-medium">
               {t('overdue_invoices')}
             </p>
-            <p className="text-sm text-destructive font-bold mt-0.5">
+            <p className="text-sm text-foreground font-semibold mt-0.5">
               {stats.overdueCount} {t('overdue_invoices_desc')}
             </p>
           </div>
         </div>
         <button
           onClick={() => onNavigate('invoices')}
-          className="text-xs font-bold text-destructive hover:text-destructive transition-colors flex items-center gap-0.5 cursor-pointer"
+          className="shrink-0 rounded-full bg-destructive/12 px-4.5 py-2.5 text-xs font-semibold text-destructive hover:bg-destructive/20 transition-colors flex items-center gap-0.5 cursor-pointer"
         >
           {t('collect_now')} →
         </button>
       </div>
 
       {/* Contracts Expiring Soon */}
-      <div className="bg-chart-1/5 border border-chart-1/15 rounded-xl p-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-chart-1/10 text-chart-1 rounded-lg">
+      <div className="bg-card border border-(--card-border) shadow-card rounded-(--radius-card) p-4 flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center bg-chart-1/12 text-chart-1 rounded-full">
             <Calendar className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-[10px] text-chart-1 font-bold uppercase tracking-wider font-mono">
+            <p className="text-xs text-muted-foreground font-medium">
               {t('contracts_expiring')}
             </p>
-            <p className="text-sm text-chart-1 font-bold mt-0.5">
+            <p className="text-sm text-foreground font-semibold mt-0.5">
               {stats.contractsExpiringSoon} {t('contracts_expiring_desc')}
             </p>
           </div>
         </div>
         <button
-          onClick={() => onNavigate('tenants')}
-          className="text-xs font-bold text-chart-1 hover:text-chart-1 transition-colors flex items-center gap-0.5 cursor-pointer"
+          onClick={() => onNavigate('contracts')}
+          className="shrink-0 rounded-full bg-chart-1/15 px-4.5 py-2.5 text-xs font-semibold text-[#94690A] dark:text-chart-1 hover:bg-chart-1/25 transition-colors flex items-center gap-0.5 cursor-pointer"
         >
           {t('view_renew')} →
         </button>

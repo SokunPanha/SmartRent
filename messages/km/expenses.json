@@ -1,0 +1,28 @@
+{
+  "Expenses": {
+    "title": "ចំណាយ",
+    "add": "បន្ថែមចំណាយ",
+    "edit": "កែចំណាយ",
+    "all_buildings": "អគារទាំងអស់",
+    "general": "ទូទៅ (គ្រប់អគារ)",
+    "amount": "ទឹកប្រាក់ (USD)",
+    "building": "អគារ",
+    "category": "ប្រភេទ",
+    "date": "កាលបរិច្ឆេទ",
+    "delete": "លុប",
+    "delete_confirm": "លុបចំណាយនេះ?",
+    "deleted": "បានលុបចំណាយ",
+    "description": "ការពិពណ៌នា",
+    "description_placeholder": "ឧ. ជួសជុលម៉ាស៊ីនបូមទឹក A-201",
+    "empty": "មិនមានចំណាយសម្រាប់រយៈពេលនេះទេ។",
+    "save": "រក្សាទុក",
+    "saved": "បានរក្សាទុកចំណាយ",
+    "total_for_year": "ចំណាយសរុបក្នុងឆ្នាំ {year}",
+    "cat_repair": "ជួសជុល",
+    "cat_cleaning": "សម្អាត",
+    "cat_utilities": "ទឹកភ្លើង",
+    "cat_tax": "ពន្ធ",
+    "cat_salary": "ប្រាក់ខែ",
+    "cat_other": "ផ្សេងៗ"
+  }
+}

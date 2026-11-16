@@ -23,6 +23,15 @@
     "month_april": "មេសា",
     "month_may": "ឧសភា",
     "month_june": "មិថុនា",
-    "room_income_ordered_note": "តម្រៀបតាមតម្លៃដែលបានបង់"
+    "room_income_ordered_note": "តម្រៀបតាមតម្លៃដែលបានបង់",
+    "cash_received": "ប្រាក់ទទួលបាន",
+    "electricity_col": "អគ្គិសនី",
+    "expenses_total": "ចំណាយ",
+    "fees_col": "ថ្លៃសេវា",
+    "monthly_statement_note": "វិក្កយបត្រ = វិក្កយបត្រសម្រាប់ខែនោះ។ ប្រាក់ទទួលបាន = ប្រាក់ដែលបានទទួលពិតក្នុងខែនោះ។",
+    "net_col": "សុទ្ធ",
+    "net_profit": "ប្រាក់ចំណេញសុទ្ធ",
+    "water_col": "ទឹក",
+    "year_total": "សរុបប្រចាំឆ្នាំ"
   }
 }

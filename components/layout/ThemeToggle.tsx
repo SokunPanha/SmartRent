@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useIsClient } from '@/hooks/use-is-client';
 import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import { Moon, Sun } from 'lucide-react';
@@ -10,9 +10,7 @@ import { Button } from '@/components/ui/button';
 export function ThemeToggle() {
   const t = useTranslations('Common');
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useIsClient();
 
   const isDark = resolvedTheme === 'dark';
 
@@ -20,7 +18,7 @@ export function ThemeToggle() {
     <Button
       variant="outline"
       size="icon"
-      className="h-8 w-8"
+      className="size-10"
       aria-label={t('theme_toggle')}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >

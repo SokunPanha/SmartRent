@@ -1,70 +1,66 @@
-import { Layers } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { AppLanguage } from '@/lib/types';
-import { Pagination, usePagination } from '@/components/shared/Pagination';
+import { cn } from '@/lib/utils';
 import { MonthlySummaryRow } from '../reports.helpers';
 
-export function MonthlyTable({
-  rows,
-  lang,
-}: {
-  rows: MonthlySummaryRow[];
-  lang: AppLanguage;
-}) {
+const usd = (v: number) => `$${v.toFixed(2)}`;
+
+/** Twelve months of the selected year: what was billed, what was actually
+ *  received (by payment date), expenses and net. */
+export function MonthlyTable({ rows }: { rows: MonthlySummaryRow[]; lang: AppLanguage }) {
   const t = useTranslations('Reports');
-  const { page, totalPages, pageRows, setPage, pageSize } = usePagination(rows);
+  const sum = (k: keyof MonthlySummaryRow) => rows.reduce((s, r) => s + (r[k] as number), 0);
   return (
-    <div className="lg:col-span-12 bg-card rounded-(--radius-card) border border-border overflow-hidden">
-      <div className="p-4 bg-muted border-b border-border">
-        <h4 className="text-xs font-bold text-foreground uppercase tracking-wider font-sans dark:font-mono">
-          {t('monthly_statement_title')}
-        </h4>
+    <div className="lg:col-span-12 overflow-hidden rounded-(--radius-card) border border-(--card-border) bg-card shadow-card">
+      <div className="border-b border-border p-4 md:px-5">
+        <h4 className="text-base font-semibold text-foreground">{t('monthly_statement_title')}</h4>
+        <p className="mt-0.5 text-xs text-muted-foreground">{t('monthly_statement_note')}</p>
       </div>
-      <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scroll-x-hint">
-        <table className="w-full text-left text-xs text-muted-foreground">
-          <thead className="sticky top-0 z-10">
-            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase font-sans dark:font-mono">
-              <th className="p-4 pl-6">{t('billed_cycle')}</th>
-              <th className="p-4 text-right">{t('rent_revenue')}</th>
-              <th className="p-4 text-right">
-                <span className="inline-flex items-center gap-1">
-                  <Layers className="w-3.5 h-3.5" /> Elect Cost (USD)
-                </span>
-              </th>
-              <th className="p-4 text-right">
-                <span className="inline-flex items-center gap-1">
-                  <Layers className="w-3.5 h-3.5" /> Water Cost (USD)
-                </span>
-              </th>
-              <th className="p-4 text-right">{t('aggregate_billed')}</th>
-              <th className="p-4 text-right text-chart-2 font-bold">
-                {t('deposited_receipts')}
-              </th>
+      <div className="scroll-x-hint overflow-x-auto">
+        <table className="w-full min-w-[820px] text-left text-sm">
+          <thead>
+            <tr className="border-b border-border text-xs text-muted-foreground">
+              <th className="p-3 pl-5 font-semibold">{t('billed_cycle')}</th>
+              <th className="p-3 text-right font-semibold">{t('rent_revenue')}</th>
+              <th className="p-3 text-right font-semibold">{t('electricity_col')}</th>
+              <th className="p-3 text-right font-semibold">{t('water_col')}</th>
+              <th className="p-3 text-right font-semibold">{t('fees_col')}</th>
+              <th className="p-3 text-right font-semibold">{t('aggregate_billed')}</th>
+              <th className="p-3 text-right font-semibold text-chart-2">{t('cash_received')}</th>
+              <th className="p-3 text-right font-semibold">{t('expenses_total')}</th>
+              <th className="p-3 pr-5 text-right font-semibold">{t('net_col')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border font-mono text-foreground">
-            {pageRows.map((row) => (
-              <tr key={row.month} className="hover:bg-muted/50 transition">
-                <td className="p-4 pl-6 font-bold text-foreground font-sans">{row.monthLabel}</td>
-                <td className="p-4 text-right">${row.rent.toFixed(2)}</td>
-                <td className="p-4 text-right text-chart-1">${row.electricity.toFixed(2)}</td>
-                <td className="p-4 text-right text-info">${row.water.toFixed(2)}</td>
-                <td className="p-4 text-right font-bold text-foreground">${row.total.toFixed(2)}</td>
-                <td className="p-4 text-right font-black text-chart-2 bg-chart-2/10">
-                  ${row.collected.toFixed(2)}
-                </td>
+          <tbody className="font-mono text-foreground">
+            {rows.map((row) => (
+              <tr key={row.month} className="border-b border-border/60 last:border-0 hover:bg-muted/40">
+                <td className="p-3 pl-5 font-sans font-semibold">{row.monthLabel}</td>
+                <td className="p-3 text-right">{usd(row.rent)}</td>
+                <td className="p-3 text-right">{usd(row.electricity)}</td>
+                <td className="p-3 text-right">{usd(row.water)}</td>
+                <td className="p-3 text-right">{usd(row.fees)}</td>
+                <td className="p-3 text-right font-semibold">{usd(row.total)}</td>
+                <td className="p-3 text-right font-semibold text-chart-2">{usd(row.received)}</td>
+                <td className="p-3 text-right">{usd(row.expenses)}</td>
+                <td className={cn('p-3 pr-5 text-right font-bold', row.net < 0 && 'text-destructive')}>{usd(row.net)}</td>
               </tr>
             ))}
           </tbody>
+          <tfoot className="font-mono">
+            <tr className="border-t-2 border-border bg-muted/40 font-bold">
+              <td className="p-3 pl-5 font-sans">{t('year_total')}</td>
+              <td className="p-3 text-right">{usd(sum('rent'))}</td>
+              <td className="p-3 text-right">{usd(sum('electricity'))}</td>
+              <td className="p-3 text-right">{usd(sum('water'))}</td>
+              <td className="p-3 text-right">{usd(sum('fees'))}</td>
+              <td className="p-3 text-right">{usd(sum('total'))}</td>
+              <td className="p-3 text-right text-chart-2">{usd(sum('received'))}</td>
+              <td className="p-3 text-right">{usd(sum('expenses'))}</td>
+              <td className={cn('p-3 pr-5 text-right', sum('net') < 0 && 'text-destructive')}>{usd(sum('net'))}</td>
+            </tr>
+          </tfoot>
         </table>
       </div>
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        totalItems={rows.length}
-        pageSize={pageSize}
-        onPageChange={setPage}
-      />
     </div>
   );
 }

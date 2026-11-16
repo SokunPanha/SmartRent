@@ -23,6 +23,15 @@
     "month_april": "April",
     "month_may": "May",
     "month_june": "June",
-    "room_income_ordered_note": "Ordered by Paid Value"
+    "room_income_ordered_note": "Ordered by Paid Value",
+    "cash_received": "Cash received",
+    "electricity_col": "Electricity",
+    "expenses_total": "Expenses",
+    "fees_col": "Fees",
+    "monthly_statement_note": "Billed = invoices for that month. Cash received = money actually received that month.",
+    "net_col": "Net",
+    "net_profit": "Net profit",
+    "water_col": "Water",
+    "year_total": "Year total"
   }
 }

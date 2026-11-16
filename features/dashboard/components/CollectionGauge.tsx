@@ -14,9 +14,9 @@ export function CollectionGauge({
 }) {
   const t = useTranslations('Dashboard');
   return (
-    <div className="bg-card border border-border p-6 rounded-3xl flex flex-col shadow-lg shadow-black/20">
+    <div className="bg-card border border-(--card-border) p-6 rounded-3xl flex flex-col shadow-card">
       <div className="mb-4">
-        <h3 className="text-sm font-bold text-foreground tracking-wider uppercase font-mono">
+        <h3 className="text-base font-semibold text-foreground tracking-tight">
           {t('payment_collection_rate')}
         </h3>
         <p className="text-xs text-muted-foreground mt-0.5">
@@ -42,7 +42,7 @@ export function CollectionGauge({
 
         <div className="grid grid-cols-2 gap-3 pt-2">
           <div className="p-3 bg-chart-2/5 rounded-xl border border-chart-2/10">
-            <span className="text-[10px] font-bold text-chart-2 tracking-wider uppercase block font-mono">
+            <span className="text-xs font-bold text-chart-2 block">
               {t('total_collected')}
             </span>
             <span className="text-lg font-bold text-chart-2 font-mono block mt-1">
@@ -53,7 +53,7 @@ export function CollectionGauge({
             </span>
           </div>
           <div className="p-3 bg-destructive/5 rounded-xl border border-destructive/10">
-            <span className="text-[10px] font-bold text-destructive tracking-wider uppercase block font-mono">
+            <span className="text-xs font-bold text-destructive block">
               {t('owed_balance')}
             </span>
             <span className="text-lg font-bold text-destructive font-mono block mt-1 text-destructive">

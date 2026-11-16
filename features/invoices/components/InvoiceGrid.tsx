@@ -1,15 +1,50 @@
 import { useTranslations } from 'next-intl';
-import { Coins, Printer, CheckCircle2, Lightbulb, Droplet, ClipboardList, Send } from 'lucide-react';
+import { CheckCircle2, ClipboardList, Coins, FileText, Send } from 'lucide-react';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
-import { formatUSD, formatKHR } from '@/lib/format';
+import { pickLocale } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 import { StatusBadge, StatusBadgeTone } from '@/components/shared/StatusBadge';
 import { EmptyState } from '@/components/shared/EmptyState';
-import {
-  MonthOption,
-  getRoomNameByInvoice,
-  getTenantNameByInvoice,
-} from '../invoices.helpers';
+import { MonthOption } from '../invoices.helpers';
+import { fmtKHR, fmtUSD, invoiceTotals } from '../invoice-document';
 
+function statusMeta(status: Invoice['status'], t: (k: string) => string): { tone: StatusBadgeTone; label: string } {
+  if (status === 'paid') return { tone: 'success', label: t('paid') };
+  if (status === 'partial') return { tone: 'warning', label: t('partial') };
+  if (status === 'overdue') return { tone: 'danger', label: t('overdue') };
+  return { tone: 'danger', label: t('unpaid') };
+}
+
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0] ?? '') + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase() || '?';
+}
+
+/** Small Telegram delivery indicator: a dot + one word, full detail on hover. */
+function TelegramState({ inv, t }: { inv: Invoice; t: (k: string) => string }) {
+  const map = {
+    sent: { dot: 'bg-chart-2', text: `${t('inv_sent')} · ${inv.telegramSentDate ?? ''}` },
+    failed: { dot: 'bg-destructive', text: t('inv_failed') },
+    scheduled: { dot: 'bg-info', text: `${t('inv_scheduled')} · ${inv.telegramScheduledDate ?? ''}` },
+    unscheduled: { dot: 'bg-muted-foreground/40', text: t('inv_unscheduled') },
+  } as const;
+  const s = map[inv.telegramStatus ?? 'unscheduled'];
+  return (
+    <span
+      className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground"
+      title={inv.telegramStatus === 'failed' ? inv.telegramError : undefined}
+    >
+      <Send className="size-3.5 shrink-0" />
+      <span className={cn('size-1.5 shrink-0 rounded-full', s.dot)} />
+      <span className="truncate">{s.text}</span>
+    </span>
+  );
+}
+
+/**
+ * Invoice cards: who (tenant + room), how much is due, when, and the three
+ * actions. The full breakdown lives in the invoice itself (View invoice).
+ */
 export function InvoiceGrid({
   invoices,
   rooms,
@@ -34,170 +69,130 @@ export function InvoiceGrid({
   lang: AppLanguage;
 }) {
   const t = useTranslations('Invoices');
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="invoices-registry-grid-list">
-      {invoices.length === 0 ? (
-        <EmptyState
-          icon={ClipboardList}
-          title={t('no_invoices_match_filters')}
-          className="md:col-span-2 lg:col-span-3"
-        />
-      ) : (
-        invoices.map((inv) => {
-          const rName = getRoomNameByInvoice(inv, rooms, properties, lang);
-          const tenantName = getTenantNameByInvoice(inv, tenants, lang);
-          const cycleMonth = activeMonths.find((m) => m.value === inv.month)?.label || inv.month;
-          const elecUnits = inv.electricityCurr - inv.electricityPrev;
-          const waterUnits = inv.waterCurr - inv.waterPrev;
 
-          let tone: StatusBadgeTone = 'danger';
-          let label = t('unpaid');
-          let pulse = false;
-          if (inv.status === 'paid') {
-            tone = 'success';
-            label = t('paid');
-          } else if (inv.status === 'partial') {
-            tone = 'warning';
-            label = t('partial');
-          } else if (inv.status === 'overdue') {
-            label = t('overdue');
-            pulse = true;
-          }
-          const overdueClassName =
-            inv.status === 'overdue' ? 'bg-destructive/20 border-destructive/30' : undefined;
+  if (invoices.length === 0) {
+    return <EmptyState icon={ClipboardList} title={t('no_invoices_match_filters')} />;
+  }
+
+  return (
+    <div className="@container" id="invoices-registry-grid-list">
+      <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2 @5xl:grid-cols-3">
+        {invoices.map((inv) => {
+          const room = rooms.find((r) => r.id === inv.roomId);
+          const prop = properties.find((p) => p.id === room?.propertyId);
+          const tenant = tenants.find((tn) => tn.id === inv.tenantId);
+          const tenantName = tenant ? pickLocale(lang, tenant.name, tenant.nameKh) : '—';
+          const propName = prop ? pickLocale(lang, prop.name, prop.nameKh) : '';
+          const period = `${activeMonths.find((m) => m.value === inv.month)?.label ?? inv.month} ${inv.year}`;
+          const status = statusMeta(inv.status, t);
+          const totals = invoiceTotals(inv);
+          const isPaid = inv.status === 'paid';
+          const paidPct = inv.totalAmountUSD > 0 ? Math.min(100, (inv.amountPaidUSD / inv.totalAmountUSD) * 100) : 0;
 
           return (
-            <div
+            <article
               key={inv.id}
-              className="bg-card border border-border rounded-xl p-5 shadow-3xs hover:border-border transition flex flex-col justify-between"
+              className="flex flex-col rounded-(--radius-card) border border-(--card-border) bg-card p-5 shadow-card transition hover:border-primary/25"
             >
-              <div>
-                <div className="flex justify-between items-start gap-2 border-b border-border pb-3">
-                  <div>
-                    <span className="font-mono text-xs text-muted-foreground font-bold block">{inv.invoiceNumber}</span>
-                    <h4 className="font-sans font-bold text-foreground text-base mt-0.5 flex items-center gap-1">
-                      {rName}
-                    </h4>
-                  </div>
-                  <StatusBadge tone={tone} pulse={pulse} className={overdueClassName}>
-                    {label}
-                  </StatusBadge>
+              {/* Who */}
+              <div className="flex items-start gap-3">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-foreground">
+                  {initials(tenant?.name ?? tenantName)}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h4 className="truncate text-base font-semibold text-foreground">{tenantName}</h4>
+                  <p className="truncate text-sm text-muted-foreground">
+                    {t('card_room', { room: room?.roomNumber ?? '—' })}
+                    {propName && ` · ${propName}`}
+                  </p>
                 </div>
-
-                <div className="py-4 space-y-2 border-b border-dashed border-border text-xs font-sans">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('tenant_name')}</span>
-                    <span className="font-semibold text-foreground">{tenantName}</span>
-                  </div>
-                  <div className="flex justify-between font-mono">
-                    <span className="text-muted-foreground font-sans">{t('billing_cycle')}</span>
-                    <span className="text-foreground font-bold">
-                      {cycleMonth} {inv.year}
-                    </span>
-                  </div>
-
-                  <div className="p-2.5 bg-muted rounded-lg flex flex-col gap-1 text-[11px] text-muted-foreground font-sans mt-2">
-                    <div className="flex justify-between">
-                      <span>{t('base_rent_amount')}</span>
-                      <span className="font-mono font-bold text-foreground">${inv.rentAmountUSD}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="flex items-center gap-0.5 text-chart-1 font-semibold">
-                        <Lightbulb className="w-3.5 h-3.5" />
-                        {t('electric_cost')} ({elecUnits} kWh)
-                      </span>
-                      <span className="font-mono text-foreground">${inv.electricityCostUSD.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="flex items-center gap-0.5 text-info font-semibold">
-                        <Droplet className="w-3.5 h-3.5" />
-                        {t('water_cost')} ({waterUnits} m³)
-                      </span>
-                      <span className="font-mono text-foreground">${inv.waterCostUSD.toFixed(2)}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between pt-2 border-t border-border">
-                    <span className="font-bold text-foreground">{t('total_amount')}</span>
-                    <div className="text-right">
-                      <span className="font-bold text-base text-chart-2 font-mono block">
-                        {formatUSD(inv.totalAmountUSD)}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground font-mono block">
-                        ≈ {formatKHR(inv.totalAmountKHR)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <StatusBadge tone={status.tone} className="shrink-0">
+                  {status.label}
+                </StatusBadge>
               </div>
 
-              <div className="mt-3.5 pt-2 border-t border-dashed border-border flex items-center justify-between text-[10px]">
-                <span className="text-muted-foreground font-sans">{t('telegram_delivery')}</span>
-                {inv.telegramStatus === 'sent' ? (
-                  <span className="text-chart-2 font-mono font-bold flex items-center gap-1 bg-chart-2/10 border border-chart-2/20 px-1.5 py-0.5 rounded">
-                    <span className="w-1.5 h-1.5 rounded-full bg-chart-2"></span>
-                    {t('inv_sent')} ({inv.telegramSentDate})
-                  </span>
-                ) : inv.telegramStatus === 'failed' ? (
-                  <span
-                    className="text-destructive font-mono font-bold bg-destructive/10 border border-destructive/20 px-1.5 py-0.5 rounded flex items-center gap-1"
-                    title={inv.telegramError}
+              {/* How much, when */}
+              <div className="mt-5 flex items-end justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground">{isPaid ? t('card_total') : t('card_balance')}</p>
+                  <p
+                    className={cn(
+                      'font-mono text-2xl font-bold tracking-tight',
+                      isPaid ? 'text-foreground' : inv.status === 'overdue' ? 'text-destructive' : 'text-foreground'
+                    )}
                   >
-                    ⚠️ {t('inv_failed')} ({inv.telegramError?.slice(0, 12)}...)
-                  </span>
-                ) : inv.telegramStatus === 'scheduled' ? (
-                  <span className="text-info font-bold bg-info/10 border border-info/20 px-1.5 py-0.5 rounded">
-                    {t('inv_scheduled')} ({inv.telegramScheduledDate})
-                  </span>
-                ) : (
-                  <span className="text-muted-foreground italic bg-muted border border-border px-1.5 py-0.5 rounded">{t('inv_unscheduled')}</span>
-                )}
+                    {fmtUSD(isPaid ? inv.totalAmountUSD : totals.balanceUSD)}
+                  </p>
+                  <p className="font-mono text-xs text-muted-foreground">
+                    ≈ {fmtKHR(isPaid ? inv.totalAmountKHR : totals.balanceKHR)}
+                  </p>
+                </div>
+                <div className="shrink-0 text-right text-xs">
+                  <p className="font-medium text-foreground">{period}</p>
+                  <p className={cn('mt-0.5', inv.status === 'overdue' ? 'font-semibold text-destructive' : 'text-muted-foreground')}>
+                    {isPaid && inv.paidDate
+                      ? t('card_paid_on', { date: inv.paidDate })
+                      : t('card_due', { date: inv.dueDate })}
+                  </p>
+                </div>
               </div>
 
-              <div className="pt-4 flex gap-2 w-full">
-                <button
-                  onClick={() => onPrint(inv)}
-                  className="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-muted hover:bg-muted border border-border text-foreground transition flex items-center justify-center gap-1 cursor-pointer"
-                  title={t('print_invoice')}
-                >
-                  <Printer className="w-3.5 h-3.5 text-muted-foreground" />
-                  {t('receipt')}
-                </button>
+              {inv.status === 'partial' && (
+                <div className="mt-3">
+                  <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full bg-chart-1" style={{ width: `${paidPct}%` }} />
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t('card_paid_of', { paid: fmtUSD(inv.amountPaidUSD), total: fmtUSD(inv.totalAmountUSD) })}
+                  </p>
+                </div>
+              )}
 
-                <button
-                  onClick={() => onDispatch(inv)}
-                  className="py-1.5 px-3 rounded-lg bg-info/10 hover:bg-info/20 border border-info/30 text-info font-bold transition flex items-center justify-center gap-1 cursor-pointer"
-                  title={t('send_telegram')}
-                >
-                  <Send className="w-3.5 h-3.5 text-info" />
-                </button>
+              {/* Meta */}
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-3">
+                <span className="shrink-0 font-mono text-xs text-muted-foreground">{inv.invoiceNumber}</span>
+                <TelegramState inv={inv} t={t} />
+              </div>
 
-                {inv.status !== 'paid' && canPay ? (
+              {/* Actions: one primary action + two round icon buttons */}
+              <div className="mt-4 flex items-center gap-2">
+                {isPaid ? (
+                  <span className="flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full bg-chart-2/10 text-sm font-semibold text-chart-2">
+                    <CheckCircle2 className="size-4 shrink-0" />
+                    <span className="truncate">{t('cleared')}</span>
+                  </span>
+                ) : canPay ? (
                   <button
                     onClick={() => onPay(inv)}
-                    className="flex-1 py-1.5 text-xs font-bold rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold whitespace-nowrap text-primary-foreground shadow-[0_6px_16px_-6px_var(--primary)] transition hover:bg-primary/90 cursor-pointer"
                   >
-                    <Coins className="w-3.5 h-3.5" />
-                    {t('pay')}
-                  </button>
-                ) : inv.status !== 'paid' ? (
-                  <button
-                    disabled
-                    className="flex-1 py-1.5 text-xs text-center border border-dashed border-border text-muted-foreground rounded-lg cursor-not-allowed animate-pulse"
-                  >
-                    {t('unpaid')}
+                    <Coins className="size-4 shrink-0" />
+                    <span className="truncate">{t('record_payment_button')}</span>
                   </button>
                 ) : (
-                  <div className="flex-1 py-1.5 text-xs bg-chart-2/10 text-chart-2 font-bold border border-chart-2/20 rounded-lg flex items-center justify-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-chart-2" />
-                    {t('cleared')}
-                  </div>
+                  <span className="flex-1" />
                 )}
+                <button
+                  onClick={() => onPrint(inv)}
+                  aria-label={t('view_invoice')}
+                  title={t('view_invoice')}
+                  className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted cursor-pointer"
+                >
+                  <FileText className="size-4" />
+                </button>
+                <button
+                  onClick={() => onDispatch(inv)}
+                  aria-label={t('card_send_telegram')}
+                  title={t('card_send_telegram')}
+                  className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-info transition hover:bg-info/10 cursor-pointer"
+                >
+                  <Send className="size-4" />
+                </button>
               </div>
-            </div>
+            </article>
           );
-        })
-      )}
+        })}
+      </div>
     </div>
   );
 }

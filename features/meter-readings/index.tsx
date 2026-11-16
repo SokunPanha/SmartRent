@@ -12,6 +12,7 @@ import {
 } from './meter-readings.helpers';
 import { useCan } from '@/features/admin/permissions.queries';
 import { useReadingForm } from './use-reading-form';
+import { NewReading, ReadingPatch } from './readings.api';
 import { ReadingFilters, RoleBanner } from './components/ReadingFilters';
 import { ReadingsTable } from './components/ReadingsTable';
 import { RecordReadingModal } from './components/RecordReadingModal';
@@ -22,7 +23,8 @@ interface MeterReadingsProps {
   properties: Property[];
   activeRole: UserRole;
   lang: AppLanguage;
-  onAddReading: (reading: MeterReading) => void;
+  onAddReading: (reading: NewReading) => void;
+  onUpdateReading: (id: string, patch: ReadingPatch) => void;
   logAction: (action: string, actionKh: string, details: string, detailsKh: string) => void;
 }
 
@@ -33,6 +35,7 @@ export default function MeterReadings({
   activeRole,
   lang,
   onAddReading,
+  onUpdateReading,
   logAction,
 }: MeterReadingsProps) {
   const t = useTranslations('MeterReadings');
@@ -61,6 +64,7 @@ export default function MeterReadings({
     activeRole,
     lang,
     onAddReading,
+    onUpdateReading,
     logAction,
   });
 
@@ -91,6 +95,8 @@ export default function MeterReadings({
         properties={properties}
         monthNames={monthNames}
         lang={lang}
+        canModify={canModify}
+        onEdit={form.openEdit}
       />
 
       <RecordReadingModal

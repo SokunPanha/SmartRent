@@ -11,7 +11,8 @@ import { Property } from '@/lib/types';
 import { useCan, useMyPermissions } from '@/features/admin/permissions.queries';
 import { useProperties } from '@/features/properties/properties.queries';
 import { PasswordConfirmModal } from '@/components/shared/PasswordConfirmModal';
-import { useSettings, useUpdateSettings, useUpdateZoneRates } from './settings.queries';
+import { useSettings, useUpdateSettings, useUpdateZoneRates, useUpdateBusiness } from './settings.queries';
+import { BusinessPaymentCard, BusinessSave } from './components/BusinessPaymentCard';
 import { FeeCatalogCard } from './components/FeeCatalogCard';
 import { PropertyFeesModal } from './components/PropertyFeesModal';
 
@@ -19,9 +20,10 @@ import { PropertyFeesModal } from './components/PropertyFeesModal';
 type PendingSave =
   | {
       type: 'global';
-      patch: { exchangeRateKhr: number; defaultElectricityRate: number; defaultWaterRate: number };
+      patch: { exchangeRateKhr: number; defaultElectricityRate: number; defaultWaterRate: number; invoiceIssueDay: number; invoiceDueDay: number };
     }
-  | { type: 'zone'; id: string; patch: { electricityRate: number | null; waterRate: number | null } };
+  | { type: 'zone'; id: string; patch: { electricityRate: number | null; waterRate: number | null } }
+  | { type: 'business'; patch: BusinessSave };
 
 export default function SystemSettings() {
   const t = useTranslations('Settings');
@@ -40,6 +42,7 @@ export default function SystemSettings() {
   const { data: properties = [], isLoading: propertiesLoading } = useProperties();
   const updateSettings = useUpdateSettings();
   const updateZone = useUpdateZoneRates();
+  const updateBusiness = useUpdateBusiness();
 
   const [pending, setPending] = useState<PendingSave | null>(null);
   const [pwError, setPwError] = useState<string | null>(null);
@@ -58,6 +61,11 @@ export default function SystemSettings() {
         { ...pending.patch, password },
         { onSuccess: closePassword, onError: (e) => setPwError(e.message) }
       );
+    } else if (pending.type === 'business') {
+      updateBusiness.mutate(
+        { ...pending.patch, password },
+        { onSuccess: closePassword, onError: (e) => setPwError(e.message) }
+      );
     } else {
       updateZone.mutate(
         { id: pending.id, patch: { ...pending.patch, password } },
@@ -69,7 +77,7 @@ export default function SystemSettings() {
   if (!authReady || !allowed) {
     const label = !authReady ? t('loading') : t('redirecting');
     return (
-      <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
+      <div className="bg-card rounded-xl border border-(--card-border) p-12 text-center text-sm text-muted-foreground italic">
         {label}
       </div>
     );
@@ -77,7 +85,7 @@ export default function SystemSettings() {
 
   return (
     <div className="space-y-6" id="system-settings-page">
-      <div className="bg-card p-4 rounded-xl border border-border shadow-3xs">
+      <div className="bg-card p-4 rounded-xl border border-(--card-border) shadow-3xs">
         <h2 className="text-base font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
           <SlidersHorizontal className="w-5 h-5 text-primary" />
           {t('title')}
@@ -86,18 +94,28 @@ export default function SystemSettings() {
       </div>
 
       {settingsLoading || !settings ? (
-        <div className="bg-card rounded-xl border border-border p-12 text-center text-sm text-muted-foreground italic">
+        <div className="bg-card rounded-xl border border-(--card-border) p-12 text-center text-sm text-muted-foreground italic">
           {t('loading')}
         </div>
       ) : (
         <GlobalRatesCard
+          key={`rates-${settings.updatedAt}`}
           settings={settings}
           saving={updateSettings.isPending}
           onSave={(patch) => setPending({ type: 'global', patch })}
         />
       )}
 
-      <div className="bg-card rounded-xl border border-border shadow-3xs">
+      {settings && (
+        <BusinessPaymentCard
+          key={`business-${settings.updatedAt}`}
+          settings={settings}
+          saving={updateBusiness.isPending}
+          onSave={(patch) => setPending({ type: 'business', patch })}
+        />
+      )}
+
+      <div className="bg-card rounded-xl border border-(--card-border) shadow-3xs">
         <div className="p-4 border-b border-border">
           <h3 className="text-sm font-bold text-foreground font-sans">{t('zone_overrides_title')}</h3>
           <p className="text-xs text-muted-foreground mt-0.5 font-sans">{t('zone_overrides_desc')}</p>
@@ -111,7 +129,7 @@ export default function SystemSettings() {
           <div className="overflow-x-auto scroll-x-hint">
             <table className="w-full text-left">
               <thead>
-                <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans dark:font-mono">
+                <tr className="bg-muted border-b border-border text-xs font-bold text-muted-foreground font-sans dark:font-mono">
                   <th className="p-4 pl-6">{t('zone')}</th>
                   <th className="p-4">{t('electricity_rate')}</th>
                   <th className="p-4">{t('water_rate')}</th>
@@ -121,7 +139,7 @@ export default function SystemSettings() {
               <tbody className="divide-y divide-border text-xs">
                 {properties.map((property) => (
                   <ZoneRateRow
-                    key={property.id}
+                    key={`${property.id}:${property.electricityRate ?? ''}:${property.waterRate ?? ''}`}
                     property={property}
                     name={pickLocale(lang, property.name, property.nameKh)}
                     saving={updateZone.isPending}
@@ -148,7 +166,7 @@ export default function SystemSettings() {
 
       <PasswordConfirmModal
         open={!!pending}
-        busy={updateSettings.isPending || updateZone.isPending}
+        busy={updateSettings.isPending || updateZone.isPending || updateBusiness.isPending}
         error={pwError}
         onClose={closePassword}
         onConfirm={handleConfirmPassword}
@@ -162,38 +180,46 @@ function GlobalRatesCard({
   saving,
   onSave,
 }: {
-  settings: { exchangeRateKhr: number; defaultElectricityRate: number; defaultWaterRate: number };
+  settings: { exchangeRateKhr: number; defaultElectricityRate: number; defaultWaterRate: number; invoiceIssueDay: number; invoiceDueDay: number };
   saving: boolean;
-  onSave: (patch: { exchangeRateKhr: number; defaultElectricityRate: number; defaultWaterRate: number }) => void;
+  onSave: (patch: { exchangeRateKhr: number; defaultElectricityRate: number; defaultWaterRate: number; invoiceIssueDay: number; invoiceDueDay: number }) => void;
 }) {
   const t = useTranslations('Settings');
   const [exchangeRate, setExchangeRate] = useState(settings.exchangeRateKhr);
   const [elecRate, setElecRate] = useState(settings.defaultElectricityRate);
   const [waterRate, setWaterRate] = useState(settings.defaultWaterRate);
-
-  useEffect(() => {
-    setExchangeRate(settings.exchangeRateKhr);
-    setElecRate(settings.defaultElectricityRate);
-    setWaterRate(settings.defaultWaterRate);
-  }, [settings]);
+  const [issueDay, setIssueDay] = useState(settings.invoiceIssueDay);
+  const [dueDay, setDueDay] = useState(settings.invoiceDueDay);
 
   const dirty =
     exchangeRate !== settings.exchangeRateKhr ||
     elecRate !== settings.defaultElectricityRate ||
-    waterRate !== settings.defaultWaterRate;
-  const valid = exchangeRate > 0 && elecRate > 0 && waterRate > 0;
+    waterRate !== settings.defaultWaterRate ||
+    issueDay !== settings.invoiceIssueDay ||
+    dueDay !== settings.invoiceDueDay;
+  const validDay = (d: number) => Number.isInteger(d) && d >= 1 && d <= 28;
+  const valid =
+    exchangeRate > 0 && elecRate > 0 && waterRate > 0 && validDay(issueDay) && validDay(dueDay) && dueDay >= issueDay;
 
   return (
-    <div className="bg-card rounded-xl border border-border shadow-3xs">
+    <div className="bg-card rounded-xl border border-(--card-border) shadow-3xs">
       <div className="p-4 border-b border-border flex items-center justify-between gap-2">
         <div>
           <h3 className="text-sm font-bold text-foreground font-sans">{t('global_rates_title')}</h3>
           <p className="text-xs text-muted-foreground mt-0.5 font-sans">{t('global_rates_desc')}</p>
         </div>
         <button
-          onClick={() => onSave({ exchangeRateKhr: exchangeRate, defaultElectricityRate: elecRate, defaultWaterRate: waterRate })}
+          onClick={() =>
+            onSave({
+              exchangeRateKhr: exchangeRate,
+              defaultElectricityRate: elecRate,
+              defaultWaterRate: waterRate,
+              invoiceIssueDay: issueDay,
+              invoiceDueDay: dueDay,
+            })
+          }
           disabled={saving || !dirty || !valid}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-40 shrink-0"
+          className="flex items-center gap-1.5 px-4.5 py-2.5 text-xs font-semibold bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition cursor-pointer disabled:opacity-40 shrink-0"
         >
           {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
           {t('save')}
@@ -202,7 +228,7 @@ function GlobalRatesCard({
 
       <div className="p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
-          <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
+          <label className="text-xs font-bold text-muted-foreground block mb-1 font-sans">
             {t('exchange_rate_label')}
           </label>
           <Input
@@ -217,7 +243,7 @@ function GlobalRatesCard({
         </div>
 
         <div>
-          <label className="text-[10px] font-bold text-chart-1 uppercase tracking-wider block mb-1 font-sans">
+          <label className="text-xs font-bold text-chart-1 block mb-1 font-sans">
             {t('default_electricity_rate_label')}
           </label>
           <Input
@@ -231,7 +257,7 @@ function GlobalRatesCard({
         </div>
 
         <div>
-          <label className="text-[10px] font-bold text-info uppercase tracking-wider block mb-1 font-sans">
+          <label className="text-xs font-bold text-info block mb-1 font-sans">
             {t('default_water_rate_label')}
           </label>
           <Input
@@ -242,6 +268,18 @@ function GlobalRatesCard({
             step={100}
             className="font-mono font-bold"
           />
+        </div>
+
+        <div className="sm:col-span-3 grid grid-cols-2 gap-4 border-t border-border pt-4">
+          <div>
+            <label className="text-xs font-bold text-muted-foreground block mb-1 font-sans">{t('invoice_issue_day')}</label>
+            <Input type="number" min={1} max={28} value={issueDay} onChange={(e) => setIssueDay(Number(e.target.value))} className="font-mono font-bold" />
+          </div>
+          <div>
+            <label className="text-xs font-bold text-muted-foreground block mb-1 font-sans">{t('invoice_due_day')}</label>
+            <Input type="number" min={1} max={28} value={dueDay} onChange={(e) => setDueDay(Number(e.target.value))} className="font-mono font-bold" />
+          </div>
+          <p className="col-span-2 text-[11px] text-muted-foreground">{t('invoice_days_help')}</p>
         </div>
       </div>
     </div>
@@ -264,11 +302,6 @@ function ZoneRateRow({
   const t = useTranslations('Settings');
   const [elec, setElec] = useState(property.electricityRate ?? '');
   const [water, setWater] = useState(property.waterRate ?? '');
-
-  useEffect(() => {
-    setElec(property.electricityRate ?? '');
-    setWater(property.waterRate ?? '');
-  }, [property]);
 
   const dirty = elec !== (property.electricityRate ?? '') || water !== (property.waterRate ?? '');
 
@@ -302,7 +335,7 @@ function ZoneRateRow({
           <button
             type="button"
             onClick={onManageFees}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold border border-border text-foreground rounded-lg hover:border-primary/40 hover:bg-accent transition cursor-pointer"
+            className="inline-flex items-center gap-1 px-3.5 py-2.5 text-xs font-semibold border border-border text-foreground rounded-full hover:border-primary/40 hover:bg-accent transition cursor-pointer"
           >
             <Coins className="w-3.5 h-3.5" />
             {t('manage_fees')}
@@ -315,7 +348,7 @@ function ZoneRateRow({
               })
             }
             disabled={saving || !dirty}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer disabled:opacity-40"
+            className="inline-flex items-center gap-1 px-3.5 py-2.5 text-xs font-semibold bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition cursor-pointer disabled:opacity-40"
           >
             {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
             {t('save')}

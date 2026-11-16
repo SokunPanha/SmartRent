@@ -34,7 +34,7 @@ export function TenantTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-card p-3.5 rounded-xl border border-border shadow-3xs">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-card p-3.5 rounded-xl border border-(--card-border) shadow-3xs">
         <h3 className="text-sm font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
           <Users className="w-4 h-4 text-primary" />
           {t('tenant_list')}
@@ -42,7 +42,7 @@ export function TenantTable({
         {canModify && (
           <button
             onClick={onAdd}
-            className="p-1 px-2.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition flex items-center gap-1 cursor-pointer"
+            className="p-1.5 px-3.5 rounded-full text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition flex items-center gap-1 cursor-pointer"
             id="open-add-tenant-modal"
           >
             <UserPlus className="w-3.5 h-3.5" />
@@ -57,12 +57,12 @@ export function TenantTable({
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder={t('search_placeholder')}
-          className="w-full pl-8 pr-3 py-2 rounded-lg border border-border text-xs bg-card text-foreground font-sans focus:outline-none focus:border-primary"
+          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-(--card-border) text-xs bg-card text-foreground font-sans focus:outline-none focus:border-primary"
           id="tenant-search-input"
         />
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-3xs overflow-hidden" id="tenants-table-view">
+      <div className="bg-card border border-(--card-border) rounded-xl shadow-3xs overflow-hidden" id="tenants-table-view">
         {tenants.length === 0 ? (
           <EmptyState icon={Users} title={t('no_tenants_match_search')} className="p-12 shadow-none border-0" />
         ) : (

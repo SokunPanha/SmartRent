@@ -24,7 +24,7 @@ export function RoomModal({
       <form onSubmit={c.handleCreateOrUpdateRoom} className="p-4 space-y-4">
         <div className="space-y-4">
           <div>
-            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
+            <label className="text-xs font-bold text-muted-foreground block mb-1 font-sans">
               {t('room_number')} *
             </label>
             <input
@@ -32,14 +32,14 @@ export function RoomModal({
               value={c.roomNumber}
               onChange={(e) => c.setRoomNumber(e.target.value)}
               placeholder={t('room_number_placeholder')}
-              className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
+              className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
+              <label className="text-xs font-bold text-muted-foreground block mb-1 font-sans">
                 {t('floor')} *
               </label>
               <input
@@ -48,13 +48,13 @@ export function RoomModal({
                 onChange={(e) => c.setRoomFloor(Number(e.target.value))}
                 min={1}
                 max={40}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:border-primary focus:outline-none"
                 required
               />
             </div>
 
             <div>
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
+              <label className="text-xs font-bold text-muted-foreground block mb-1 font-sans">
                 {t('room_rent_label')} *
               </label>
               <input
@@ -63,29 +63,35 @@ export function RoomModal({
                 onChange={(e) => c.setRoomRent(Number(e.target.value))}
                 min={1}
                 max={10000}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
+                className="w-full px-4 py-3 rounded-xl border border-border text-sm focus:border-primary focus:outline-none font-mono font-bold"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1 font-sans">
+            <label className="text-xs font-bold text-muted-foreground block mb-1 font-sans">
               {tCommon('status')} *
             </label>
-            <Select
-              value={c.roomStatus}
-              onValueChange={(v) => c.setRoomStatus(v as typeof c.roomStatus)}
-            >
-              <SelectTrigger className="w-full data-[size=default]:h-auto px-3 py-2.5 rounded-lg bg-card text-sm font-sans focus-visible:border-primary focus-visible:ring-primary/30">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="vacant">{t('vacant')}</SelectItem>
-                <SelectItem value="occupied">{t('occupied')}</SelectItem>
-                <SelectItem value="maintenance">{t('maintenance')}</SelectItem>
-              </SelectContent>
-            </Select>
+            {c.roomStatus === 'occupied' ? (
+              // Occupancy comes from the lease; end it with Move out instead.
+              <p className="rounded-xl border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
+                {t('occupied')} — {t('occupied_by_lease_hint')}
+              </p>
+            ) : (
+              <Select
+                value={c.roomStatus}
+                onValueChange={(v) => c.setRoomStatus(v as typeof c.roomStatus)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="vacant">{t('vacant')}</SelectItem>
+                  <SelectItem value="maintenance">{t('maintenance')}</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
 

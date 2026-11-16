@@ -58,6 +58,10 @@ export function useTenantsController({
   const [tenantCheckIn, setTenantCheckIn] = useState(todayISO);
   const [tenantEmergency, setTenantEmergency] = useState('');
   const [tenantTelegramAutoSend, setTenantTelegramAutoSend] = useState(true);
+  // Photo of the back of the national ID card: storage key from the upload endpoint.
+  const [tenantIdBack, setTenantIdBack] = useState<string | null>(null);
+  const [idUploading, setIdUploading] = useState(false);
+  const [idImageTouched, setIdImageTouched] = useState(false);
 
   const openTenantModal = () => setShowTenantModal(true);
   const closeTenantModal = () => setShowTenantModal(false);
@@ -66,6 +70,11 @@ export function useTenantsController({
     e.preventDefault();
     if (!canModify) return toast.error(tCommon('insufficient_permissions'));
     if (!tenantName || !tenantNameKh || !tenantPhone || !tenantNID) return toast.error(tCommon('please_fill'));
+    if (idUploading) return toast.error(t('id_wait_upload'));
+    if (!tenantIdBack) {
+      setIdImageTouched(true);
+      return toast.error(t('id_images_required'));
+    }
 
     onAddTenant({
       id: 'tenant-' + Date.now(),
@@ -73,6 +82,7 @@ export function useTenantsController({
       nameKh: tenantNameKh,
       phone: tenantPhone,
       nationalId: tenantNID,
+      nationalIdBack: tenantIdBack,
       email: tenantEmail || undefined,
       checkInDate: tenantCheckIn,
       emergencyContact: tenantEmergency,
@@ -93,6 +103,8 @@ export function useTenantsController({
     setTenantCheckIn(todayISO());
     setTenantEmergency('');
     setTenantTelegramAutoSend(true);
+    setTenantIdBack(null);
+    setIdImageTouched(false);
     setShowTenantModal(false);
   }
 
@@ -141,6 +153,10 @@ export function useTenantsController({
     setTenantEmergency,
     tenantTelegramAutoSend,
     setTenantTelegramAutoSend,
+    tenantIdBack,
+    setTenantIdBack,
+    setIdUploading,
+    idImageTouched,
     handleCreateTenant,
     handleDeleteTenantClick,
   };

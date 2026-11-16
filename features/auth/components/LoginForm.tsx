@@ -26,7 +26,7 @@ export function LoginForm() {
             <Building2 className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-lg font-extrabold uppercase tracking-tight">
+            <CardTitle className="text-lg font-extrabold tracking-tight">
               {t('app_title')}
             </CardTitle>
             <CardDescription className="text-xs">
@@ -80,6 +80,12 @@ export function LoginForm() {
                 t('sign_in')
               )}
             </Button>
+
+            {process.env.NODE_ENV !== 'production' && (
+              <p className="rounded-md border border-dashed border-border px-3 py-2 text-center text-[11px] text-muted-foreground">
+                Dev login: admin@khrent.local / password123
+              </p>
+            )}
           </form>
         </CardContent>
       </Card>

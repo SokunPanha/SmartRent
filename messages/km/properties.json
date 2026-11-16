@@ -52,6 +52,14 @@
     "building_not_found": "រកមិនឃើញអគារ។",
     "delete_building": "លុបអគារ",
     "search_placeholder": "ស្វែងរកអគារ...",
-    "no_buildings_match_search": "រកមិនឃើញអគារដែលត្រូវនឹងការស្វែងរករបស់អ្នកឡើយ។"
+    "no_buildings_match_search": "រកមិនឃើញអគារដែលត្រូវនឹងការស្វែងរករបស់អ្នកឡើយ។",
+    "all_rooms_heading": "បន្ទប់ទាំងអស់",
+    "building_col": "អគារ",
+    "tenant_col": "អ្នកជួលបច្ចុប្បន្ន",
+    "all_buildings": "អគារទាំងអស់",
+    "search_rooms_placeholder": "ស្វែងរកបន្ទប់ ឬអ្នកជួល…",
+    "no_rooms_match": "មិនមានបន្ទប់ត្រូវនឹងតម្រងទាំងនេះទេ។",
+    "status_col": "ស្ថានភាព",
+    "occupied_by_lease_hint": "កំណត់ដោយកិច្ចសន្យា។ បញ្ចប់វាដោយ \"ចេញពីបន្ទប់\" នៅទំព័រអ្នកជួល។"
   }
 }

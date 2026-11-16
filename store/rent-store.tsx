@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsClient } from '@/hooks/use-is-client';
 import React, {
   createContext,
   useContext,
@@ -63,15 +64,11 @@ function langToLocale(lang: AppLanguage): Locale {
 export function RentProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status: sessionStatus } = useSession();
   const sessionLoading = sessionStatus === 'loading';
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsClient();
   const router = useRouter();
 
   const locale = useLocale();
   const lang = localeToLang(locale);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const triggerToast = (msg: string) => toast(msg);
 

@@ -3,7 +3,7 @@ import { FileText, CalendarDays } from 'lucide-react';
 import { Tenant, Contract, Room, Property, AppLanguage } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { StatusBadge, StatusBadgeTone } from '@/components/shared/StatusBadge';
-import { DeleteButton } from '@/components/shared/DeleteButton';
+import { LeaseActions, DepositBadge } from './LeaseActions';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { Pagination, usePagination } from '@/components/shared/Pagination';
 import { pickLocale } from '@/lib/i18n';
@@ -51,7 +51,7 @@ export function ContractTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-card p-3.5 rounded-xl border border-border shadow-3xs">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-card p-3.5 rounded-xl border border-(--card-border) shadow-3xs">
         <h3 className="text-sm font-bold text-foreground tracking-tight flex items-center gap-1.5 font-sans">
           <FileText className="w-4 h-4 text-primary" />
           {t('contracts_list')}
@@ -59,7 +59,7 @@ export function ContractTable({
       </div>
 
       <div className="flex flex-wrap gap-3 items-center">
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('status_label')}</span>
           <Select value={statusFilter} onValueChange={(v) => onStatusFilterChange(v as typeof statusFilter)}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -74,7 +74,7 @@ export function ContractTable({
           </Select>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('property_label')}</span>
           <Select value={propertyFilter} onValueChange={onPropertyFilterChange}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -92,7 +92,7 @@ export function ContractTable({
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-3xs overflow-hidden" id="contracts-table-view">
+      <div className="bg-card border border-(--card-border) rounded-xl shadow-3xs overflow-hidden" id="contracts-table-view">
         {contracts.length === 0 ? (
           <EmptyState icon={FileText} title={t('no_contracts')} className="p-12 shadow-none border-0" />
         ) : (
@@ -143,8 +143,9 @@ export function ContractTable({
                         <td className="px-4 py-3.5 text-right tabular-nums font-mono font-bold text-foreground">
                           ${contract.rentAmount}
                         </td>
-                        <td className="px-4 py-3.5 text-right tabular-nums font-mono text-chart-2">
-                          ${contract.depositAmount}
+                        <td className="px-4 py-3.5 text-right">
+                          <span className="block tabular-nums font-mono text-foreground">${contract.depositAmount}</span>
+                          <DepositBadge contract={contract} />
                         </td>
                         <td className="px-4 py-3.5 text-muted-foreground font-sans text-xs">
                           <span className="inline-flex items-center gap-1">
@@ -155,25 +156,11 @@ export function ContractTable({
                         {canModify && (
                           <td className="px-4 py-3.5">
                             <div className="flex items-center gap-2 justify-end">
-                              <Select
-                                value={contract.status}
-                                onValueChange={(v) =>
-                                  onUpdateStatus(contract.id, v as 'active' | 'suspended' | 'expired')
-                                }
-                              >
-                                <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 rounded-lg bg-muted p-1 px-1.5 text-[11px] font-sans shadow-none">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="active">{t('active')}</SelectItem>
-                                  <SelectItem value="suspended">{t('suspended')}</SelectItem>
-                                  <SelectItem value="expired">{t('expired')}</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <DeleteButton
-                                onClick={() => onDelete(contract.id)}
-                                title={t('terminate_record')}
-                                className="p-1.5 bg-muted border border-border rounded-lg"
+                              <LeaseActions
+                                contract={contract}
+                                room={rooms.find((r) => r.id === contract.roomId)}
+                                canModify={canModify}
+                                onDelete={onDelete}
                               />
                             </div>
                           </td>

@@ -33,11 +33,11 @@ export function UserTable({
   const t = useTranslations('Admin');
   const { page, totalPages, pageRows, setPage, pageSize } = usePagination(users);
   return (
-    <div className="bg-card rounded-(--radius-card) border border-border overflow-hidden">
+    <div className="bg-card rounded-(--radius-card) border border-(--card-border) overflow-hidden">
       <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scroll-x-hint">
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 z-10">
-            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans dark:font-mono">
+            <tr className="bg-muted border-b border-border text-xs font-bold text-muted-foreground font-sans dark:font-mono">
               <th className="p-4 pl-6">{t('table_user')}</th>
               <th className="p-4">{t('table_email')}</th>
               <th className="p-4">{t('table_role')}</th>
@@ -69,7 +69,7 @@ export function UserTable({
                           <span className="font-bold text-foreground text-sm">
                             {u.name}
                             {isSelf && (
-                              <span className="ml-1 text-[9px] uppercase font-bold text-primary">(you)</span>
+                              <span className="ml-1 text-[11px] font-bold text-primary">(you)</span>
                             )}
                           </span>
                           {u.nameKh && <span className="text-[10px] text-muted-foreground">{u.nameKh}</span>}
@@ -146,7 +146,7 @@ export function UserTable({
                           title={t('edit_user')}
                           disabled={busy}
                           onClick={() => onEdit(u)}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition hover:border-primary/40 hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                          className="inline-flex h-10 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition hover:border-primary/40 hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                         >
                           <SquarePen className="w-4 h-4" />
                         </button>

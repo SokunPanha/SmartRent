@@ -18,6 +18,7 @@ const NAMESPACES = [
   'reports',
   'tenants',
   'settings',
+  'expenses',
 ] as const;
 
 export default getRequestConfig(async () => {

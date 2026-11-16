@@ -82,7 +82,7 @@ export default function BuildingDetail({
         <PermissionBanner message={t('cannot_modify_persona', { role: activeRole.toUpperCase() })} />
       )}
 
-      <div className="bg-card border border-border rounded-xl shadow-3xs p-6 flex flex-col md:flex-row md:items-start md:justify-between gap-5">
+      <div className="bg-card border border-(--card-border) rounded-xl shadow-3xs p-6 flex flex-col md:flex-row md:items-start md:justify-between gap-5">
         <div>
           <span className="text-[11px] font-semibold tracking-wide bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-sans">
             {typeLabel(property.type, t)}
@@ -134,7 +134,7 @@ export default function BuildingDetail({
         <div className="flex justify-end">
           <button
             onClick={c.handleDeleteBuilding}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-destructive border border-destructive/30 hover:bg-destructive/10 rounded-lg transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-destructive border border-destructive/30 hover:bg-destructive/10 rounded-full transition cursor-pointer"
           >
             <Trash2 className="w-3.5 h-3.5" />
             {t('delete_building')}

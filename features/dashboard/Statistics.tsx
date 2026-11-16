@@ -48,7 +48,7 @@ export default function Statistics({
 
   return (
     <div className="space-y-6 text-foreground" id="statistics-tab-content">
-      <div className="gradient-hero flex items-center gap-2 p-4 rounded-xl shadow-lg">
+      <div className="gradient-hero flex items-center gap-2 p-5 rounded-(--radius-card) shadow-[0_14px_34px_-14px_var(--primary)]">
         <Activity className="w-5 h-5 text-white" />
         <h2 className="font-sans text-base font-bold tracking-tight text-white">
           {t('statistics_title')}

@@ -1,29 +1,47 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { invoiceKeys } from './invoices.queries';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { Invoice, Room, Tenant, Property, AppLanguage } from '@/lib/types';
-import { apiGet, apiPost } from '@/lib/api/client';
-import { getRoomNameByInvoice, generateTelegramInvoiceHTML } from './invoices.helpers';
+import { apiGet } from '@/lib/api/client';
+import { getRoomNameByInvoice, generateTelegramInvoiceCaption } from './invoices.helpers';
+import { renderInvoiceImage } from './invoice-image';
+import { bi, invoiceIssuer, paymentInfo } from './invoice-document';
+import { loadImage } from './invoice-image';
+import { useSettings } from '@/features/settings/settings.queries';
+import { paymentQrUrl } from '@/features/settings/settings.api';
 
 type PayMethod = 'cash' | 'aba' | 'wing' | 'other';
 type TestStatus = 'success' | 'failed' | 'loading' | '';
 
-// The backend's /api/telegram/send unwraps as `{ message, messageId }` on
-// success and throws (via lib/api/client.ts) on failure — synthesize the
-// old `{ok, data: {success, error, messageId}}` shape so the rest of this
-// file (dispatch logging, status checks) doesn't need to change.
+/** Today as YYYY-MM-DD in the user's local calendar. */
+function localToday(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Renders the invoice as an image and sends it with a short caption via
+ *  POST /api/telegram/send-photo. Returns the old `{ok, data}` shape so the
+ *  dispatch logging below stays unchanged. */
 async function dispatchToTelegram(
   tenantId: string,
-  text: string
+  invoiceId: string,
+  image: Blob,
+  caption: string
 ): Promise<{ ok: boolean; data: { success: boolean; messageId?: number; error?: string } }> {
   try {
-    const result = await apiPost<{ message: string; messageId?: number }>('/api/telegram/send', {
-      tenantId,
-      text,
-    });
-    return { ok: true, data: { success: true, messageId: result.messageId } };
+    const form = new FormData();
+    form.append('tenantId', tenantId);
+    form.append('caption', caption);
+    form.append('invoiceId', invoiceId);
+    form.append('photo', image, 'invoice.png');
+    const res = await fetch('/api/telegram/send-photo', { method: 'POST', body: form });
+    const json = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(json?.error || `Request failed (${res.status})`);
+    return { ok: true, data: { success: true, messageId: json?.data?.messageId } };
   } catch (err) {
     return {
       ok: false,
@@ -45,10 +63,10 @@ interface Args {
     invoiceId: string,
     amount: number,
     method: PayMethod,
-    notes?: string
-  ) => void;
+    notes: string | undefined,
+    paidDate: string
+  ) => Promise<unknown>;
   logAction: (action: string, actionKh: string, details: string, detailsKh: string) => void;
-  onUpdateInvoices?: (updatedInvoices: Invoice[]) => void;
 }
 
 /** Owns filtering, payment, telegram-dispatch and print state for the invoices feature. */
@@ -63,10 +81,13 @@ export function useInvoicesController({
   onAutoGenerateInvoices,
   onRecordPayment,
   logAction,
-  onUpdateInvoices,
 }: Args) {
+  const qc = useQueryClient();
+  /** Telegram delivery status is written by the server; just refetch. */
+  const refreshInvoices = () => qc.invalidateQueries({ queryKey: invoiceKeys.all });
   const t = useTranslations('Invoices');
   const tCommon = useTranslations('Common');
+  const { data: settings } = useSettings();
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [selectedProperty, setSelectedProperty] = useState<string>('all');
@@ -105,14 +126,8 @@ export function useInvoicesController({
   const [payAmount, setPayAmount] = useState<number>(0);
   const [payMethod, setPayMethod] = useState<PayMethod>('aba');
   const [payNotes, setPayNotes] = useState('');
-
-  const [telegramScheduledDate, setTelegramScheduledDate] = useState<string>(() => {
-    const today = new Date().toISOString().split('T')[0];
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('khrent_telegram_scheduled_date') || today;
-    }
-    return today;
-  });
+  const [payDate, setPayDate] = useState<string>(() => localToday());
+  const [paySaving, setPaySaving] = useState(false);
   const [telegramIsSettingsOpen, setTelegramIsSettingsOpen] = useState(false);
   const [telegramIsDispatching, setTelegramIsDispatching] = useState(false);
   const [telegramLogs, setTelegramLogs] = useState<string[]>([]);
@@ -150,18 +165,26 @@ export function useInvoicesController({
 
   const roomName = (inv: Invoice) => getRoomNameByInvoice(inv, rooms, properties, lang);
 
-  function handleSaveScheduledDate(date: string) {
-    setTelegramScheduledDate(date);
-    if (typeof window !== 'undefined')
-      localStorage.setItem('khrent_telegram_scheduled_date', date);
-    if (onUpdateInvoices) {
-      const updated = invoices.map((inv) =>
-        inv.status !== 'paid' && (!inv.telegramStatus || inv.telegramStatus === 'unscheduled')
-          ? { ...inv, telegramScheduledDate: date, telegramStatus: 'scheduled' as const }
-          : inv
-      );
-      onUpdateInvoices(updated);
-    }
+  /** Invoice image + short caption for Telegram (bilingual, Khmer first). */
+  async function buildTelegramPayload(inv: Invoice, tenant: Tenant) {
+    const room = rooms.find((r) => r.id === inv.roomId);
+    const prop = properties.find((p) => p.id === room?.propertyId);
+    const roomNumber = room?.roomNumber ?? '—';
+    const payment = paymentInfo(settings);
+    const qrImage = payment?.qrKey ? await loadImage(paymentQrUrl(payment.qrKey)) : null;
+    const image = await renderInvoiceImage({
+      invoice: inv,
+      tenantName: bi(tenant.nameKh, tenant.name),
+      tenantPhone: tenant.phone,
+      roomNumber,
+      floor: room?.floor,
+      propertyName: bi(prop?.nameKh, prop?.name),
+      issuer: invoiceIssuer(settings, prop),
+      payment,
+      qrImage,
+    });
+    qrImage?.close();
+    return { image, caption: generateTelegramInvoiceCaption(inv, roomNumber) };
   }
 
   async function handleTestBotConnection() {
@@ -185,24 +208,13 @@ export function useInvoicesController({
     setTelegramLogs([`${t('dispatching')} Invoice ${invoice.invoiceNumber}...`]);
 
     const rName = roomName(invoice);
-    const textHTML = generateTelegramInvoiceHTML(invoice, tenant.name, rName, lang);
-
     try {
-      const { ok: resOk, data } = await dispatchToTelegram(tenant.id, textHTML);
+      const { image, caption } = await buildTelegramPayload(invoice, tenant);
+      const { ok: resOk, data } = await dispatchToTelegram(tenant.id, invoice.id, image, caption);
       if (resOk && data.success) {
-        const updated = invoices.map((i) =>
-          i.id === invoice.id
-            ? {
-                ...i,
-                telegramStatus: 'sent' as const,
-                telegramSentDate: new Date().toISOString().split('T')[0],
-                telegramScheduledDate,
-                telegramError: undefined,
-              }
-            : i
-        );
-        onUpdateInvoices?.(updated);
         setTelegramLogs((prev) => [...prev, `✅ SUCCESS: Dispatched packet ID ${data.messageId || 'N/A'}`]);
+        // The log panel lives on the Telegram delivery page, so confirm here too.
+        toast.success(t('telegram_send_success'));
         logAction(
           'Sent Telegram Invoice',
           'បានបញ្ជូនវិក្កយបត្រតេឡេក្រាម',
@@ -212,21 +224,20 @@ export function useInvoicesController({
       } else {
         const errMsg = data.error || 'Server proxy failed';
         setTelegramLogs((prev) => [...prev, `❌ FAILED: ${errMsg}`]);
-        const updated = invoices.map((i) =>
-          i.id === invoice.id ? { ...i, telegramStatus: 'failed' as const, telegramError: errMsg } : i
-        );
-        onUpdateInvoices?.(updated);
+        toast.error(t('telegram_send_failed', { error: errMsg }));
       }
     } catch (err: any) {
       setTelegramLogs((prev) => [...prev, `❌ EXCEPTION: ${err.message || 'Network error'}`]);
+      toast.error(t('telegram_send_failed', { error: err.message || 'Network error' }));
     } finally {
       setTelegramIsDispatching(false);
+      refreshInvoices();
     }
   }
 
   async function handleTriggerScheduledQueue() {
     const dispatchable = filteredInvoices.filter((inv) => {
-      if (inv.status === 'paid') return false;
+      if (inv.status === 'paid' || inv.telegramStatus === 'sent') return false;
       const tenant = tenants.find((tn) => tn.id === inv.tenantId);
       return !!(tenant && tenant.telegramChatId);
     });
@@ -242,7 +253,6 @@ export function useInvoicesController({
 
     let successCount = 0;
     let failedCount = 0;
-    let localInvoices = [...invoices];
 
     for (let index = 0; index < dispatchable.length; index++) {
       const invoice = dispatchable[index];
@@ -255,44 +265,25 @@ export function useInvoicesController({
       ]);
       setTelegramProgress(Math.round((index / dispatchable.length) * 100));
 
-      const textHTML = generateTelegramInvoiceHTML(invoice, tenant.name, rName, lang);
 
       try {
-        const { ok: resOk, data } = await dispatchToTelegram(tenant.id, textHTML);
+        const { image, caption } = await buildTelegramPayload(invoice, tenant);
+        const { ok: resOk, data } = await dispatchToTelegram(tenant.id, invoice.id, image, caption);
         if (resOk && data.success) {
-          localInvoices = localInvoices.map((i) =>
-            i.id === invoice.id
-              ? {
-                  ...i,
-                  telegramStatus: 'sent' as const,
-                  telegramSentDate: new Date().toISOString().split('T')[0],
-                  telegramScheduledDate,
-                  telegramError: undefined,
-                }
-              : i
-          );
           successCount++;
           setTelegramLogs((prev) => [...prev, `   ✅ Dispatched message ID: ${data.messageId || 'N/A'}`]);
         } else {
           const errMsg = data.error || 'Server proxy failed';
-          localInvoices = localInvoices.map((i) =>
-            i.id === invoice.id ? { ...i, telegramStatus: 'failed' as const, telegramError: errMsg } : i
-          );
           failedCount++;
           setTelegramLogs((prev) => [...prev, `   ❌ Failed: ${errMsg}`]);
         }
       } catch (err: any) {
-        localInvoices = localInvoices.map((i) =>
-          i.id === invoice.id
-            ? { ...i, telegramStatus: 'failed' as const, telegramError: err.message || 'Network connection failed' }
-            : i
-        );
         failedCount++;
         setTelegramLogs((prev) => [...prev, `   ❌ Error: ${err.message || 'Connection error'}`]);
       }
     }
 
-    onUpdateInvoices?.(localInvoices);
+    refreshInvoices();
     setTelegramProgress(100);
     setTelegramLogs((prev) => [
       ...prev,
@@ -317,10 +308,11 @@ export function useInvoicesController({
     setPayAmount(Number(remaining.toFixed(2)));
     setPayMethod('aba');
     setPayNotes('');
+    setPayDate(localToday());
     setShowPaymentModal(true);
   }
 
-  function handleSubmitPayment(e: React.FormEvent) {
+  async function handleSubmitPayment(e: React.FormEvent) {
     e.preventDefault();
     if (!canPay) return;
     if (!payAmount || payAmount <= 0) {
@@ -336,7 +328,14 @@ export function useInvoicesController({
       return;
     }
 
-    onRecordPayment(targetInvoiceId, Number(payAmount), payMethod, payNotes);
+    setPaySaving(true);
+    try {
+      await onRecordPayment(targetInvoiceId, Number(payAmount), payMethod, payNotes || undefined, payDate);
+    } catch {
+      return; // error already shown
+    } finally {
+      setPaySaving(false);
+    }
     const rName = roomName(currentInv);
     logAction(
       'Recorded Rent Payment',
@@ -344,7 +343,11 @@ export function useInvoicesController({
       `Logged payment of $${payAmount} via ${payMethod.toUpperCase()} for Room ${rName}`,
       `បានកត់ត្រាការបង់ប្រាក់ចំនួន $${payAmount} តាមរយៈ ${payMethod.toUpperCase()} សម្រាប់បន្ទប់ ${rName}`
     );
-    setShowPaymentModal(false);
+    // Keep the dialog open so the receipt can be printed / sent; prefill the
+    // rest of the balance for a further partial payment.
+    const left = Number((remaining - payAmount).toFixed(2));
+    setPayAmount(left > 0 ? left : 0);
+    setPayNotes('');
   }
 
   function handleGenerateClick() {
@@ -400,13 +403,16 @@ export function useInvoicesController({
     setPayMethod,
     payNotes,
     setPayNotes,
+    payDate,
+    setPayDate,
+    paySaving,
+    targetInvoiceId,
     handleOpenPaymentClick,
     handleSubmitPayment,
     // print
     printInvoice,
     setPrintInvoice,
     // telegram
-    telegramScheduledDate,
     telegramIsSettingsOpen,
     setTelegramIsSettingsOpen,
     telegramIsDispatching,
@@ -414,7 +420,6 @@ export function useInvoicesController({
     setTelegramLogs,
     telegramProgress,
     telegramTestStatus,
-    handleSaveScheduledDate,
     handleTestBotConnection,
     handleDispatchSingleInvoice,
     handleTriggerScheduledQueue,

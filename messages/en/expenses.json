@@ -1,0 +1,28 @@
+{
+  "Expenses": {
+    "title": "Expenses",
+    "add": "Add expense",
+    "edit": "Edit expense",
+    "all_buildings": "All buildings",
+    "general": "General (all buildings)",
+    "amount": "Amount (USD)",
+    "building": "Building",
+    "category": "Category",
+    "date": "Date",
+    "delete": "Delete",
+    "delete_confirm": "Delete this expense?",
+    "deleted": "Expense deleted",
+    "description": "Description",
+    "description_placeholder": "e.g. Fixed water pump in A-201",
+    "empty": "No expenses recorded for this period.",
+    "save": "Save",
+    "saved": "Expense saved",
+    "total_for_year": "Total expenses in {year}",
+    "cat_repair": "Repair",
+    "cat_cleaning": "Cleaning",
+    "cat_utilities": "Utilities",
+    "cat_tax": "Tax",
+    "cat_salary": "Salary",
+    "cat_other": "Other"
+  }
+}

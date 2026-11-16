@@ -52,6 +52,14 @@
     "building_not_found": "Building not found.",
     "delete_building": "Delete building",
     "search_placeholder": "Search buildings...",
-    "no_buildings_match_search": "No buildings match your search."
+    "no_buildings_match_search": "No buildings match your search.",
+    "all_rooms_heading": "All rooms",
+    "building_col": "Building",
+    "tenant_col": "Current tenant",
+    "all_buildings": "All buildings",
+    "search_rooms_placeholder": "Search room or tenant…",
+    "no_rooms_match": "No rooms match these filters.",
+    "status_col": "Status",
+    "occupied_by_lease_hint": "set by the lease. End it with \"Move out\" on the tenant's page."
   }
 }

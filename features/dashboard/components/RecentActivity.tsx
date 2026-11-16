@@ -13,15 +13,15 @@ export function RecentActivity({
   const t = useTranslations('Dashboard');
   return (
     <div
-      className="bg-card border border-border p-6 rounded-3xl shadow-lg shadow-black/20"
+      className="bg-card border border-(--card-border) p-6 rounded-3xl shadow-card"
       id="dashboard-recent-activities"
     >
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-sm font-bold text-foreground tracking-wider uppercase flex items-center gap-2 font-mono">
+        <h3 className="text-base font-semibold text-foreground flex items-center gap-2 tracking-tight">
           <Clock className="w-4 h-4 text-primary animate-pulse" />
           {t('recent_activities')}
         </h3>
-        <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-widest font-mono">
+        <span className="text-[11px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold">
           {t('live_logs')}
         </span>
       </div>
@@ -67,7 +67,7 @@ export function RecentActivity({
                     ) : null}
                     <div className="relative flex space-x-3 items-start">
                       <div>
-                        <span className="h-8 w-8 rounded-full bg-card border border-border flex items-center justify-center ring-8 ring-ring bg-muted">
+                        <span className="h-8 w-8 rounded-full bg-card border border-(--card-border) flex items-center justify-center ring-8 ring-ring bg-muted">
                           <User className="w-4 h-4 text-primary" />
                         </span>
                       </div>
@@ -84,7 +84,7 @@ export function RecentActivity({
                               {log.username}
                             </span>
                             <span
-                              className={`text-[9px] uppercase font-bold px-1.5 py-0.2 rounded-md ${roleColor}`}
+                              className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${roleColor}`}
                             >
                               {log.role}
                             </span>

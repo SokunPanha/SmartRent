@@ -1,68 +1,38 @@
-import { TrendingUp, Coins, Receipt } from 'lucide-react';
+import { TrendingUp, Coins, Receipt, Wrench, PiggyBank } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { AppLanguage } from '@/lib/types';
+import { cn } from '@/lib/utils';
 import { formatUSD, formatKHRFromUSD } from '@/lib/format';
 import { ReportData } from '../reports.helpers';
 
-export function SummaryCards({
-  data,
-  lang,
-}: {
-  data: ReportData;
-  lang: AppLanguage;
-}) {
+/** Year totals: billed, cash received, still owed, expenses, net profit. */
+export function SummaryCards({ data }: { data: ReportData; lang: AppLanguage }) {
   const t = useTranslations('Reports');
+  const cards = [
+    { label: t('gross_revenue_invoiced'), value: data.totalInvoiced, icon: Coins, tone: 'text-primary bg-primary/10' },
+    { label: t('cash_received'), value: data.totalCollected, icon: TrendingUp, tone: 'text-chart-2 bg-chart-2/10' },
+    { label: t('outstanding_ar'), value: data.totalOutstanding, icon: Receipt, tone: 'text-destructive bg-destructive/10' },
+    { label: t('expenses_total'), value: data.totalExpenses, icon: Wrench, tone: 'text-chart-3 bg-chart-3/10' },
+    {
+      label: t('net_profit'),
+      value: data.netProfit,
+      icon: PiggyBank,
+      tone: data.netProfit >= 0 ? 'text-chart-2 bg-chart-2/10' : 'text-destructive bg-destructive/10',
+    },
+  ];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="bg-card p-5 rounded-2xl border border-border shadow-3xs hover:border-primary/30 transition">
-        <div className="flex justify-between items-center text-primary bg-primary/10 p-2.5 rounded-xl w-fit">
-          <Coins className="w-5 h-5" />
-        </div>
-        <div className="mt-4">
-          <span className="text-xs text-muted-foreground uppercase tracking-widest block font-bold">
-            {t('gross_revenue_invoiced')}
-          </span>
-          <span className="text-2xl font-black text-foreground font-mono block mt-1">
-            {formatUSD(data.totalInvoiced)}
-          </span>
-          <span className="text-[11px] text-muted-foreground font-mono block mt-0.5">
-            ≈ {formatKHRFromUSD(data.totalInvoiced)}
-          </span>
-        </div>
-      </div>
-
-      <div className="bg-card p-5 rounded-2xl border border-border shadow-3xs hover:border-chart-2/30 transition">
-        <div className="flex justify-between items-center text-chart-2 bg-chart-2/10 p-2.5 rounded-xl w-fit">
-          <TrendingUp className="w-5 h-5" />
-        </div>
-        <div className="mt-4">
-          <span className="text-xs text-muted-foreground uppercase tracking-widest block font-bold">
-            {t('total_cash_receipts')}
-          </span>
-          <span className="text-2xl font-black text-chart-2 font-mono block mt-1">
-            {formatUSD(data.totalCollected)}
-          </span>
-          <span className="text-[11px] text-muted-foreground font-mono block mt-0.5">
-            ≈ {formatKHRFromUSD(data.totalCollected)}
-          </span>
-        </div>
-      </div>
-
-      <div className="bg-card p-5 rounded-2xl border border-border shadow-3xs hover:border-destructive/30 transition">
-        <div className="flex justify-between items-center text-destructive bg-destructive/10 p-2.5 rounded-xl w-fit">
-          <Receipt className="w-5 h-5" />
-        </div>
-        <div className="mt-4">
-          <span className="text-xs text-muted-foreground uppercase tracking-widest block font-bold">
-            {t('outstanding_ar')}
-          </span>
-          <span className="text-2xl font-black text-destructive font-mono block mt-1">
-            {formatUSD(data.totalOutstanding)}
-          </span>
-          <span className="text-[11px] text-muted-foreground font-mono block mt-0.5">
-            ≈ {formatKHRFromUSD(data.totalOutstanding)}
-          </span>
-        </div>
+    <div className="@container">
+      <div className="grid grid-cols-2 gap-4 @3xl:grid-cols-3 @5xl:grid-cols-5">
+        {cards.map(({ label, value, icon: Icon, tone }) => (
+          <div key={label} className="rounded-(--radius-card) border border-(--card-border) bg-card p-5 shadow-card">
+            <span className={cn('flex size-10 items-center justify-center rounded-full', tone)}>
+              <Icon className="size-5" />
+            </span>
+            <span className="mt-3 block text-xs font-semibold text-muted-foreground">{label}</span>
+            <span className="mt-1 block font-mono text-xl font-bold text-foreground">{formatUSD(value)}</span>
+            <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">≈ {formatKHRFromUSD(value)}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

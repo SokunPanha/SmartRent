@@ -8,7 +8,7 @@ export function ModalHeader({ title, onClose }: { title: React.ReactNode; onClos
       <button
         type="button"
         onClick={onClose}
-        className="p-1 hover:bg-muted rounded-sm text-muted-foreground hover:text-muted-foreground cursor-pointer"
+        className="p-1.5 hover:bg-muted rounded-sm text-muted-foreground hover:text-muted-foreground cursor-pointer"
       >
         <X className="w-4 h-4" />
       </button>

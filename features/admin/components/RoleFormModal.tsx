@@ -74,14 +74,14 @@ export function RoleFormModal({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={t('role_description_placeholder')}
                 rows={3}
-                className="w-full resize-none rounded-lg border border-input bg-card px-3 py-2 font-sans text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                className="w-full resize-none rounded-xl border border-input bg-card px-4 py-2.5 font-sans text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
               />
             </div>
             <div className="flex gap-2 pt-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-sm border border-border py-2 font-sans text-sm transition hover:bg-muted cursor-pointer"
+                className="flex-1 rounded-sm border border-border py-2.5 font-sans text-sm transition hover:bg-muted cursor-pointer"
               >
                 {t('cancel')}
               </button>
@@ -89,7 +89,7 @@ export function RoleFormModal({
                 type="button"
                 disabled={!nameValid}
                 onClick={() => setStep(2)}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-sm bg-primary py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 cursor-pointer disabled:opacity-40"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-sm bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 cursor-pointer disabled:opacity-40"
               >
                 {t('next')}
                 <ArrowRight className="h-4 w-4" />
@@ -103,7 +103,7 @@ export function RoleFormModal({
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-sm border border-border py-2 font-sans text-sm transition hover:bg-muted cursor-pointer"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-sm border border-border py-2.5 font-sans text-sm transition hover:bg-muted cursor-pointer"
               >
                 <ArrowLeft className="h-4 w-4" />
                 {t('back')}
@@ -112,7 +112,7 @@ export function RoleFormModal({
                 type="button"
                 disabled={busy || !nameValid}
                 onClick={handleCreate}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-sm bg-primary py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 cursor-pointer disabled:opacity-40"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-sm bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 cursor-pointer disabled:opacity-40"
               >
                 <Check className="h-4 w-4" />
                 {t('create_role_action')}

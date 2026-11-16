@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { Send, Settings, Loader2, CalendarDays } from 'lucide-react';
+import { Send, Settings, Loader2 } from 'lucide-react';
 import { Tenant, AppLanguage } from '@/lib/types';
 import { useInvoicesController } from '../use-invoices-controller';
 
@@ -27,7 +27,7 @@ export function TelegramHub({
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 px-2.5 rounded-full bg-primary/20 text-primary font-mono text-[10px] uppercase font-bold tracking-widest border border-primary/30">
+            <span className="p-1.5 px-2.5 rounded-full bg-primary/20 text-primary text-xs font-bold border border-primary/30">
               {t('telegram_service_badge')}
             </span>
             <span className="flex h-2 w-2 relative">
@@ -46,7 +46,7 @@ export function TelegramHub({
 
         <button
           onClick={() => c.setTelegramIsSettingsOpen(!c.telegramIsSettingsOpen)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-card/10 hover:bg-card/20 text-primary hover:text-foreground rounded-lg transition border border-border cursor-pointer"
+          className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold bg-card/10 hover:bg-card/20 text-primary hover:text-foreground rounded-full transition border border-(--card-border) cursor-pointer"
         >
           <Settings className="w-4 h-4" />
           {t('bot_credentials')}
@@ -54,28 +54,28 @@ export function TelegramHub({
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-        <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
+        <div className="bg-card/5 border border-(--card-border) rounded-xl p-3 text-center">
+          <p className="text-xs text-muted-foreground font-sans">
             {t('active_recipients')}
           </p>
           <p className="text-xl font-mono font-bold text-primary mt-1">
             {recipients} <span className="text-xs text-muted-foreground font-sans">/ {tenants.length}</span>
           </p>
         </div>
-        <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
+        <div className="bg-card/5 border border-(--card-border) rounded-xl p-3 text-center">
+          <p className="text-xs text-muted-foreground font-sans">
             {t('scheduled_queue')}
           </p>
           <p className="text-xl font-mono font-bold text-chart-1 mt-1">{queued}</p>
         </div>
-        <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
+        <div className="bg-card/5 border border-(--card-border) rounded-xl p-3 text-center">
+          <p className="text-xs text-muted-foreground font-sans">
             {t('successful_sends')}
           </p>
           <p className="text-xl font-mono font-bold text-chart-2 mt-1">{sent}</p>
         </div>
-        <div className="bg-card/5 border border-border rounded-xl p-3 text-center">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-sans">
+        <div className="bg-card/5 border border-(--card-border) rounded-xl p-3 text-center">
+          <p className="text-xs text-muted-foreground font-sans">
             {t('deliveries_failed')}
           </p>
           <p className="text-xl font-mono font-bold text-destructive mt-1">{failed}</p>
@@ -83,30 +83,16 @@ export function TelegramHub({
       </div>
 
       <div className="bg-background/40 p-4 rounded-xl border border-border flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
-        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center shrink-0">
-          <div className="space-y-1">
-            <label className="text-[10px] uppercase font-bold text-primary font-sans tracking-wider block">
-              {t('scheduled_auto_send_date')}
-            </label>
-            <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground">
-              <CalendarDays className="w-4 h-4 text-muted-foreground" />
-              <input
-                type="date"
-                value={c.telegramScheduledDate}
-                onChange={(e) => c.handleSaveScheduledDate(e.target.value)}
-                className="bg-transparent text-foreground focus:outline-none font-mono"
-              />
-            </div>
-          </div>
+        <div className="min-w-0 space-y-1">
+          <p className="text-sm font-semibold text-foreground">{t('manual_send_title')}</p>
+          <p className="text-xs text-muted-foreground">{t('manual_send_desc')}</p>
         </div>
 
         <div className="flex gap-2 items-center self-end md:self-auto">
           <button
             onClick={c.handleTriggerScheduledQueue}
             disabled={c.telegramIsDispatching}
-            className={`flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold rounded-lg transition shadow-sm cursor-pointer ${
-              c.telegramIsDispatching
-                ? 'bg-primary/50 text-primary-foreground/70 border border-primary/20'
+            className={`flex items-center gap-1.5 px-6 py-3 text-xs font-bold rounded-full transition shadow-sm cursor-pointer ${ c.telegramIsDispatching ?'bg-primary/50 text-primary-foreground/70 border border-primary/20'
                 : 'bg-primary hover:bg-primary/90 text-primary-foreground border border-primary'
             }`}
           >
@@ -136,7 +122,7 @@ export function TelegramHub({
             <button
               onClick={c.handleTestBotConnection}
               disabled={c.telegramTestStatus === 'loading'}
-              className="px-3 py-2 bg-card/10 hover:bg-card/15 text-primary font-semibold rounded-lg shrink-0 transition cursor-pointer"
+              className="px-4 py-2.5 bg-card/10 hover:bg-card/15 text-primary font-semibold rounded-full shrink-0 transition cursor-pointer"
             >
               {c.telegramTestStatus === 'loading' ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -179,7 +165,7 @@ export function TelegramHub({
             <span>✈️ {t('telegram_console_title')}</span>
             <button
               onClick={() => c.setTelegramLogs([])}
-              className="text-muted-foreground hover:text-foreground transition uppercase text-[9px] cursor-pointer"
+              className="text-muted-foreground hover:text-foreground transition text-xs cursor-pointer"
             >
               {t('telegram_clear_console')}
             </button>

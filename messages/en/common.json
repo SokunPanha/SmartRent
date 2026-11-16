@@ -5,6 +5,7 @@
     "khemar_lang": "ភាសាខ្មែរ",
     "english_lang": "English",
     "theme_color": "Theme",
+    "theme_indigo": "Indigo",
     "theme_crimson": "Crimson (ABA)",
     "theme_navy": "Dark Navy",
     "theme_amethyst": "Amethyst",
@@ -52,6 +53,14 @@
     "pagination_prev": "Previous page",
     "pagination_next": "Next page",
     "system_settings": "System Settings",
-    "theme_toggle": "Toggle theme"
+    "theme_toggle": "Toggle theme",
+    "nav_tenants": "Tenants",
+    "nav_contracts": "Contracts",
+    "nav_buildings": "Buildings",
+    "nav_all_rooms": "All rooms",
+    "nav_invoices": "Invoices",
+    "nav_telegram_delivery": "Telegram delivery",
+    "nav_reports": "Reports",
+    "nav_expenses": "Expenses"
   }
 }

@@ -4,9 +4,9 @@ import { Lightbulb, Droplet } from 'lucide-react';
 export function UtilityChart() {
   const t = useTranslations('Dashboard');
   return (
-    <div className="bg-card border border-border p-6 rounded-3xl flex flex-col shadow-lg shadow-black/20">
+    <div className="bg-card border border-(--card-border) p-6 rounded-3xl flex flex-col shadow-card">
       <div className="mb-4">
-        <h3 className="text-sm font-bold text-foreground tracking-wider uppercase font-mono">
+        <h3 className="text-base font-semibold text-foreground tracking-tight">
           {t('utility_consumption')}
         </h3>
         <p className="text-xs text-muted-foreground mt-0.5">

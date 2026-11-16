@@ -70,6 +70,7 @@ export default function TenantDetailPage() {
         lang={lang}
         onAddContract={(contract) => contractMut.create.mutate(contract)}
         onDeleteTenant={(id) => tenantMut.remove.mutate(id)}
+        onUpdateTenant={(patch) => tenantMut.update.mutateAsync(patch)}
         generateTelegramCode={(tenantId) => tenantMut.generateTelegramCode.mutateAsync(tenantId)}
         logAction={logAction}
       />

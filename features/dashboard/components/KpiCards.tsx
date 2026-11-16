@@ -1,9 +1,51 @@
 import { Building2, Building, Coins, AlertTriangle, ArrowUpRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { formatUSD, formatKHRFromUSD } from '@/lib/format';
+import { cn } from '@/lib/utils';
 import { DashboardStats } from '../dashboard.helpers';
 
 const usd0 = (v: number) => formatUSD(v, 0);
+
+/** Pastel metric tile (see `.tile*` in globals.css / DESIGN.md). */
+function KpiTile({
+  id,
+  tone,
+  icon: Icon,
+  label,
+  chip,
+  onClick,
+  children,
+}: {
+  id: string;
+  tone: 'indigo' | 'green' | 'orange' | 'yellow';
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  chip?: React.ReactNode;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      id={id}
+      onClick={onClick}
+      className={cn(
+        'tile group flex min-h-40 cursor-pointer flex-col justify-between p-5 transition duration-200 hover:brightness-[0.98]',
+        tone !== 'indigo' && `tile-${tone}`
+      )}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[15px] font-medium leading-tight">{label}</span>
+        <span className="tile-icon size-9 shrink-0 shadow-sm transition group-hover:scale-105">
+          <Icon className="size-[18px]" />
+        </span>
+      </div>
+      <div className="mt-4">
+        {children}
+        {chip && <div className="mt-1.5 text-xs font-medium tile-muted">{chip}</div>}
+      </div>
+    </div>
+  );
+}
 
 export function KpiCards({
   stats,
@@ -13,115 +55,82 @@ export function KpiCards({
   onNavigate: (tab: string) => void;
 }) {
   const t = useTranslations('Dashboard');
+  const paidPct = Math.round(
+    (stats.currentMonthRevenueCollected / (stats.currentMonthRevenueInvoiced || 1)) * 100
+  );
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-metric-cards-grid">
-      {/* KPI: Total Properties */}
-      <div
-        onClick={() => onNavigate('properties')}
-        className="bg-card p-5 rounded-2xl border border-border shadow-card hover:border-primary/30 transition duration-200 cursor-pointer group"
+      <KpiTile
         id="kpi-properties"
-      >
-        <div className="flex items-start justify-between">
-          <div className="p-2.5 bg-primary/10 rounded-xl text-primary group-hover:scale-105 transition">
-            <Building2 className="w-5 h-5" />
-          </div>
-          <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition" />
-        </div>
-        <div className="mt-3">
-          <span className="text-xs font-medium text-muted-foreground block">
-            {t('total_properties')}
-          </span>
-          <span className="text-2xl font-bold text-foreground tracking-tight font-sans">
-            {stats.totalProperties}
-          </span>
-        </div>
-      </div>
-
-      {/* KPI: Total Rooms */}
-      <div
+        tone="indigo"
+        icon={Building2}
+        label={t('total_properties')}
         onClick={() => onNavigate('properties')}
-        className="bg-card p-5 rounded-2xl border border-border shadow-card hover:border-primary/30 transition duration-200 cursor-pointer group"
+        chip={
+          <span className="inline-flex items-center gap-1">
+            <ArrowUpRight className="size-3.5" />
+            {stats.totalRooms} {t('total_rooms').toLowerCase()}
+          </span>
+        }
+      >
+        <span className="block text-3xl font-bold tracking-tight">{stats.totalProperties}</span>
+      </KpiTile>
+
+      <KpiTile
         id="kpi-rooms"
+        tone="green"
+        icon={Building}
+        label={t('total_rooms')}
+        onClick={() => onNavigate('properties')}
+        chip={
+          <>
+            {stats.occupiedRooms}/{stats.totalRooms} {t('occ_short')} · {stats.vacantRooms}{' '}
+            {t('vacant').toLowerCase()}
+          </>
+        }
       >
-        <div className="flex items-start justify-between">
-          <div className="p-2.5 bg-info/10 rounded-xl text-info group-hover:scale-105 transition">
-            <Building className="w-5 h-5" />
-          </div>
-          <span className="text-[11px] font-semibold bg-info/10 text-info px-2 py-0.5 rounded-full border border-info/20">
-            {stats.occupiedRooms}/{stats.totalRooms} {t('occ_short')}
-          </span>
-        </div>
-        <div className="mt-3">
-          <span className="text-xs font-medium text-muted-foreground block">
-            {t('total_rooms')}
-          </span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-foreground tracking-tight font-sans">
-              {stats.totalRooms}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              ({stats.vacantRooms} {t('vacant').toLowerCase()})
-            </span>
-          </div>
-        </div>
-      </div>
+        <span className="block text-3xl font-bold tracking-tight">{stats.totalRooms}</span>
+      </KpiTile>
 
-      {/* KPI: Rent Revenue (current month) */}
-      <div
-        onClick={() => onNavigate('invoices')}
-        className="bg-card p-5 rounded-2xl border border-border shadow-card hover:border-primary/30 transition duration-200 cursor-pointer group"
+      <KpiTile
         id="kpi-revenue"
-      >
-        <div className="flex items-start justify-between">
-          <div className="p-2.5 bg-chart-2/10 rounded-xl text-chart-2 group-hover:scale-105 transition">
-            <Coins className="w-5 h-5" />
-          </div>
-          <span className="text-[11px] font-semibold bg-chart-2/10 text-chart-2 px-2 py-0.5 rounded-full border border-chart-2/20">
-            {Math.round((stats.currentMonthRevenueCollected / (stats.currentMonthRevenueInvoiced || 1)) * 100)}%{' '}
-            {t('paid_short')}
-          </span>
-        </div>
-        <div className="mt-3">
-          <span className="text-xs font-medium text-muted-foreground block">
-            {t('monthly_revenue')}
-          </span>
-          <span className="text-2xl font-bold text-foreground tracking-tight block">
-            {usd0(stats.currentMonthRevenueInvoiced)}
-          </span>
-          <span className="text-[11px] text-muted-foreground block mt-0.5">
-            ≈ {formatKHRFromUSD(stats.currentMonthRevenueInvoiced)}
-          </span>
-        </div>
-      </div>
-
-      {/* KPI: Outstanding Amount */}
-      <div
+        tone="yellow"
+        icon={Coins}
+        label={t('monthly_revenue', { month: t(`month_${new Date().getMonth() + 1}`) })}
         onClick={() => onNavigate('invoices')}
-        className="bg-card p-5 rounded-2xl border border-border shadow-card hover:border-primary/30 transition duration-200 cursor-pointer group"
-        id="kpi-outstanding"
+        chip={
+          <>
+            {paidPct}% {t('paid_short')} · ≈ {formatKHRFromUSD(stats.currentMonthRevenueInvoiced)}
+          </>
+        }
       >
-        <div className="flex items-start justify-between">
-          <div className="p-2.5 bg-destructive/10 rounded-xl text-destructive group-hover:scale-105 transition">
-            <AlertTriangle className="w-5 h-5" />
-          </div>
-          {stats.overdueCount > 0 && (
-            <span className="text-[11px] font-semibold bg-destructive/10 text-destructive px-2 py-0.5 rounded-full border border-destructive/20">
-              {stats.overdueCount} {t('overdue_short')}
-            </span>
-          )}
-        </div>
-        <div className="mt-3">
-          <span className="text-xs font-medium text-muted-foreground block">
-            {t('outstanding_amount')}
-          </span>
-          <span className="text-2xl font-bold text-destructive tracking-tight block">
-            {usd0(stats.totalOutstanding)}
-          </span>
-          <span className="text-[11px] text-muted-foreground block mt-0.5">
+        <span className="block text-3xl font-bold tracking-tight">
+          {usd0(stats.currentMonthRevenueInvoiced)}
+        </span>
+      </KpiTile>
+
+      <KpiTile
+        id="kpi-outstanding"
+        tone="orange"
+        icon={AlertTriangle}
+        label={t('outstanding_amount')}
+        onClick={() => onNavigate('invoices')}
+        chip={
+          <>
+            {stats.overdueCount > 0 && (
+              <>
+                {stats.overdueCount} {t('overdue_short')} ·{' '}
+              </>
+            )}
             ≈ {formatKHRFromUSD(stats.totalOutstanding)}
-          </span>
-        </div>
-      </div>
+          </>
+        }
+      >
+        <span className="block text-3xl font-bold tracking-tight">
+          {usd0(stats.totalOutstanding)}
+        </span>
+      </KpiTile>
     </div>
   );
 }

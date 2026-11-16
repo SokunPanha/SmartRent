@@ -26,7 +26,7 @@ export function PageSkeleton() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="flex flex-col gap-4 rounded-(--radius-card) border border-border bg-card p-6 shadow-card"
+            className="flex flex-col gap-4 rounded-(--radius-card) border border-(--card-border) bg-card p-6 shadow-card"
           >
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-8 w-20" />
@@ -36,7 +36,7 @@ export function PageSkeleton() {
       </div>
 
       {/* List / table block */}
-      <div className="flex flex-col gap-4 rounded-(--radius-card) border border-border bg-card p-6 shadow-card">
+      <div className="flex flex-col gap-4 rounded-(--radius-card) border border-(--card-border) bg-card p-6 shadow-card">
         <Skeleton className="h-5 w-40" />
         <div className="flex flex-col gap-3">
           {Array.from({ length: 6 }).map((_, i) => (

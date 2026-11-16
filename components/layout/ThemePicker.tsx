@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useIsClient } from '@/hooks/use-is-client';
 import { Check, Palette } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -19,9 +19,7 @@ import { ACCENTS, useAccent } from '@/components/theme/accent-provider';
 export function ThemePicker() {
   const t = useTranslations('Common');
   const { accent, setAccent } = useAccent();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useIsClient();
 
   return (
     <DropdownMenu>
@@ -29,7 +27,7 @@ export function ThemePicker() {
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="size-10"
           aria-label={t('theme_color')}
         >
           <Palette className="h-4 w-4 text-primary" />

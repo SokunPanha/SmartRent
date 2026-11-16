@@ -31,6 +31,18 @@ export function useUpdateSettings() {
   });
 }
 
+export function useUpdateBusiness() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: settingsApi.updateBusiness,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: settingsKeys.all });
+      toast('Business details saved!');
+    },
+    onError: (e) => toast.error(e.message),
+  });
+}
+
 export function useUpdateZoneRates() {
   const qc = useQueryClient();
   return useMutation({

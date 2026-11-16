@@ -39,6 +39,27 @@
     "water_rate": "Water Rate (KHR/m³)",
     "actions": "Actions",
     "no_zones": "No property locations yet.",
-    "use_system_default": "Use system default"
+    "use_system_default": "Use system default",
+    "business_title": "Business & payment details",
+    "business_desc": "Shown on every invoice (printed and sent on Telegram). Leave a field empty to hide it.",
+    "business_name_kh": "Business name (Khmer)",
+    "business_name_en": "Business name (English)",
+    "business_phone": "Phone",
+    "business_address_kh": "Address (Khmer)",
+    "business_address_en": "Address (English)",
+    "bank_section": "Bank account",
+    "bank_name": "Bank",
+    "bank_account_name": "Account name",
+    "bank_account_number": "Account number",
+    "payment_qr": "Payment QR (e.g. ABA KHQR)",
+    "payment_qr_hint": "PNG or JPG, up to 2 MB. Printed on invoices so tenants can scan and pay.",
+    "payment_qr_upload": "Upload QR",
+    "payment_qr_replace": "Replace",
+    "payment_qr_remove": "Remove",
+    "payment_qr_uploading": "Uploading…",
+    "business_preview_note": "Tip: open any invoice to preview how this looks.",
+    "invoice_days_help": "Day of the billing month invoices are issued and due (1–28; due on or after the issue day).",
+    "invoice_due_day": "Invoice due day",
+    "invoice_issue_day": "Invoice issue day"
   }
 }

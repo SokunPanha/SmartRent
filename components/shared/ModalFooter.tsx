@@ -20,7 +20,7 @@ export function ModalFooter({
       <button
         type="button"
         onClick={onCancel}
-        className="flex-1 py-2 rounded-sm text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
+        className="flex-1 py-2.5 rounded-sm text-sm border border-border hover:bg-muted transition cursor-pointer font-sans"
       >
         {cancelLabel}
       </button>
@@ -28,7 +28,7 @@ export function ModalFooter({
         type="submit"
         disabled={submitDisabled}
         className={cn(
-          'flex-1 py-2 rounded-sm text-sm transition font-semibold cursor-pointer font-sans disabled:opacity-40 disabled:cursor-not-allowed',
+          'flex-1 py-2.5 rounded-sm text-sm transition font-semibold cursor-pointer font-sans disabled:opacity-40 disabled:cursor-not-allowed',
           'bg-primary hover:bg-primary/90 text-primary-foreground'
         )}
       >

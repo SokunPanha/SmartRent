@@ -22,7 +22,7 @@ export function DeleteButton({
       disabled={disabled}
       title={title}
       className={cn(
-        'text-muted-foreground hover:text-destructive rounded-md hover:bg-destructive/10 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground',
+        'text-muted-foreground hover:text-destructive rounded-full hover:bg-destructive/10 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground',
         size === 'sm' ? 'p-1' : 'p-1.5',
         className
       )}

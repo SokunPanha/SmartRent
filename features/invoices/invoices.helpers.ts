@@ -53,57 +53,31 @@ export function getTenantNameByInvoice(inv: Invoice, tenants: Tenant[], lang: Ap
   return tItem ? pickLocale(lang, tItem.name, tItem.nameKh) : 'Unknown';
 }
 
-/** Builds the HTML message body sent to a tenant over Telegram. */
-export function generateTelegramInvoiceHTML(
-  inv: Invoice,
-  tenantName: string,
-  roomName: string,
-  lang: AppLanguage
-): string {
-  const elecUnits = inv.electricityCurr - inv.electricityPrev;
-  const waterUnits = inv.waterCurr - inv.waterPrev;
-  const feeLines = inv.feeLines ?? [];
-  const feeLinesKh = feeLines
-    .map((f) => `\n• ${f.nameKh}៖ ${f.amountUSD.toFixed(2)} (៛${f.amountKHR.toLocaleString()})`)
-    .join('');
-  const feeLinesEn = feeLines
-    .map((f) => `\n• ${f.name}: ${f.amountUSD.toFixed(2)} (≈ ${f.amountKHR.toLocaleString()} KHR)`)
-    .join('');
+const escapeHtml = (v: string) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const money = (v: number) =>
+  '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  if (lang === 'kh') {
-    return `<b>🔔 វិក្កយបត្រថ្លៃឈ្នួលបន្ទប់សរុប (ខែ${getMonthName(inv.month, 'kh')} ${inv.year})</b>
-----------------------------------
-<b>🏢 បន្ទប់៖</b> ${roomName}
-<b>👤 អតិថិជន៖</b> ${tenantName}
-<b>📅 ថ្ងៃចេញវិក្កយបត្រ៖</b> ${inv.issueDate}
-<b>⏰ កាលកំណត់បង់ប្រាក់៖</b> ${inv.dueDate}
-----------------------------------
-<b>💰 សេចក្តីលម្អិតអំពីការគិតប្រាក់៖</b>
-• ថ្លៃឈ្នួលបន្ទប់មូលដ្ឋាន៖ ${inv.rentAmountUSD}
-• ថ្លៃអគ្គិសនី (${elecUnits} kWh): ${inv.electricityCostUSD.toFixed(2)} (៛${inv.electricityCostKHR.toLocaleString()})
-• ថ្លៃទឹកប្រើប្រាស់ (${waterUnits} m³): ${inv.waterCostUSD.toFixed(2)} (៛${inv.waterCostKHR.toLocaleString()})${feeLinesKh}
-----------------------------------
-<b>💵 ចំនួនទឹកប្រាក់ត្រូវទូទាត់សរុប៖</b>
-<b>${inv.totalAmountUSD.toFixed(2)} USD</b> (≈ ៛${inv.totalAmountKHR.toLocaleString()})
-----------------------------------
-<i>សូមទូទាត់ប្រាក់តាមរយៈ ABA QR ឬសាច់ប្រាក់មុនថ្ងៃកំណត់។ សូមអរគុណ! 🙏</i>`;
-  }
+/** Short HTML caption sent under the invoice image on Telegram — the image
+ *  carries the full breakdown, so this is just the recap. Bilingual, Khmer
+ *  first (always, regardless of the staff member's UI language). */
+export function generateTelegramInvoiceCaption(inv: Invoice, roomNumber: string): string {
+  const khr = Math.round(inv.totalAmountKHR).toLocaleString('en-US');
+  const balance = Math.max(0, inv.totalAmountUSD - inv.amountPaidUSD);
+  const partial = inv.amountPaidUSD > 0 && inv.status !== 'paid';
+  const room = escapeHtml(roomNumber);
+  const no = escapeHtml(inv.invoiceNumber);
+  const due = escapeHtml(inv.dueDate);
 
-  return `<b>🔔 MONTHLY RENTAL INVOICE</b>
-----------------------------------
-<b>🏢 Room Unit:</b> ${roomName}
-<b>👤 Tenant Name:</b> ${tenantName}
-<b>📅 Billing Cycle:</b> ${getMonthName(inv.month, 'en')} ${inv.year}
-<b>📅 Issue Date:</b> ${inv.issueDate}
-<b>⏰ Grand Due Date:</b> ${inv.dueDate}
-----------------------------------
-<b>💰 Detailed Breakdown:</b>
-• Base Apartment Rent: ${inv.rentAmountUSD}
-• Electricity Outlay (${elecUnits} kWh): ${inv.electricityCostUSD.toFixed(2)} (≈ ${inv.electricityCostKHR.toLocaleString()} KHR)
-• Clean Water Outlay (${waterUnits} m³): ${inv.waterCostUSD.toFixed(2)} (≈ ${inv.waterCostKHR.toLocaleString()} KHR)${feeLinesEn}
-----------------------------------
-<b>💵 TOTAL AMOUNT DUE:</b>
-<b>${inv.totalAmountUSD.toFixed(2)} USD</b> (≈ ${inv.totalAmountKHR.toLocaleString()} KHR)
-----------------------------------
-<i>Please process your payment using ABA QR or Cash prior to the due date. Thank you! 🙏</i>`;
+  return [
+    `🧾 <b>វិក្កយបត្រ ${no}</b> · ខែ${getMonthName(inv.month, 'kh')} ${inv.year}`,
+    `🏠 បន្ទប់ ${room}`,
+    `💵 សរុប៖ <b>${money(inv.totalAmountUSD)}</b> (≈ ${khr} ៛)`,
+    ...(partial ? [`✅ បានបង់ ${money(inv.amountPaidUSD)} · នៅសល់ <b>${money(balance)}</b>`] : []),
+    `⏰ ថ្ងៃផុតកំណត់៖ ${due}`,
+    'សូមទូទាត់មុនថ្ងៃផុតកំណត់។ សូមអរគុណ! 🙏',
+    '',
+    `<i>Invoice ${no} · ${getMonthName(inv.month, 'en')} ${inv.year} · Room ${room}</i>`,
+    `<i>Total ${money(inv.totalAmountUSD)}${partial ? ` · Balance ${money(balance)}` : ''} · Due ${due}</i>`,
+    '<i>Please pay before the due date. Thank you!</i>',
+  ].join('\n');
 }

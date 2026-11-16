@@ -5,6 +5,7 @@
     "khemar_lang": "ភាសាខ្មែរ",
     "english_lang": "English",
     "theme_color": "ពណ៌រូបរាង",
+    "theme_indigo": "ខៀវស្វាយ",
     "theme_crimson": "ក្រហម (ABA)",
     "theme_navy": "ខៀវទុំ",
     "theme_amethyst": "ស្វាយ",
@@ -52,6 +53,14 @@
     "pagination_prev": "ទំព័រមុន",
     "pagination_next": "ទំព័របន្ទាប់",
     "system_settings": "ការកំណត់ប្រព័ន្ធ",
-    "theme_toggle": "ប្ដូររចនាបថ ភ្លឺ/ខ្មៅ"
+    "theme_toggle": "ប្ដូររចនាបថ ភ្លឺ/ខ្មៅ",
+    "nav_tenants": "អ្នកជួល",
+    "nav_contracts": "កិច្ចសន្យា",
+    "nav_buildings": "អគារ",
+    "nav_all_rooms": "បន្ទប់ទាំងអស់",
+    "nav_invoices": "វិក្កយបត្រ",
+    "nav_telegram_delivery": "ការផ្ញើតាមតេឡេក្រាម",
+    "nav_reports": "របាយការណ៍",
+    "nav_expenses": "ចំណាយ"
   }
 }

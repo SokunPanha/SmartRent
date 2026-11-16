@@ -34,7 +34,7 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition hover:bg-primary/20 cursor-pointer"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_6px_16px_-6px_var(--primary)] transition hover:bg-primary/90 cursor-pointer"
           aria-label={userName || t('users')}
         >
           <UserCircle className="h-5 w-5" />
@@ -47,7 +47,7 @@ export function UserMenu() {
               {userName || '—'}
             </span>
             <span className="truncate text-[10px] text-muted-foreground">{userEmail}</span>
-            <span className="mt-1 inline-block w-fit rounded-md bg-primary/15 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-primary">
+            <span className="mt-1 inline-block w-fit rounded-md bg-primary/15 px-1.5 py-0.5 text-[11px] font-extrabold text-primary">
               {roleLabel}
             </span>
           </div>

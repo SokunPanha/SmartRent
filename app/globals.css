@@ -16,6 +16,9 @@
     --color-sidebar-primary: var(--sidebar-primary);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar: var(--sidebar);
+    --color-sidebar-muted: var(--sidebar-muted);
+    --color-sidebar-active: var(--sidebar-active);
+    --color-sidebar-active-foreground: var(--sidebar-active-foreground);
     --color-chart-5: var(--chart-5);
     --color-chart-4: var(--chart-4);
     --color-chart-3: var(--chart-3);
@@ -30,6 +33,7 @@
     --color-info: var(--info);
     --color-success-foreground: var(--success-foreground);
     --color-success: var(--success);
+    --color-warning: var(--warning);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -47,110 +51,175 @@
     --radius-sm: 8px;
     --radius-md: 10px;
     --radius-lg: 12px;
-    --radius-xl: 14px;
-    --radius-2xl: 16px;
-    --radius-3xl: 20px;
-    --radius-4xl: 24px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+    --radius-3xl: 24px;
+    --radius-4xl: 28px;
 }
 
-/* Aura Management System — Refined & Premium (light) — see DESIGN.md.
-   Warm ivory canvas + white cards, warm charcoal ink, and a single ABA-red
-   signature accent (#EC2028). Depth is a soft ambient shadow, not heavy fills. */
+/* Aura — Pastel Console (see DESIGN.md).
+   A dark charcoal frame (the sidebar) holds a rounded, cool-mint content panel;
+   white borderless cards sit on it. One vivid indigo signature accent, plus four
+   soft pastel tiles (indigo / mint / peach / butter) for headline metrics. */
 :root {
     --font-heading: var(--font-sans);
-    --background: #FAF9F7;
-    --foreground: #1F1D1B;
+    --background: #F2F5F5;
+    --foreground: #1B1C20;
     --card: #FFFFFF;
-    --card-foreground: #1F1D1B;
+    --card-foreground: #1B1C20;
+    --card-border: #ECEFF1;
     --popover: #FFFFFF;
-    --popover-foreground: #1F1D1B;
-    --primary: #EC2028;
+    --popover-foreground: #1B1C20;
+    --primary: #4F5BEF;
     --primary-foreground: #FFFFFF;
-    --secondary: #F2F0EB;
-    --secondary-foreground: #1F1D1B;
-    --muted: #F4F2EE;
-    --muted-foreground: #7A736B;
-    --accent: #FCECEC;
-    --accent-foreground: #EC2028;
-    --destructive: #BE3B31;
+    --secondary: #EEF1F4;
+    --secondary-foreground: #1B1C20;
+    --muted: #F3F5F7;
+    --muted-foreground: #80858F;
+    --accent: #EEF0FE;
+    --accent-foreground: #3D48D6;
+    --destructive: #E5484D;
     --destructive-foreground: #FFFFFF;
-    --info: #2C6E8F;
+    --info: #3478F6;
     --info-foreground: #FFFFFF;
-    --success: #2E7D5B;
+    --success: #1F9D5C;
     --success-foreground: #FFFFFF;
-    --border: #E8E3DC;
-    --input: #E2DCD4;
-    --ring: #EC2028;
-    --chart-1: #C08A3E;
-    --chart-2: #2E7D5B;
-    --chart-3: #BE3B31;
-    --chart-4: #2C6E8F;
-    --chart-5: #8A6FA8;
-    --radius: 10px;
-    --radius-card: 12px;
-    --radius-modal: 16px;
-    --shadow-card: 0 1px 2px rgba(31, 29, 27, 0.04), 0 2px 8px rgba(31, 29, 27, 0.03);
-    --shadow-modal: 0 16px 48px rgba(31, 29, 27, 0.10);
-    --sidebar: #FCFBF9;
-    --sidebar-foreground: #1F1D1B;
-    --sidebar-primary: #EC2028;
+    --warning: #D9A21B;
+    --border: #E6EAED;
+    --input: #E0E4E8;
+    --ring: #4F5BEF;
+    --chart-1: #E2B23A;
+    --chart-2: #2EB67D;
+    --chart-3: #F2774A;
+    --chart-4: #4F5BEF;
+    --chart-5: #A57BEA;
+    --radius: 12px;
+    --radius-card: 20px;
+    --radius-modal: 24px;
+    --radius-panel: 28px;
+    --shadow-card: 0 1px 2px rgba(20, 22, 30, 0.03), 0 6px 20px rgba(20, 22, 30, 0.04);
+    --shadow-modal: 0 24px 64px rgba(20, 22, 30, 0.14);
+
+    /* Dark charcoal sidebar frame in BOTH modes. Active item = white pill. */
+    --sidebar: #1F2024;
+    --sidebar-foreground: #E4E5E9;
+    --sidebar-muted: #8D9099;
+    --sidebar-primary: #4F5BEF;
     --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #FCECEC;
-    --sidebar-accent-foreground: #EC2028;
-    --sidebar-border: #E8E3DC;
-    --sidebar-ring: #EC2028;
+    --sidebar-accent: #2B2C31;
+    --sidebar-accent-foreground: #FFFFFF;
+    --sidebar-active: #FFFFFF;
+    --sidebar-active-foreground: #1B1C20;
+    --sidebar-border: #2E2F35;
+    --sidebar-ring: #4F5BEF;
+
+    /* Pastel metric tiles: surface → surface-2 gradient, solid icon chip. */
+    --tile-indigo: #D9DCFB;
+    --tile-indigo-2: #E8EAFD;
+    --tile-indigo-icon: #4F5BEF;
+    --tile-green: #CDEBDA;
+    --tile-green-2: #E1F4E9;
+    --tile-green-icon: #1FA35B;
+    --tile-orange: #FAD9CB;
+    --tile-orange-2: #FCE8DF;
+    --tile-orange-icon: #F2693A;
+    --tile-yellow: #F0EBC6;
+    --tile-yellow-2: #F8F4DC;
+    --tile-yellow-icon: #E2B023;
+    --tile-foreground: #1B1C20;
+    --tile-muted: rgba(27, 28, 32, 0.55);
+    --tile-arc: rgba(255, 255, 255, 0.38);
 }
 
-/* Aura Dark — Refined & Premium (warm charcoal + ABA red). */
 .dark {
-    --background: #171613;
-    --foreground: #E9E5DE;
-    --card: #201E1A;
-    --card-foreground: #E9E5DE;
-    --popover: #201E1A;
-    --popover-foreground: #E9E5DE;
-    --primary: #F04148;
-    --primary-foreground: #FFFFFF;
-    --secondary: #2A2723;
-    --secondary-foreground: #D8D2C9;
-    --muted: #201E1A;
-    --muted-foreground: #A29B90;
-    --accent: #351A1B;
-    --accent-foreground: #FF9B9F;
-    --destructive: #E88C82;
-    --destructive-foreground: #2A0906;
-    --info: #7FC2E6;
-    --info-foreground: #06344A;
-    --success: #4FBE83;
+    --background: #16171B;
+    --foreground: #ECEDF0;
+    --card: #1F2025;
+    --card-foreground: #ECEDF0;
+    --card-border: #26282E;
+    --popover: #1F2025;
+    --popover-foreground: #ECEDF0;
+    --primary: #7C86F8;
+    --primary-foreground: #0E1033;
+    --secondary: #26272D;
+    --secondary-foreground: #DADCE1;
+    --muted: #222328;
+    --muted-foreground: #969AA4;
+    --accent: #252848;
+    --accent-foreground: #BAC0FC;
+    --destructive: #F2777B;
+    --destructive-foreground: #2B0709;
+    --info: #6EA8FF;
+    --info-foreground: #06224A;
+    --success: #4CC38A;
     --success-foreground: #00311C;
-    --border: #34302A;
-    --input: #34302A;
-    --ring: #F04148;
-    --chart-1: #E0B270;
-    --chart-2: #4FBE83;
-    --chart-3: #E88C82;
-    --chart-4: #7FC2E6;
-    --chart-5: #C0A6DE;
-    --radius-card: 12px;
-    --radius-modal: 16px;
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.22);
-    --shadow-modal: 0 20px 48px rgba(0, 0, 0, 0.45);
-    --sidebar: #1B1A16;
-    --sidebar-foreground: #E9E5DE;
-    --sidebar-primary: #F04148;
-    --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #351A1B;
-    --sidebar-accent-foreground: #FF9B9F;
-    --sidebar-border: #34302A;
-    --sidebar-ring: #F04148;
+    --warning: #EBC255;
+    --border: #2B2D33;
+    --input: #32343B;
+    --ring: #7C86F8;
+    --chart-1: #EBC25A;
+    --chart-2: #4CC38A;
+    --chart-3: #F58E68;
+    --chart-4: #7C86F8;
+    --chart-5: #BE9DF2;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.2);
+    --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.5);
+
+    --sidebar: #0E0F12;
+    --sidebar-foreground: #D9DBE0;
+    --sidebar-muted: #80838C;
+    --sidebar-primary: #7C86F8;
+    --sidebar-primary-foreground: #0E1033;
+    --sidebar-accent: #1C1D22;
+    --sidebar-accent-foreground: #FFFFFF;
+    --sidebar-active: #ECEDF0;
+    --sidebar-active-foreground: #111215;
+    --sidebar-border: #24262C;
+    --sidebar-ring: #7C86F8;
+
+    --tile-indigo: #2A2E5C;
+    --tile-indigo-2: #22254A;
+    --tile-indigo-icon: #7C86F8;
+    --tile-green: #1D3D2D;
+    --tile-green-2: #193225;
+    --tile-green-icon: #3FBF7A;
+    --tile-orange: #4A2A1F;
+    --tile-orange-2: #3C231A;
+    --tile-orange-icon: #F58258;
+    --tile-yellow: #403A1E;
+    --tile-yellow-2: #342F19;
+    --tile-yellow-icon: #E6BC3C;
+    --tile-foreground: #F1F2F4;
+    --tile-muted: rgba(241, 242, 244, 0.6);
+    --tile-arc: rgba(255, 255, 255, 0.05);
 }
 
 /* ── Accent themes ─────────────────────────────────────────────────────────
    Orthogonal to light/dark: `[data-accent]` on <html> swaps only the signature
-   accent tokens (primary / ring / accent tint / sidebar), leaving the warm
-   neutral canvas intact. Default (no attribute) = Crimson/ABA red in :root/.dark.
-   Each accent must set BOTH the light block ([data-accent="x"]) and the dark
-   block (.dark[data-accent="x"]) so the dark override wins its specificity. */
+   accent tokens (primary / ring / accent tint). Default (indigo) lives in
+   :root/.dark. The sidebar stays dark charcoal for every accent.
+   Each accent must set BOTH the light and the dark block so the dark override
+   wins its specificity. */
+
+/* Crimson (ABA red) */
+[data-accent='red'] {
+    --primary: #EC2028;
+    --primary-foreground: #FFFFFF;
+    --accent: #FCECEC;
+    --accent-foreground: #C8161D;
+    --ring: #EC2028;
+    --sidebar-primary: #EC2028;
+    --sidebar-ring: #EC2028;
+}
+.dark[data-accent='red'] {
+    --primary: #F04148;
+    --primary-foreground: #FFFFFF;
+    --accent: #351A1B;
+    --accent-foreground: #FF9B9F;
+    --ring: #F04148;
+    --sidebar-primary: #F04148;
+    --sidebar-ring: #F04148;
+}
 
 /* Dark Navy */
 [data-accent='navy'] {
@@ -160,9 +229,6 @@
     --accent-foreground: #1E3A8A;
     --ring: #1E3A8A;
     --sidebar-primary: #1E3A8A;
-    --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #E8EDF9;
-    --sidebar-accent-foreground: #1E3A8A;
     --sidebar-ring: #1E3A8A;
 }
 .dark[data-accent='navy'] {
@@ -172,9 +238,6 @@
     --accent-foreground: #AAC1F2;
     --ring: #5C86E6;
     --sidebar-primary: #5C86E6;
-    --sidebar-primary-foreground: #0A1226;
-    --sidebar-accent: #1B2440;
-    --sidebar-accent-foreground: #AAC1F2;
     --sidebar-ring: #5C86E6;
 }
 
@@ -186,9 +249,6 @@
     --accent-foreground: #6D28D9;
     --ring: #6D28D9;
     --sidebar-primary: #6D28D9;
-    --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #F1EAFB;
-    --sidebar-accent-foreground: #6D28D9;
     --sidebar-ring: #6D28D9;
 }
 .dark[data-accent='amethyst'] {
@@ -198,9 +258,6 @@
     --accent-foreground: #C9B2F5;
     --ring: #A98AF0;
     --sidebar-primary: #A98AF0;
-    --sidebar-primary-foreground: #1C0B3B;
-    --sidebar-accent: #271A40;
-    --sidebar-accent-foreground: #C9B2F5;
     --sidebar-ring: #A98AF0;
 }
 
@@ -236,6 +293,57 @@
   box-shadow: var(--shadow-card);
 }
 
+/* Printing an invoice: only #rental-invoice-print-area goes on paper (A4).
+   Every element that neither contains nor sits inside the invoice is removed
+   from layout, and the invoice's ancestors (modal, app shell) are flattened,
+   so the invoice flows from the top of page 1 with no blank or repeated pages. */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  body:has(#rental-invoice-print-area) {
+    background: #ffffff !important;
+  }
+  body:has(#rental-invoice-print-area)
+    *:not(:has(#rental-invoice-print-area)):not(#rental-invoice-print-area):not(#rental-invoice-print-area *) {
+    display: none !important;
+  }
+  body:has(#rental-invoice-print-area) *:has(#rental-invoice-print-area) {
+    display: block !important;
+    position: static !important;
+    inset: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    transform: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+  }
+  #rental-invoice-print-area {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    /* Bilingual (Khmer + English) content is long; scale slightly so a
+       typical invoice fits on one A4 page. */
+    zoom: 0.84;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
 /* Force the light palette when printing (invoices/receipts print on paper). */
 @media print {
   .dark {
@@ -252,12 +360,23 @@
   }
 }
 
-/* Hero/banner treatment: deep ABA-red premium gradient with a warm glow.
-   Reserved for a couple of hero bands (see DESIGN.md) — never the page canvas
-   or a scrollable data surface. */
+/* Hero/banner treatment: vivid signature gradient with a soft glow and two
+   faint arcs (the "Upgrade" card look). Reserved for a couple of hero bands
+   (see DESIGN.md) — never the page canvas or a scrollable data surface. */
 .gradient-hero {
+  background-color: #3540C9;
+  background-image:
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.10) 0 22%, transparent 22.5%),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.07) 0 38%, transparent 38.5%),
+    radial-gradient(120% 70% at 15% 0%, rgba(190, 196, 255, 0.35) 0%, rgba(190, 196, 255, 0) 60%),
+    linear-gradient(155deg, #6873F7 0%, #4F5BEF 45%, #3540C9 100%);
+  color: #EEF0FE;
+}
+[data-accent='red'] .gradient-hero {
   background-color: #7A0E12;
   background-image:
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.10) 0 22%, transparent 22.5%),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.07) 0 38%, transparent 38.5%),
     radial-gradient(120% 65% at 20% 10%, rgba(255, 155, 159, 0.28) 0%, rgba(255, 155, 159, 0) 60%),
     linear-gradient(155deg, #EC2028 0%, #B4141B 45%, #7A0E12 100%);
   color: #FDECEC;
@@ -265,6 +384,8 @@
 [data-accent='navy'] .gradient-hero {
   background-color: #0F1E4A;
   background-image:
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.10) 0 22%, transparent 22.5%),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.07) 0 38%, transparent 38.5%),
     radial-gradient(120% 65% at 20% 10%, rgba(140, 170, 240, 0.28) 0%, rgba(140, 170, 240, 0) 60%),
     linear-gradient(155deg, #2E4FA8 0%, #1E3A8A 45%, #0F1E4A 100%);
   color: #EAF0FD;
@@ -272,7 +393,38 @@
 [data-accent='amethyst'] .gradient-hero {
   background-color: #2A1258;
   background-image:
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.10) 0 22%, transparent 22.5%),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.07) 0 38%, transparent 38.5%),
     radial-gradient(120% 65% at 20% 10%, rgba(190, 150, 245, 0.28) 0%, rgba(190, 150, 245, 0) 60%),
     linear-gradient(155deg, #8B4EE0 0%, #6D28D9 45%, #2A1258 100%);
   color: #F3ECFC;
 }
+
+/* Pastel metric tiles (indigo / green / orange / yellow). A soft diagonal
+   gradient plus two concentric arcs in the bottom-right corner. Text inside
+   uses --tile-foreground / --tile-muted; the icon chip uses .tile-icon. */
+.tile {
+  --tile-a: var(--tile-indigo);
+  --tile-b: var(--tile-indigo-2);
+  --tile-c: var(--tile-indigo-icon);
+  position: relative;
+  overflow: hidden;
+  color: var(--tile-foreground);
+  border-radius: var(--radius-card);
+  background-image:
+    radial-gradient(circle at 105% 115%, var(--tile-arc) 0 34%, transparent 34.5%),
+    radial-gradient(circle at 105% 115%, var(--tile-arc) 0 52%, transparent 52.5%),
+    linear-gradient(135deg, var(--tile-a) 0%, var(--tile-b) 100%);
+}
+.tile-green { --tile-a: var(--tile-green); --tile-b: var(--tile-green-2); --tile-c: var(--tile-green-icon); }
+.tile-orange { --tile-a: var(--tile-orange); --tile-b: var(--tile-orange-2); --tile-c: var(--tile-orange-icon); }
+.tile-yellow { --tile-a: var(--tile-yellow); --tile-b: var(--tile-yellow-2); --tile-c: var(--tile-yellow-icon); }
+.tile-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--tile-c);
+  color: #FFFFFF;
+}
+.tile-muted { color: var(--tile-muted); }

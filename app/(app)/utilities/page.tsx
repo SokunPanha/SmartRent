@@ -35,6 +35,7 @@ export default function UtilitiesPage() {
         activeRole={activeRole}
         lang={lang}
         onAddReading={(reading) => readingMut.create.mutate(reading)}
+        onUpdateReading={(id, patch) => readingMut.update.mutate({ id, patch })}
         logAction={logAction}
       />
     </PageTransition>

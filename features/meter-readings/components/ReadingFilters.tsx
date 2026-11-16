@@ -60,9 +60,9 @@ export function ReadingFilters({
 }) {
   const t = useTranslations('MeterReadings');
   return (
-    <div className="bg-card p-4 rounded-xl border border-border shadow-3xs flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+    <div className="bg-card p-4 rounded-xl border border-(--card-border) shadow-3xs flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
       <div className="flex flex-wrap gap-3 items-center w-full md:w-auto">
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('property_label')}</span>
           <Select value={selectedPropId} onValueChange={onSelectProp}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -79,7 +79,7 @@ export function ReadingFilters({
           </Select>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('month_label')}</span>
           <Select value={selectedMonth} onValueChange={onSelectMonth}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -96,7 +96,7 @@ export function ReadingFilters({
           </Select>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('year_label')}</span>
           <Select value={selectedYear} onValueChange={onSelectYear}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -119,7 +119,7 @@ export function ReadingFilters({
             value={roomSearch}
             onChange={(e) => onRoomSearchChange(e.target.value)}
             placeholder={t('room_search_placeholder')}
-            className="w-full sm:w-48 pl-8 pr-3 py-1.5 rounded-lg border border-border text-xs bg-card text-foreground font-sans focus:outline-none focus:border-primary"
+            className="w-full sm:w-48 pl-9 pr-4 py-2.5 rounded-xl border border-(--card-border) text-xs bg-card text-foreground font-sans focus:outline-none focus:border-primary"
             id="reading-room-search-input"
           />
         </div>
@@ -128,7 +128,7 @@ export function ReadingFilters({
       {canModify && (
         <button
           onClick={onRecord}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer self-stretch md:self-auto justify-center"
+          className="flex items-center gap-1.5 px-4.5 py-2.5 text-xs font-semibold bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition cursor-pointer self-stretch md:self-auto justify-center"
           id="open-record-reading-btn"
         >
           <Plus className="w-4 h-4" />

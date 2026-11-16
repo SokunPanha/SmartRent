@@ -48,7 +48,7 @@ export function BuildingGrid({
 
   return (
     <div
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+      className="grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-3 gap-4 md:gap-5"
       id="buildings-grid-layout"
     >
       {properties.map((prop) => {
@@ -60,17 +60,17 @@ export function BuildingGrid({
             key={prop.id}
             type="button"
             onClick={() => onOpen(prop.id)}
-            className="group text-left bg-card border border-border rounded-xl p-5 shadow-3xs flex flex-col gap-3.5 transition hover:border-primary hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer"
+            className="group text-left bg-card border border-(--card-border) min-w-0 rounded-(--radius-card) p-5 shadow-card flex flex-col gap-3.5 transition hover:border-primary/40 hover:shadow-[0_10px_28px_-12px_rgba(20,22,30,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[11px] font-semibold tracking-wide bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-sans">
+              <span className="truncate text-[11px] font-semibold bg-accent text-accent-foreground px-2.5 py-0.5 rounded-full font-sans">
                 {typeLabel(prop.type, t)}
               </span>
               <ArrowRight className="w-4 h-4 text-muted-foreground transition group-hover:text-primary group-hover:translate-x-0.5" />
             </div>
 
             <div>
-              <h4 className="font-bold text-foreground text-base font-sans">
+              <h4 className="truncate font-bold text-foreground text-base font-sans">
                 {pickLocale(lang, prop.name, prop.nameKh)}
               </h4>
               <p className="text-xs text-muted-foreground flex items-start gap-1 mt-1.5 font-sans">

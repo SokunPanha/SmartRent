@@ -61,7 +61,7 @@ export function FeeFormModal({
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="h-10 w-full rounded-lg border border-input bg-card px-3 font-sans text-sm focus:border-primary focus:outline-none"
+              className="h-11 w-full rounded-xl border border-input bg-card px-4 font-sans text-sm focus:border-primary focus:outline-none"
             >
               <option value="USD">USD</option>
               <option value="KHR">KHR</option>

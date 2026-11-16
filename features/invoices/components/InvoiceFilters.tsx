@@ -42,9 +42,9 @@ export function InvoiceFilters({
 }) {
   const t = useTranslations('Invoices');
   return (
-    <div className="bg-card p-4 rounded-xl border border-border shadow-3xs flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+    <div className="bg-card p-4 rounded-xl border border-(--card-border) shadow-3xs flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
       <div className="flex flex-wrap gap-3 items-center w-full md:w-auto">
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('filter_status')}</span>
           <Select value={selectedStatus} onValueChange={onSelectStatus}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -60,7 +60,7 @@ export function InvoiceFilters({
           </Select>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('month_label')}</span>
           <Select value={selectedMonth} onValueChange={onSelectMonth}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -77,7 +77,7 @@ export function InvoiceFilters({
           </Select>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('year_label')}</span>
           <Select value={selectedYear} onValueChange={onSelectYear}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -94,7 +94,7 @@ export function InvoiceFilters({
           </Select>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('property_label')}</span>
           <Select value={selectedProperty} onValueChange={onSelectProperty}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -111,7 +111,7 @@ export function InvoiceFilters({
           </Select>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+        <div className="flex h-10 items-center gap-1.5 bg-muted px-4 rounded-full border border-border text-xs">
           <span className="text-muted-foreground font-sans">{t('telegram_status_label')}</span>
           <Select value={selectedTelegramStatus} onValueChange={onSelectTelegramStatus}>
             <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -131,7 +131,7 @@ export function InvoiceFilters({
       {canGenerate && (
         <button
           onClick={onGenerate}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer self-stretch md:self-auto justify-center"
+          className="flex h-11 shrink-0 items-center gap-1.5 px-5 text-sm font-semibold whitespace-nowrap bg-primary text-primary-foreground rounded-full shadow-[0_6px_16px_-6px_var(--primary)] hover:bg-primary/90 transition cursor-pointer self-stretch md:self-auto justify-center"
           id="trigger-june-invoices-btn"
         >
           <Calculator className="w-4 h-4" />

@@ -214,7 +214,7 @@ export default function TelegramPortalPage() {
                   {invoices
                     .filter((inv) => invoiceStatusFilter === 'all' || inv.status === invoiceStatusFilter)
                     .map((inv) => (
-                    <div key={inv.id} className="bg-card border border-border rounded-xl p-3.5 space-y-1.5">
+                    <div key={inv.id} className="bg-card border border-(--card-border) rounded-xl p-3.5 space-y-1.5">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold text-foreground">{inv.invoiceNumber}</span>
                         <span
@@ -251,7 +251,7 @@ export default function TelegramPortalPage() {
                           className={`max-w-[80%] rounded-xl px-3 py-2 text-xs ${
                             m.senderType === 'tenant'
                               ? 'bg-primary text-primary-foreground'
-                              : 'bg-card border border-border text-foreground'
+                              : 'bg-card border border-(--card-border) text-foreground'
                           }`}
                         >
                           {m.body}
@@ -265,7 +265,7 @@ export default function TelegramPortalPage() {
                       value={draft}
                       onChange={(e) => setDraft(e.target.value)}
                       placeholder={lang === 'en' ? 'Type a message...' : 'វាយសារ...'}
-                      className="flex-1 px-3 py-2 rounded-lg border border-border text-xs bg-card text-foreground focus:outline-none focus:border-primary"
+                      className="flex-1 px-3 py-2 rounded-lg border border-(--card-border) text-xs bg-card text-foreground focus:outline-none focus:border-primary"
                     />
                     <button
                       type="submit"

@@ -18,7 +18,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'rounded-xl border border-border bg-card p-16 text-center shadow-3xs',
+        'rounded-xl border border-(--card-border) bg-card p-16 text-center shadow-3xs',
         className
       )}
     >

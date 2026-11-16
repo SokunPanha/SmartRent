@@ -14,21 +14,21 @@ export function RoomRevenueTable({
   const { page, totalPages, pageRows, setPage, pageSize } = usePagination(rows);
   return (
     <div
-      className="lg:col-span-12 bg-card rounded-(--radius-card) border border-border overflow-hidden"
+      className="lg:col-span-12 bg-card rounded-(--radius-card) border border-(--card-border) overflow-hidden"
       id="room-revenue-drilldown"
     >
       <div className="p-4 bg-muted border-b border-border flex justify-between items-center">
-        <h4 className="text-xs font-bold text-foreground uppercase tracking-wider font-sans dark:font-mono">
+        <h4 className="text-xs font-bold text-foreground font-sans dark:font-mono">
           {t('room_income_title')}
         </h4>
-        <span className="text-[10px] uppercase font-bold text-muted-foreground font-mono">
+        <span className="text-xs font-bold text-muted-foreground">
           {t('room_income_ordered_note')}
         </span>
       </div>
       <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scroll-x-hint">
         <table className="w-full min-w-[520px] text-left text-xs">
           <thead className="sticky top-0 z-10">
-            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase font-sans dark:font-mono">
+            <tr className="bg-muted border-b border-border text-xs font-bold text-muted-foreground font-sans dark:font-mono">
               <th className="p-4 pl-6">{t('room_number')}</th>
               <th className="p-4">{t('location_property')}</th>
               <th className="p-4 text-right font-bold text-chart-2">

@@ -113,7 +113,7 @@ export function UserFormModal({
           <select
             value={preferredLang}
             onChange={(e) => setPreferredLang(e.target.value)}
-            className="h-10 w-full rounded-lg border border-input bg-card px-3 font-sans text-sm focus:border-primary focus:outline-none"
+            className="h-11 w-full rounded-xl border border-input bg-card px-4 font-sans text-sm focus:border-primary focus:outline-none"
           >
             <option value="">{t('lang_default')}</option>
             <option value="en">{t('lang_en')}</option>

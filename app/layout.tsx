@@ -43,7 +43,7 @@ export default async function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{var a=localStorage.getItem('tt-accent');document.documentElement.setAttribute('data-accent',(a==='navy'||a==='amethyst')?a:'red');}catch(e){document.documentElement.setAttribute('data-accent','red');}})();",
+              "(function(){try{var a=localStorage.getItem('tt-accent-v2');document.documentElement.setAttribute('data-accent',(a==='red'||a==='navy'||a==='amethyst')?a:'indigo');}catch(e){document.documentElement.setAttribute('data-accent','indigo');}})();",
           }}
         />
       </head>

@@ -45,6 +45,14 @@
     "month_9": "September",
     "month_10": "October",
     "month_11": "November",
-    "month_12": "December"
+    "month_12": "December",
+    "edit_reading": "Edit reading",
+    "final_reading": "Move-out",
+    "meter_replaced": "Meter replaced / reset",
+    "meter_replaced_help": "Tick only if the meter was changed, so \"previous\" no longer continues from last month.",
+    "prev_from_period": "\"Previous\" continues from the {period} reading.",
+    "reading_saved": "Meter reading saved",
+    "reading_updated": "Reading updated",
+    "reading_updated_invoice": "Reading updated — invoice {number} recalculated."
   }
 }

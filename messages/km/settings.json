@@ -39,6 +39,27 @@
     "water_rate": "អត្រាទឹក (៛/m³)",
     "actions": "សកម្មភាព",
     "no_zones": "មិនទាន់មានទីតាំងអចលនទ្រព្យនៅឡើយទេ។",
-    "use_system_default": "ប្រើលំនាំដើមប្រព័ន្ធ"
+    "use_system_default": "ប្រើលំនាំដើមប្រព័ន្ធ",
+    "business_title": "ព័ត៌មានអាជីវកម្ម និងការទូទាត់",
+    "business_desc": "បង្ហាញលើវិក្កយបត្រទាំងអស់ (បោះពុម្ព និងផ្ញើតាមតេឡេក្រាម)។ ទុកទទេដើម្បីលាក់។",
+    "business_name_kh": "ឈ្មោះអាជីវកម្ម (ខ្មែរ)",
+    "business_name_en": "ឈ្មោះអាជីវកម្ម (អង់គ្លេស)",
+    "business_phone": "ទូរស័ព្ទ",
+    "business_address_kh": "អាសយដ្ឋាន (ខ្មែរ)",
+    "business_address_en": "អាសយដ្ឋាន (អង់គ្លេស)",
+    "bank_section": "គណនីធនាគារ",
+    "bank_name": "ធនាគារ",
+    "bank_account_name": "ឈ្មោះគណនី",
+    "bank_account_number": "លេខគណនី",
+    "payment_qr": "QR ទូទាត់ (ឧ. ABA KHQR)",
+    "payment_qr_hint": "PNG ឬ JPG មិនលើស 2 MB។ បោះពុម្ពលើវិក្កយបត្រ ដើម្បីឲ្យអ្នកជួលស្កេនបង់។",
+    "payment_qr_upload": "បង្ហោះ QR",
+    "payment_qr_replace": "ប្តូរ",
+    "payment_qr_remove": "ដកចេញ",
+    "payment_qr_uploading": "កំពុងបង្ហោះ…",
+    "business_preview_note": "គន្លឹះ៖ បើកវិក្កយបត្រណាមួយ ដើម្បីមើលលទ្ធផល។",
+    "invoice_days_help": "ថ្ងៃនៃខែដែលចេញវិក្កយបត្រ និងថ្ងៃផុតកំណត់ (១–២៨; ថ្ងៃផុតកំណត់មិនមុនថ្ងៃចេញ)។",
+    "invoice_due_day": "ថ្ងៃផុតកំណត់",
+    "invoice_issue_day": "ថ្ងៃចេញវិក្កយបត្រ"
   }
 }

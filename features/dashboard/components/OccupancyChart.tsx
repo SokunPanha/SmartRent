@@ -14,9 +14,9 @@ export function OccupancyChart({
 }) {
   const t = useTranslations('Dashboard');
   return (
-    <div className="bg-card border border-border p-6 rounded-3xl flex flex-col shadow-lg shadow-black/20">
+    <div className="bg-card border border-(--card-border) p-6 rounded-3xl flex flex-col shadow-card">
       <div className="mb-4">
-        <h3 className="text-sm font-bold text-foreground tracking-wider uppercase font-mono">
+        <h3 className="text-base font-semibold text-foreground tracking-tight">
           {t('occupancy_rate')}
         </h3>
         <p className="text-xs text-muted-foreground mt-0.5">
@@ -73,7 +73,7 @@ export function OccupancyChart({
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-2xl font-bold text-foreground font-sans">{occupiedPct}%</span>
-            <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-semibold font-mono">
+            <span className="text-[11px] text-muted-foreground font-semibold">
               {t('occupied_donut_label')}
             </span>
           </div>
@@ -83,7 +83,7 @@ export function OccupancyChart({
           <div className="flex items-center gap-3 bg-chart-2/5 p-2 px-3 rounded-lg border border-chart-2/10">
             <span className="w-3 h-3 rounded-full bg-chart-2 block"></span>
             <div>
-              <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
+              <p className="text-[11px] text-muted-foreground font-bold">
                 {t('occupied')}
               </p>
               <p className="text-sm font-semibold text-foreground font-sans">
@@ -96,7 +96,7 @@ export function OccupancyChart({
           <div className="flex items-center gap-3 bg-chart-3/5 p-2 px-3 rounded-lg border border-chart-3/10">
             <span className="w-3 h-3 rounded-full bg-chart-3 block"></span>
             <div>
-              <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
+              <p className="text-[11px] text-muted-foreground font-bold">
                 {t('vacant')}
               </p>
               <p className="text-sm font-semibold text-foreground font-sans">
@@ -109,7 +109,7 @@ export function OccupancyChart({
           <div className="flex items-center gap-3 bg-chart-1/5 p-2 px-3 rounded-lg border border-chart-1/10">
             <span className="w-3 h-3 rounded-full bg-chart-1 block"></span>
             <div>
-              <p className="text-[11px] text-muted-foreground font-bold uppercase tracking-wider font-mono">
+              <p className="text-[11px] text-muted-foreground font-bold">
                 {t('maintenance')}
               </p>
               <p className="text-sm font-semibold text-foreground font-sans">

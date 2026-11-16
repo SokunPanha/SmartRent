@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Invoice, Room, Property, Contract, AppLanguage } from '@/lib/types';
 import { getReportData } from './reports.helpers';
+import { usePaymentsLedger } from '@/features/invoices/invoices.queries';
+import { useExpenses } from '@/features/expenses/expenses.queries';
 import { ReportFilters } from './components/ReportFilters';
 import { SummaryCards } from './components/SummaryCards';
 import { MonthlyTable } from './components/MonthlyTable';
@@ -24,17 +26,21 @@ export default function FinancialReports({
   lang,
 }: FinancialReportsProps) {
   const t = useTranslations('Reports');
+  const thisYear = new Date().getFullYear();
   const availableYears = useMemo(
-    () => Array.from(new Set(invoices.map((inv) => inv.year))).sort((a, b) => b - a),
-    [invoices]
+    () => Array.from(new Set([thisYear, ...invoices.map((inv) => inv.year)])).sort((a, b) => b - a),
+    [invoices, thisYear]
   );
-  const [selectedYear, setSelectedYear] = useState<number>(availableYears[0] ?? new Date().getFullYear());
+  const [selectedYear, setSelectedYear] = useState<number>(thisYear);
+  const range = { from: `${selectedYear}-01-01`, to: `${selectedYear}-12-31` };
+  const { data: payments = [] } = usePaymentsLedger(range);
+  const { data: expenses = [] } = useExpenses(range);
   const [selectedProperty, setSelectedProperty] = useState<string>('all');
   const [outstandingOnly, setOutstandingOnly] = useState(false);
 
   const reportData = useMemo(
-    () => getReportData(invoices, rooms, properties, selectedYear, selectedProperty, lang, t),
-    [invoices, rooms, properties, selectedYear, selectedProperty, lang, t]
+    () => getReportData(invoices, payments, expenses, rooms, properties, selectedYear, selectedProperty, lang),
+    [invoices, payments, expenses, rooms, properties, selectedYear, selectedProperty, lang]
   );
 
   const roomRows = outstandingOnly

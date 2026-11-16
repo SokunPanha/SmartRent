@@ -1,4 +1,4 @@
-import { Lightbulb, Droplet } from 'lucide-react';
+import { Lightbulb, Droplet, Pencil } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { MeterReading, Room, Property, AppLanguage } from '@/lib/types';
 import { Pagination, usePagination } from '@/components/shared/Pagination';
@@ -14,7 +14,11 @@ export function ReadingsTable({
   properties,
   monthNames,
   lang,
+  canModify = false,
+  onEdit,
 }: {
+  canModify?: boolean;
+  onEdit?: (r: MeterReading) => void;
   readings: MeterReading[];
   rooms: Room[];
   properties: Property[];
@@ -24,11 +28,11 @@ export function ReadingsTable({
   const t = useTranslations('MeterReadings');
   const { page, totalPages, pageRows, setPage, pageSize } = usePagination(readings);
   return (
-    <div className="bg-card rounded-(--radius-card) border border-border overflow-hidden">
+    <div className="bg-card rounded-(--radius-card) border border-(--card-border) overflow-hidden">
       <div className="overflow-x-auto overflow-y-auto max-h-[55vh] scroll-x-hint">
         <table className="w-full text-left border-collapse" id="utility-readings-ledger-table">
           <thead className="sticky top-0 z-10">
-            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans dark:font-mono">
+            <tr className="bg-muted border-b border-border text-xs font-bold text-muted-foreground font-sans dark:font-mono">
               <th className="p-4 pl-6">{t('room_number')}</th>
               <th className="p-4">{t('billing_cycle')}</th>
               <th className="p-4">
@@ -45,6 +49,7 @@ export function ReadingsTable({
               </th>
               <th className="p-4">{t('reading_date')}</th>
               <th className="p-4 pr-6">{t('recorded_by')}</th>
+              {canModify && onEdit && <th className="p-4 pr-6" />}
             </tr>
           </thead>
           <tbody className="divide-y divide-border text-xs text-muted-foreground font-sans">
@@ -97,10 +102,25 @@ export function ReadingsTable({
                     </td>
                     <td className="p-4 text-muted-foreground font-mono">{r.readingDate}</td>
                     <td className="p-4 pr-6 shrink-0">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-md font-mono">
+                      <span className="text-xs font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-md">
                         {r.recordedBy}
                       </span>
+                      {r.kind === 'final' && (
+                        <span className="ml-1.5 text-xs font-semibold text-destructive">{t('final_reading')}</span>
+                      )}
                     </td>
+                    {canModify && onEdit && (
+                      <td className="p-4 pr-6 text-right">
+                        <button
+                          onClick={() => onEdit(r)}
+                          aria-label={t('edit_reading')}
+                          title={t('edit_reading')}
+                          className="inline-flex size-9 items-center justify-center rounded-full border border-border hover:bg-muted cursor-pointer"
+                        >
+                          <Pencil className="size-4" />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 );
               })

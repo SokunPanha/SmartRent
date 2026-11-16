@@ -33,7 +33,7 @@ export function FeeCatalogCard({ lang }: { lang: AppLanguage }) {
   }
 
   return (
-    <div className="bg-card rounded-xl border border-border shadow-card">
+    <div className="bg-card rounded-xl border border-(--card-border) shadow-card">
       <div className="p-4 border-b border-border flex items-center justify-between gap-2">
         <div>
           <h3 className="text-sm font-bold text-foreground font-sans flex items-center gap-1.5">
@@ -44,7 +44,7 @@ export function FeeCatalogCard({ lang }: { lang: AppLanguage }) {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer"
+          className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           {t('add_fee')}
@@ -81,7 +81,7 @@ export function FeeCatalogCard({ lang }: { lang: AppLanguage }) {
                     title={t('edit_fee_title')}
                     disabled={busy}
                     onClick={() => setEditFee(fee)}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition hover:border-primary/40 hover:text-primary disabled:opacity-40 cursor-pointer"
+                    className="inline-flex h-10 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition hover:border-primary/40 hover:text-primary disabled:opacity-40 cursor-pointer"
                   >
                     <SquarePen className="w-4 h-4" />
                   </button>

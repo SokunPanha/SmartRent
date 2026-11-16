@@ -25,11 +25,11 @@ export function RolesTable({
   const { page, totalPages, pageRows, setPage, pageSize } = usePagination(roles);
 
   return (
-    <div className="bg-card rounded-(--radius-card) border border-border shadow-card overflow-hidden">
+    <div className="bg-card rounded-(--radius-card) border border-(--card-border) shadow-card overflow-hidden">
       <div className="overflow-x-auto scroll-x-hint">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-muted border-b border-border text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-sans dark:font-mono">
+            <tr className="bg-muted border-b border-border text-xs font-bold text-muted-foreground font-sans dark:font-mono">
               <th className="p-4 pl-6">{t('table_role')}</th>
               <th className="p-4">{t('role_description')}</th>
               <th className="p-4">{t('table_permissions')}</th>
@@ -122,7 +122,7 @@ function IconButton({
       title={title}
       disabled={disabled}
       onClick={onClick}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition hover:border-primary/40 hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+      className="inline-flex h-10 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition hover:border-primary/40 hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
     >
       {children}
     </button>

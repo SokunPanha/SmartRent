@@ -44,13 +44,13 @@ export default function BuildingsView({
         <PermissionBanner message={t('cannot_modify_persona', { role: activeRole.toUpperCase() })} />
       )}
 
-      <div className="sticky top-14 z-30 -mx-6 md:-mx-8 px-6 md:px-8 py-3 bg-background border-b border-border">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg font-bold text-foreground tracking-tight font-sans">
+      <div className="@container sticky top-16 md:top-20 z-30 -mx-4 md:-mx-8 px-4 md:px-8 py-3 bg-background/85 backdrop-blur-md">
+        <div className="flex flex-col @3xl:flex-row @3xl:items-center justify-between gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+            <h2 className="text-xl font-bold text-foreground tracking-tight font-sans">
               {t('buildings_heading')}
             </h2>
-            <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+            <div className="flex h-10 items-center gap-1.5 bg-card px-4 rounded-full border border-(--card-border) shadow-card text-xs">
               <span className="text-muted-foreground font-sans">{t('type_filter_label')}</span>
               <Select
                 value={c.propertyTypeFilter}
@@ -70,14 +70,14 @@ export default function BuildingsView({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <div className="flex w-full items-center gap-2 sm:gap-3 @3xl:w-auto">
+            <div className="relative min-w-0 flex-1 @3xl:flex-none">
+              <Search className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 value={c.buildingSearch}
                 onChange={(e) => c.setBuildingSearch(e.target.value)}
                 placeholder={t('search_placeholder')}
-                className="w-full sm:w-56 pl-8 pr-3 py-1.5 rounded-lg border border-border text-xs bg-card text-foreground font-sans focus:outline-none focus:border-primary"
+                className="h-11 w-full @3xl:w-64 pl-10 pr-4 rounded-full border border-(--card-border) text-sm bg-card text-foreground shadow-card font-sans focus:outline-none focus:border-primary focus:ring-3 focus:ring-primary/20"
                 id="building-search-input"
               />
             </div>
@@ -85,7 +85,7 @@ export default function BuildingsView({
             {canModify && (
               <button
                 onClick={c.openPropModal}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer justify-center shrink-0"
+                className="flex h-10 items-center gap-1.5 px-4 text-sm font-semibold bg-primary text-primary-foreground rounded-full shadow-[0_6px_16px_-6px_var(--primary)] hover:bg-primary/90 transition cursor-pointer justify-center shrink-0"
                 id="open-add-property-modal"
               >
                 <Plus className="w-4 h-4" />
@@ -96,6 +96,7 @@ export default function BuildingsView({
         </div>
       </div>
 
+      <div className="@container">
       <BuildingGrid
         properties={c.filteredProperties}
         rooms={rooms}
@@ -103,6 +104,7 @@ export default function BuildingsView({
         lang={lang}
         searchActive={c.buildingSearch.trim().length > 0}
       />
+      </div>
 
       <PropertyModal c={c} lang={lang} />
     </div>

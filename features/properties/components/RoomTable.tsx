@@ -39,11 +39,11 @@ export function RoomTable({
   const tCommon = useTranslations('Common');
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-3xs overflow-hidden">
-      <div className="flex items-center justify-between gap-3 p-4 border-b border-border">
-        <div className="flex items-center gap-3">
+    <div className="bg-card border border-(--card-border) rounded-(--radius-card) shadow-card overflow-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 md:px-5 border-b border-border">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
           <h3 className="font-bold text-foreground text-base font-sans">{t('rooms_heading')}</h3>
-          <div className="flex items-center gap-1.5 bg-muted p-1 px-2.5 rounded-lg border border-border text-xs">
+          <div className="flex h-9 items-center gap-1.5 bg-muted px-3.5 rounded-full border border-border text-xs">
             <span className="text-muted-foreground font-sans">{t('status_filter_label')}</span>
             <Select value={statusFilter} onValueChange={(v) => onStatusFilterChange(v as 'all' | RoomStatus)}>
               <SelectTrigger className="w-fit data-[size=default]:h-auto gap-1 border-0 bg-transparent p-0 font-bold text-foreground shadow-none focus-visible:ring-0">
@@ -61,7 +61,7 @@ export function RoomTable({
         {canModify && (
           <button
             onClick={onAddRoom}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition cursor-pointer shrink-0"
+            className="flex h-9 items-center gap-1.5 px-4 text-xs font-semibold bg-primary text-primary-foreground rounded-full shadow-[0_6px_16px_-6px_var(--primary)] hover:bg-primary/90 transition cursor-pointer shrink-0"
             id="open-add-room-modal"
           >
             <Plus className="w-4 h-4" />
@@ -79,7 +79,7 @@ export function RoomTable({
             canModify && (
               <button
                 onClick={onAddRoom}
-                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition cursor-pointer"
+                className="inline-flex items-center gap-1 px-4 py-2.5 text-xs font-semibold bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 {t('add_room')}
@@ -133,7 +133,7 @@ export function RoomTable({
                           <div className="flex items-center gap-1.5 justify-end">
                             <button
                               onClick={() => onEditRoom(room)}
-                              className="p-1.5 bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 border border-border rounded-lg transition cursor-pointer"
+                              className="p-2 bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 border border-border rounded-full transition cursor-pointer"
                               title={tCommon('edit')}
                             >
                               <Edit3 className="w-3.5 h-3.5" />
@@ -177,7 +177,7 @@ export function RoomTable({
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => onEditRoom(room)}
-                          className="p-1.5 bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 border border-border rounded-lg transition cursor-pointer"
+                          className="p-2 bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 border border-border rounded-full transition cursor-pointer"
                           title={tCommon('edit')}
                         >
                           <Edit3 className="w-3.5 h-3.5" />

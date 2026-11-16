@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { roomKeys } from '@/features/properties/properties.queries';
-import { tenantsApi, contractsApi } from './tenants.api';
+import { tenantsApi, contractsApi, MoveOutPayload } from './tenants.api';
 
 export const tenantKeys = { all: ['tenants'] as const };
 export const contractKeys = { all: ['contracts'] as const };
@@ -48,6 +48,14 @@ export function useTenantMutations() {
     onError: (e) => toast.error(e.message),
   });
 
+  const update = useMutation({
+    mutationFn: tenantsApi.update,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: tenantKeys.all });
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
   const remove = useMutation({
     mutationFn: tenantsApi.remove,
     onSuccess: () => {
@@ -62,22 +70,24 @@ export function useTenantMutations() {
     onError: (e) => toast.error(e.message),
   });
 
-  return { create, remove, generateTelegramCode };
+  return { create, update, remove, generateTelegramCode };
 }
 
-/** Contract mutations also touch room status, so rooms are invalidated too. */
+/** Contract mutations also touch rooms, invoices (move-in / final) and
+ *  readings, so those are refreshed too. */
 export function useContractMutations() {
   const qc = useQueryClient();
   const invalidate = () => {
-    qc.invalidateQueries({ queryKey: contractKeys.all });
-    qc.invalidateQueries({ queryKey: roomKeys.all });
+    for (const key of [contractKeys.all, roomKeys.all, ['invoices'], ['payments'], ['readings']]) {
+      qc.invalidateQueries({ queryKey: key });
+    }
   };
 
   const create = useMutation({
     mutationFn: contractsApi.create,
     onSuccess: () => {
       invalidate();
-      toast('Lease validation completed: Room marked Occupied!');
+      toast.success('Lease created — room marked occupied.');
     },
     onError: (e) => toast.error(e.message),
   });
@@ -101,5 +111,25 @@ export function useContractMutations() {
     onError: (e) => toast.error(e.message),
   });
 
-  return { create, updateStatus, remove };
+  const update = useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: Parameters<typeof contractsApi.update>[1] }) =>
+      contractsApi.update(id, patch),
+    onSuccess: () => invalidate(),
+    onError: (e) => toast.error(e.message),
+  });
+
+  const renew = useMutation({
+    mutationFn: ({ id, endDate, rentAmount }: { id: string; endDate: string; rentAmount?: number }) =>
+      contractsApi.renew(id, { endDate, rentAmount }),
+    onSuccess: () => invalidate(),
+    onError: (e) => toast.error(e.message),
+  });
+
+  const moveOut = useMutation({
+    mutationFn: ({ id, body }: { id: string; body: MoveOutPayload }) => contractsApi.moveOut(id, body),
+    onSuccess: () => invalidate(),
+    onError: (e) => toast.error(e.message),
+  });
+
+  return { create, updateStatus, remove, update, renew, moveOut };
 }

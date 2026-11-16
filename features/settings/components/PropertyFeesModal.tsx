@@ -125,7 +125,7 @@ function PropertyFeesForm({
                 value={sel[f.id]?.amount ?? ''}
                 onChange={(e) => setAmt(f.id, e.target.value)}
                 placeholder={t('use_default')}
-                className="h-8 w-28 rounded-lg border border-input bg-card px-2 font-mono text-xs focus:border-primary focus:outline-none disabled:opacity-40"
+                className="h-10 w-28 rounded-xl border border-input bg-card px-3 font-mono text-xs focus:border-primary focus:outline-none disabled:opacity-40"
               />
             </div>
           ))

@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import { ShieldCheck, SlidersHorizontal, type LucideIcon } from 'lucide-react';
 import { useRent } from '@/store/rent-store';
 import { useCan } from '@/features/admin/permissions.queries';
-import { NAV_ITEMS } from '@/components/layout/nav-config';
+import { flatNavItems } from '@/components/layout/nav-config';
 
 interface ActionItem {
   tab: string;
@@ -22,7 +22,7 @@ export function QuickActionsGrid({ onNavigate }: { onNavigate: (tab: string) => 
   const can = useCan();
   const canAdmin = isSuperAdmin || can('admin.access');
 
-  const items: ActionItem[] = NAV_ITEMS.filter((item) => item.href !== '/dashboard').map(
+  const items: ActionItem[] = flatNavItems().filter((item) => item.href !== '/dashboard').map(
     (item) => ({
       tab: item.href.slice(1),
       label: t(item.labelKey),
@@ -45,7 +45,7 @@ export function QuickActionsGrid({ onNavigate }: { onNavigate: (tab: string) => 
           <button
             key={item.tab}
             onClick={() => onNavigate(item.tab)}
-            className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-3xs transition hover:border-primary/30 cursor-pointer"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-(--card-border) bg-card p-4 text-center shadow-3xs transition hover:border-primary/30 cursor-pointer"
           >
             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-muted text-foreground">
               <Icon className="h-5 w-5" />
